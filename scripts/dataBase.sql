@@ -1,0 +1,96 @@
+-- CREATE USER AND DATABASE for learnSphere
+DROP DATABASE IF EXISTS learnSphere;
+CREATE DATABASE learnSphere;
+/*
+CREATE USER 'learnSphere'@'%' IDENTIFIED BY 'y0uNever$ee4CumM4n';
+GRANT ALL PRIVILEGES ON learnSphere.* TO 'learnSphere'@'%';
+FLUSH PRIVILEGES;
+*/
+USE learnSphere;
+-- TEACHER Table
+CREATE TABLE teacher (
+	idTeacher BIGINT UNSIGNED AUTO_INCREMENT,
+	dni VARCHAR(9) UNIQUE NOT NULL,
+	firstName VARCHAR(50) NOT NULL,
+	lastName VARCHAR(100) NOT NULL,
+	phoneNumber INT NOT NULL,
+	email VARCHAR(100) UNIQUE NOT NULL,
+	userName VARCHAR(6) UNIQUE NOT NULL,
+	-- ¿HASH PASSWORD?
+	userPassword VARCHAR(255) NOT NULL,
+	PRIMARY KEY (idTeacher)
+);
+-- PROJECT Table
+CREATE TABLE project (
+	idProject BIGINT UNSIGNED AUTO_INCREMENT,
+	title VARCHAR(50) NOT NULL,
+	description VARCHAR(500) NOT NULL,
+	idTeacher BIGINT UNSIGNED NOT NULL,
+	PRIMARY KEY (idProject),
+	FOREIGN KEY (idTeacher) REFERENCES teacher(idTeacher)
+);
+-- ALUMN Table
+CREATE TABLE alumn (
+	idAlumn BIGINT UNSIGNED AUTO_INCREMENT,
+	dni VARCHAR(9) UNIQUE NOT NULL,
+	firstName VARCHAR(50) NOT NULL,
+	lastName VARCHAR(100) NOT NULL,
+	phoneNumber INT NOT NULL,
+	email VARCHAR(100) UNIQUE NOT NULL,
+	userName VARCHAR(6) UNIQUE NOT NULL,
+	-- ¿HASH PASSWORD?
+	userPassword VARCHAR(255) NOT NULL,
+	PRIMARY KEY (idAlumn)
+);
+-- ASSIGNED PROJECTS TO ALUMNS 
+CREATE TABLE projectToAlumn (
+	idProjectToAlumn BIGINT UNSIGNED AUTO_INCREMENT,
+	idProject BIGINT UNSIGNED NOT NULL,
+	idAlumn BIGINT UNSIGNED NOT NULL,
+	projectGrade TINYINT UNSIGNED NOT NULL,
+	PRIMARY KEY (idProjectToAlumn),
+	FOREIGN KEY (idProject) REFERENCES project(idProject),
+	FOREIGN KEY (idAlumn) REFERENCES alumn(idAlumn)
+);
+-- SKILL Table
+CREATE TABLE skill (
+	idSkill BIGINT UNSIGNED AUTO_INCREMENT,
+	idProject BIGINT UNSIGNED NOT NULL,
+	skillName VARCHAR(100) NOT NULL,
+	globalPercentage TINYINT UNSIGNED NOT NULL,
+	PRIMARY KEY (idSkill),
+	FOREIGN KEY (idProject) REFERENCES project(idProject)
+);
+
+-- ACTIVITY Table
+CREATE TABLE activity (
+	idActivity BIGINT UNSIGNED AUTO_INCREMENT,
+	idProject BIGINT UNSIGNED NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	description VARCHAR(500) NOT NULL,
+	PRIMARY KEY (idActivity),
+	FOREIGN KEY (idProject) REFERENCES project(idProject)
+);
+
+-- PERENTAGE SKILL FOR ACTIVITY
+CREATE TABLE activityPercentatge (
+	idActivityPercentatge BIGINT UNSIGNED AUTO_INCREMENT,
+	idSkill BIGINT UNSIGNED NOT NULL,
+	idActivity BIGINT UNSIGNED NOT NULL,
+	activityPercentatge TINYINT UNSIGNED NOT NULL,
+	PRIMARY KEY (idActivityPercentatge),
+	FOREIGN KEY (idSkill) REFERENCES skill(idSkill),
+	FOREIGN KEY (idActivity) REFERENCES activity(idActivity)
+);
+
+-- ACTIVITY evaluation of the SKILL to ALUMN 
+CREATE TABLE activityGrade (
+	idActivityGrade BIGINT UNSIGNED AUTO_INCREMENT,
+	idActivity BIGINT UNSIGNED NOT NULL,
+	idSkill BIGINT UNSIGNED NOT NULL,
+	idAlumn BIGINT UNSIGNED NOT NULL,
+	PRIMARY KEY (idActivityGrade),
+	FOREIGN KEY (idActivity) REFERENCES activity(idActivity),
+	FOREIGN KEY (idSkill) REFERENCES skill(idSkill),
+	FOREIGN KEY (idAlumn) REFERENCES alumn(idAlumn)
+);
