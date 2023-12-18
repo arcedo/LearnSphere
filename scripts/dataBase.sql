@@ -1,11 +1,7 @@
--- CREATE USER AND DATABASE for learnSphere
+-- CREATE DATABASE for learnSphere
 DROP DATABASE IF EXISTS learnSphere;
 CREATE DATABASE learnSphere;
-/*
-CREATE USER 'learnSphere'@'%' IDENTIFIED BY 'y0uNever$ee4CumM4n';
-GRANT ALL PRIVILEGES ON learnSphere.* TO 'learnSphere'@'%';
-FLUSH PRIVILEGES;
-*/
+
 USE learnSphere;
 -- TEACHER Table
 CREATE TABLE teacher (
@@ -94,3 +90,8 @@ CREATE TABLE activityGrade (
 	FOREIGN KEY (idSkill) REFERENCES skill(idSkill),
 	FOREIGN KEY (idAlumn) REFERENCES alumn(idAlumn)
 );
+
+-- PUBLIC USER for LearnSphere
+CREATE USER 'learnSphere'@'%' IDENTIFIED BY 'y0uNever$ee4CumM4n';
+GRANT ALL PRIVILEGES ON learnSphere.* TO 'learnSphere'@'%';
+FLUSH PRIVILEGES;
