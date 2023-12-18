@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-const path = require('path');
+//const path = require('path');
 const database = require('./app/database/dbConnection.js');
 
 //Server config variables
 const port = 3000;
 const appRoutes = './app/routes/';
-const appViews = './app/views/';
+//const appViews = './app/views/';
 
 //Database config
 require('dotenv').config();
@@ -18,6 +18,7 @@ const dbConfig = {
     database: process.env.DB_NAME || 'learnSphere',
     connectionLimit: 10
 };
+
 database.connect(dbConfig, function (err) {
     if (err) {
         console.error('Unable to connect to MySQL: ' + err);
@@ -34,19 +35,24 @@ database.connect(dbConfig, function (err) {
     }
 });
 
-
 //Import routes
 const studentsRouter = require(appRoutes + 'students');
 const teachersRouter = require(appRoutes + 'teachers');
+const projectsRouter = require(appRoutes + 'projects');
+const activitiesRouter = require(appRoutes + 'activities');
+const skillsRouter = require(appRoutes + 'skills');
 
 //Server config
 app.listen(port, () => console.log(`Listening on port ${port}!`));
-app.set('views', path.join(__dirname, appViews + 'views'));
+//app.set('views', path.join(__dirname, appViews + 'views'));
 //app.set('view engine', viewEngine);
 //app.engine('html', require('ejs').renderFile);
 
 //Routes
 app.use('/students', studentsRouter);
 app.use('/teachers', teachersRouter);
+app.use('/projects', projectsRouter);
+app.use('/activities', activitiesRouter);
+app.use('/skills', skillsRouter);
 
 module.exports = app;
