@@ -37,6 +37,7 @@ database.connect(dbConfig, function (err) {
 
 //Import routes
 const studentsRouter = require(appRoutes + 'students');
+
 const teachersRouter = require(appRoutes + 'teachers');
 
 //Server config
