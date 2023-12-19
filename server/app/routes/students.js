@@ -4,7 +4,7 @@ const database = require('../database/dbConnection.js');
 
 
 //Get all the students data
-router.get('/', async (res) => {
+router.get('/', async (req, res) => {
     try {
         const result = await database.getPromise().query('SELECT * FROM student;');
         res.status(200).json(result[0]); // Assuming result is an array of rows

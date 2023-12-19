@@ -41,9 +41,10 @@ const teachersRouter = require(appRoutes + 'teachers');
 const projectsRouter = require(appRoutes + 'projects');
 const activitiesRouter = require(appRoutes + 'activities');
 const skillsRouter = require(appRoutes + 'skills');
+const groupsRouter = require(appRoutes + 'groups');
 
 //Server config
-app.listen(port, () => console.log(`Listening on port ${port}!`));
+app.listen(port, () => console.log(`Listening on port ${port}!\nURL: http://localhost:${port}`));
 //app.set('views', path.join(__dirname, appViews + 'views'));
 //app.set('view engine', viewEngine);
 //app.engine('html', require('ejs').renderFile);
@@ -54,5 +55,6 @@ app.use('/teachers', teachersRouter);
 app.use('/projects', projectsRouter);
 app.use('/activities', activitiesRouter);
 app.use('/skills', skillsRouter);
+app.use('/groups', groupsRouter);
 
 module.exports = app;
