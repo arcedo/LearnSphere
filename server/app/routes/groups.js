@@ -2,6 +2,39 @@ const express = require('express');
 const router = express.Router();
 const database = require('../database/dbConnection.js');
 
+/**
+ * @swagger
+ * tags:
+ *   name: StudentGroups
+ *   description: Operations related to student groups
+ * definitions:
+ *   schemas:
+ *     StudentGroup:
+ *       description: Student Group Schema
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *       required: ['name']
+ */
+
+/**
+ * @swagger
+ * /studentgroups:
+ *   get:
+ *     tags:
+ *       - StudentGroups
+ *     summary: Get all student groups
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/schemas/StudentGroup'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get('/', async (req, res) => {
     try {
         const result = await database.getPromise().query('SELECT * FROM studentGroup;');
@@ -12,6 +45,28 @@ router.get('/', async (req, res) => {
     };
 });
 
+/**
+ * @swagger
+ * /studentgroups:
+ *   post:
+ *     tags:
+ *       - StudentGroups
+ *     summary: Create a student group
+ *     parameters:
+ *       - in: body
+ *         name: studentGroup
+ *         description: Student group to create
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/schemas/StudentGroup'
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           $ref: '#/definitions/schemas/StudentGroup'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.post('/', async (req, res) => {
     try {
         const result = await database.getPromise().query(
@@ -25,6 +80,33 @@ router.post('/', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /studentgroups/{idStudentGroup}:
+ *   put:
+ *     tags:
+ *       - StudentGroups
+ *     summary: Update a student group by ID
+ *     parameters:
+ *       - in: path
+ *         name: idStudentGroup
+ *         description: ID of the student group to update
+ *         required: true
+ *         type: integer
+ *       - in: body
+ *         name: studentGroup
+ *         description: Updated student group information
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/schemas/StudentGroup'
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           $ref: '#/definitions/schemas/StudentGroup'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.put('/:idStudentGroup', async (req, res) => {
     try {
         const result = await database.getPromise().query(
@@ -38,6 +120,25 @@ router.put('/:idStudentGroup', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /studentgroups/{idStudentGroup}:
+ *   delete:
+ *     tags:
+ *       - StudentGroups
+ *     summary: Delete a student group by ID
+ *     parameters:
+ *       - in: path
+ *         name: idStudentGroup
+ *         description: ID of the student group to delete
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *       500:
+ *         description: Internal Server Error
+ */
 router.delete('/:idStudentGroup', async (req, res) => {
     try {
         const result = await database.getPromise().query(

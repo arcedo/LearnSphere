@@ -36,6 +36,7 @@ database.connect(dbConfig, function (err) {
 });
 
 //Import routes
+const apiDocs = require(appRoutes + 'api-docs');
 const studentsRouter = require(appRoutes + 'students');
 const teachersRouter = require(appRoutes + 'teachers');
 const projectsRouter = require(appRoutes + 'projects');
@@ -50,6 +51,7 @@ app.listen(port, () => console.log(`Listening on port ${port}!\nURL: http://loca
 //app.engine('html', require('ejs').renderFile);
 
 //Routes
+app.use('/', apiDocs);
 app.use('/students', studentsRouter);
 app.use('/teachers', teachersRouter);
 app.use('/projects', projectsRouter);

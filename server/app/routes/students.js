@@ -2,8 +2,55 @@ const express = require('express');
 const router = express.Router();
 const database = require('../database/dbConnection.js');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Students
+ *   description: Operations related to students
+ * definitions:
+ *   schemas:
+ *     Student:
+ *       description: Student Schema
+ *       type: object
+ *       properties:
+ *         dni:
+ *           type: string
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         phoneNumber:
+ *           type: integer
+ *         email:
+ *           type: string
+ *         userName:
+ *           type: string
+ *         userPassword:
+ *           type: string
+ *         idStudentGroup:
+ *           type: string
+ *       required: ['dni', 'firstName', 'lastName', 'phoneNumber', 'email', 'userName', 'userPassword', 'idStudentGroup']
+ */
 
-//Get all the students data
+
+/**
+ * @swagger
+ * /students:
+ *   get:
+ *     tags:
+ *       - Students
+ *     summary: Get all students
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/schemas/Student'
+ *       500:
+ *         description: Internal Server Error
+ */
+
 router.get('/', async (req, res) => {
     try {
         const result = await database.getPromise().query('SELECT * FROM student;');
@@ -14,8 +61,28 @@ router.get('/', async (req, res) => {
     };
 });
 
-//Get a specific (by id) student data
-router.get('/:id', async (req, res) => {
+/**
+ * @swagger
+ * /students/{idStudent}:
+ *   get:
+ *     tags:
+ *       - Students
+ *     summary: Get a student by ID
+ *     parameters:
+ *       - in: path
+ *         name: idStudent
+ *         description: ID of the student to retrieve
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           $ref: '#/definitions/schemas/Student'
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get('/:idStudent', async (req, res) => {
     try {
         const result = await database.getPromise().query('SELECT * FROM student WHERE idStudent = ?;', [req.params.idStudent]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
@@ -25,6 +92,32 @@ router.get('/:id', async (req, res) => {
     };
 });
 
+/**
+ *  @swagger
+ * /students:
+ *   post:
+ *     tags:
+ *       - Students
+ *     summary: Create multiple students
+ *     parameters:
+ *       - in: body
+ *         name: students
+ *         description: Array of students to create
+ *         required: true
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/schemas/Student'
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/schemas/Student'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.post('/', async (req, res) => {
     try {
         const students = req.body.students;
@@ -48,6 +141,33 @@ router.post('/', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /students/{idStudent}:
+ *   put:
+ *     tags:
+ *       - Students
+ *     summary: Update a student by ID
+ *     parameters:
+ *       - in: path
+ *         name: idStudent
+ *         description: ID of the student to update
+ *         required: true
+ *         type: integer
+ *       - in: body
+ *         name: student
+ *         description: Updated student information
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/schemas/Student'
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           $ref: '#/definitions/schemas/Student'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.put('/:id', async (req, res) => {
     try {
         const result = await database.getPromise().query(
@@ -60,6 +180,25 @@ router.put('/:id', async (req, res) => {
     };
 });
 
+/**
+ * @swagger
+ * /students/{idStudent}:
+ *   delete:
+ *     tags:
+ *       - Students
+ *     summary: Delete a student by ID
+ *     parameters:
+ *       - in: path
+ *         name: idStudent
+ *         description: ID of the student to delete
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *       500:
+ *         description: Internal Server Error
+ */
 router.delete('/:id', async (req, res) => {
     try {
         const result = await database.getPromise().query(
@@ -72,7 +211,37 @@ router.delete('/:id', async (req, res) => {
     };
 });
 
-//Get the grade from one student on one project
+/**
+ * @swagger
+ * /students/{idStudent}/{idProject}/grade:
+ *   get:
+ *     tags:
+ *       - Students
+ *     summary: Get the grade for a student on a project
+ *     parameters:
+ *       - in: path
+ *         name: idStudent
+ *         description: ID of the student
+ *         required: true
+ *         type: integer
+ *       - in: path
+ *         name: idProject
+ *         description: ID of the project
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               projectGrade:
+ *                 type: integer
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get('/:idStudent/:idProject/grade', async (req, res) => {
     try {
         const result = await database.getPromise().query(
@@ -85,8 +254,37 @@ router.get('/:idStudent/:idProject/grade', async (req, res) => {
     }
 });
 
-//TODO: Get the grade from one student on one activity
-// we need all the skills to calculate the grade but right now we have just one skill in the table activityGrade
+/**
+ * @swagger
+ * /students/{idStudent}/{idActivity}/grade:
+ *   get:
+ *     tags:
+ *       - Students
+ *     summary: Get the grade for a student on an activity
+ *     parameters:
+ *       - in: path
+ *         name: idStudent
+ *         description: ID of the student
+ *         required: true
+ *         type: integer
+ *       - in: path
+ *         name: idActivity
+ *         description: ID of the activity
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               grade:
+ *                 type: integer
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get('/:idStudent/:idActivity/grade', async (req, res) => {
     try {
         const result = await database.getPromise().query(
