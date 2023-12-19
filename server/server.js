@@ -4,7 +4,7 @@ const app = express();
 const database = require('./app/database/dbConnection.js');
 
 //Server config variables
-const port = 3000;
+const port = 3001;
 const appRoutes = './app/routes/';
 //const appViews = './app/views/';
 
