@@ -18,6 +18,9 @@ const Login = () => {
       <p>{welcomeMessage}</p>
 
       {/* You can add more components or elements here */}
+      <form action="/login" method="post">
+
+      </form>
     </div>
   );
 };

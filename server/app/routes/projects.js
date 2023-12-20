@@ -107,8 +107,8 @@ router.get('/:idProject', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'INSERT INTO project (title, description, idTeacher) VALUES (?, ?, ?)',
-            [req.body.title, req.body.description, req.body.idTeacher]
+            'INSERT INTO project (title, description, idTeacher, idStudentGroup) VALUES (?, ?, ?, ?);',
+            [req.body.title, req.body.description, req.body.idTeacher, req.body.idStudentGroup]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
@@ -147,8 +147,8 @@ router.post('/', async (req, res) => {
 router.put('/:idProject', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'UPDATE project SET title = ?, description = ?, idTeacher = ? WHERE idProject = ?;',
-            [req.body.title, req.body.description, req.body.idTeacher, req.params.idProject]
+            'UPDATE project SET title = ?, description = ?, idTeacher = ?, idStudentGroup = ?, WHERE idProject = ?;',
+            [req.body.title, req.body.description, req.body.idTeacher, req.body.idStudentGroup, req.params.idProject]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
