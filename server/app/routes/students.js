@@ -175,7 +175,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, idStudentGroup WHERE idStudent = ?;',
+            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, idStudentGroup = ? WHERE idStudent = ?;',
             [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.idStudentGroup, req.params.id]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
