@@ -106,8 +106,11 @@ router.get('/:idStudent', async (req, res) => {
  *         required: true
  *         schema:
  *           type: array
- *           items:
- *             $ref: '#/definitions/schemas/Student'
+ *           properties:
+ *             students:
+ *               type: array
+ *               items:
+ *                 $ref: '#/definitions/schemas/Student'
  *     responses:
  *       200:
  *         description: Successful operation
@@ -128,10 +131,11 @@ router.post('/', async (req, res) => {
             student.phoneNumber,
             student.email,
             student.userName,
-            student.userPassword
+            student.userPassword,
+            student.idStudentGroup
         ]);
 
-        const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword) VALUES ?';
+        const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup) VALUES ?';
         const result = await database.getPromise().query(sql, [values]);
 
         res.status(200).json(result[0]); // Assuming result is an array of rows
@@ -171,8 +175,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ? WHERE idStudent = ?;',
-            [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.params.id]);
+            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, idStudentGroup WHERE idStudent = ?;',
+            [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.idStudentGroup, req.params.id]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);

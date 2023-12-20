@@ -19,7 +19,9 @@ const database = require('../database/dbConnection.js');
  *           type: string
  *         idTeacher:
  *           type: integer
- *       required: ['title', 'description', 'idTeacher']
+ *         idStudentGroup:
+ *           type: string
+ *       required: ['title', 'description', 'idTeacher', 'idStudentGroup']
  */
 
 /**
