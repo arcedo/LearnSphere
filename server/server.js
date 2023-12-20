@@ -1,14 +1,12 @@
 const express = require('express');
 const app = express();
-//const path = require('path');
 const database = require('./app/database/dbConnection.js');
 
-//Server config variables
+// Server config variables
 const port = 3001;
 const appRoutes = './app/routes/';
-//const appViews = './app/views/';
 
-//Database config
+// Database config
 require('dotenv').config();
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
@@ -18,6 +16,10 @@ const dbConfig = {
     database: process.env.DB_NAME || 'learnSphere',
     connectionLimit: 10
 };
+
+// Middleware for parsing request bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 database.connect(dbConfig, function (err) {
     if (err) {
@@ -35,7 +37,7 @@ database.connect(dbConfig, function (err) {
     }
 });
 
-//Import routes
+// Import routes
 const apiDocs = require(appRoutes + 'api-docs');
 const studentsRouter = require(appRoutes + 'students');
 const teachersRouter = require(appRoutes + 'teachers');
@@ -44,13 +46,7 @@ const activitiesRouter = require(appRoutes + 'activities');
 const skillsRouter = require(appRoutes + 'skills');
 const groupsRouter = require(appRoutes + 'groups');
 
-//Server config
-app.listen(port, () => console.log(`Listening on port ${port}!\nURL: http://localhost:${port}`));
-//app.set('views', path.join(__dirname, appViews + 'views'));
-//app.set('view engine', viewEngine);
-//app.engine('html', require('ejs').renderFile);
-
-//Routes
+// Routes
 app.use('/', apiDocs);
 app.use('/students', studentsRouter);
 app.use('/teachers', teachersRouter);
@@ -58,5 +54,21 @@ app.use('/projects', projectsRouter);
 app.use('/activities', activitiesRouter);
 app.use('/skills', skillsRouter);
 app.use('/groups', groupsRouter);
+
+// Request logging middleware
+app.use((req, res, next) => {
+    console.log(`Received ${req.method} request to ${req.path}`);
+    console.log('Request Body:', req.body);
+    next();
+});
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
+
+// Server config
+app.listen(port, () => console.log(`Listening on port ${port}!\nURL: http://localhost:${port}`));
 
 module.exports = app;

@@ -5,7 +5,7 @@ const database = require('../database/dbConnection.js');
 /**
  * @swagger
  * tags:
- *   name: StudentGroups
+ *   name: Groups
  *   description: Operations related to student groups
  * definitions:
  *   schemas:
@@ -20,10 +20,10 @@ const database = require('../database/dbConnection.js');
 
 /**
  * @swagger
- * /studentgroups:
+ * /groups:
  *   get:
  *     tags:
- *       - StudentGroups
+ *       - Groups
  *     summary: Get all student groups
  *     responses:
  *       200:
@@ -47,10 +47,10 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /studentgroups:
+ * /groups:
  *   post:
  *     tags:
- *       - StudentGroups
+ *       - Groups
  *     summary: Create a student group
  *     parameters:
  *       - in: body
@@ -70,7 +70,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'INSERT INTO studentGroup (name) VALUES (?)',
+            'INSERT INTO studentGroup VALUES (?);',
             [req.body.name]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows
@@ -82,10 +82,10 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /studentgroups/{idStudentGroup}:
+ * /groups/{idStudentGroup}:
  *   put:
  *     tags:
- *       - StudentGroups
+ *       - Groups
  *     summary: Update a student group by ID
  *     parameters:
  *       - in: path
@@ -122,10 +122,10 @@ router.put('/:idStudentGroup', async (req, res) => {
 
 /**
  * @swagger
- * /studentgroups/{idStudentGroup}:
+ * /groups/{idStudentGroup}:
  *   delete:
  *     tags:
- *       - StudentGroups
+ *       - Groups
  *     summary: Delete a student group by ID
  *     parameters:
  *       - in: path
