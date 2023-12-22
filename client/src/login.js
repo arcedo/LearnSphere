@@ -10,18 +10,22 @@ const Login = () => {
 
   // Return the JSX to be rendered
   return (
-    <div>
-      {/* Render the page title */}
-      <h1>{pageTitle}</h1>
+    <section id="main" className="flex h-full w-full">
+      <div>
+        {/* Render the page title */}
+        <h1>{pageTitle}</h1>
 
-      {/* Render a welcome message */}
-      <p>{welcomeMessage}</p>
+        {/* Render a welcome message */}
+        <p>{welcomeMessage}</p>
 
-      {/* You can add more components or elements here */}
-      <form action="/login" method="post">
-
-      </form>
-    </div>
+        {/* You can add more components or elements here */}
+        <form action="/login" method="post">
+          <input type="text" name="username" placeholder="Username" />
+          <input type="password" name="password" placeholder="Password" />
+          <input type="submit" value="Login" />
+        </form>
+      </div>
+    </section>
   );
 };
 
