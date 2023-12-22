@@ -20,9 +20,6 @@ const swaggerOptions = {
                 url: 'https://opensource.org/license/mit/'
             },
             servers: ['http://localhost:3000']
-        },
-        definitions: {
-
         }
     },
     // APIs to document
@@ -32,7 +29,8 @@ const swaggerOptions = {
         './app/routes/activities.js',
         './app/routes/projects.js',
         './app/routes/groups.js',
-        './app/routes/skills.js'
+        './app/routes/skills.js',
+        './app/routes/auth.js',
     ]
 };
 

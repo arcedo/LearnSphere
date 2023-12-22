@@ -45,6 +45,7 @@ const projectsRouter = require(appRoutes + 'projects');
 const activitiesRouter = require(appRoutes + 'activities');
 const skillsRouter = require(appRoutes + 'skills');
 const groupsRouter = require(appRoutes + 'groups');
+const authRouter = require(appRoutes + 'auth');
 
 // Routes
 app.use('/', apiDocs);
@@ -54,6 +55,7 @@ app.use('/projects', projectsRouter);
 app.use('/activities', activitiesRouter);
 app.use('/skills', skillsRouter);
 app.use('/groups', groupsRouter);
+app.use('/auth', authRouter);
 
 // Request logging middleware
 app.use((req, res, next) => {

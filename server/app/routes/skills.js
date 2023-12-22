@@ -15,8 +15,6 @@ const database = require('../database/dbConnection.js');
  *       properties:
  *         skillName:
  *           type: string
- *         idProject:
- *           type: integer
  *         globalPercentage:
  *           type: integer
  *       required: ['skillName', 'idProject', 'globalPercentage']
