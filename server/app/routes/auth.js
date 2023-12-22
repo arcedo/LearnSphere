@@ -52,17 +52,20 @@ router.post('/', async (req, res) => {
             'SELECT * FROM student WHERE userName LIKE ? AND userPassword LIKE ?;',
             [req.body.userName, req.body.userPassword]
         );
+
         if (result[0].length === 0) {
             result = await database.getPromise().query(
                 'SELECT * FROM teacher WHERE userName LIKE ? AND userPassword LIKE ?;',
                 [req.body.userName, req.body.userPassword]
             );
         }
+
         if (result[0].length === 0) {
-            res.status(401).send();
-            return;
+            // No matching user found
+            return res.status(401).json({ status: 401, error: 'Authentication failed' });
         }
-        res.status(200).json(result[0]); // Assuming result is an array of rows
+
+        res.status(200).json({ status: 200, data: result[0] }); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();

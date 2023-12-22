@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const database = require('./app/database/dbConnection.js');
 
+const cors = require('cors');
+app.use(cors());
+
 // Server config variables
 const port = 3001;
 const appRoutes = './app/routes/';
