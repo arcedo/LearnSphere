@@ -52,14 +52,17 @@ router.post('/', async (req, res) => {
             'SELECT * FROM student WHERE userName LIKE ? AND userPassword LIKE ?;',
             [req.body.userName, req.body.userPassword]
         );
-        result[0][0].userRole = 'student';
 
         if (result[0].length === 0) {
             result = await database.getPromise().query(
                 'SELECT * FROM teacher WHERE userName LIKE ? AND userPassword LIKE ?;',
                 [req.body.userName, req.body.userPassword]
             );
-            result[0][0].userRole = 'teacher';
+            if (result[0].length !== 0) {
+                result[0][0].userType = 'teacher';
+            }
+        } else {
+            result[0][0].userType = 'student';
         }
 
         if (result[0].length === 0) {
