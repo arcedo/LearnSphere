@@ -4,12 +4,12 @@
 
 @font-face {
   font-family: "Montserrat";
-  src: url(media/Montserrat-VariableFont_wght.ttf) format("truetype");
+  src: url(./assets/fonts/Montserrat-VariableFont_wght.ttf) format("truetype");
 }
 
 @font-face {
   font-family: "Sora";
-  src: url(media/Sora-VariableFont_wght.ttf) format("truetype");
+  src: url(./assets/fonts/Sora-VariableFont_wght.ttf) format("truetype");
 }
 
 :root{
