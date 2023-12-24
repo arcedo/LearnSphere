@@ -13,8 +13,9 @@
 }
 
 :root{
-  --black: #222;
+  --black: #0E070C;
   --white: #fefefe;
+  --sidebar: #222222;
 }
 
 .bgColor{
@@ -23,6 +24,14 @@
 
 .white{
   color: var(--white);
+}
+
+.bgBlack{
+  background-color: var(--black);
+}
+
+.bgSidebar{
+  background-color: var(--sidebar);
 }
 
 body {
@@ -37,4 +46,69 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@keyframes rotateHover1 {
+  from {
+    transform: translateX(0rem) translateY(0.18rem) rotate(0deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0.25rem) translateY(0.18rem) rotate(-45deg) translateZ(0px);
+  }
+}
+
+@keyframes rotateUnhover1 {
+  from {
+    transform: translateX(0.25rem) translateY(0.18rem) rotate(-45deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0rem) translateY(0.18rem) rotate(0deg) translateZ(0px);
+  }
+}
+
+@keyframes rotateHover2 {
+  from {
+    transform: translateX(0rem) translateY(-0.18rem) rotate(0deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0.25rem) translateY(-0.18rem) rotate(45deg) translateZ(0px);
+  }
+}
+
+@keyframes rotateUnhover2 {
+  from {
+    transform: translateX(0.25rem) translateY(-0.18rem) rotate(45deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0rem) translateY(-0.18rem) rotate(0deg) translateZ(0px);
+  }
+}
+
+.rotate-hover-1 {
+  animation: rotateHover1 0.15s ease-in-out forwards;
+}
+
+.rotate-unhover-1 {
+  animation: rotateUnhover1 0.15s ease-in-out forwards;
+}
+
+.rotate-hover-2 {
+  animation: rotateHover2 0.15s ease-in-out forwards;
+}
+
+.rotate-unhover-2 {
+  animation: rotateUnhover2 0.15s ease-in-out forwards;
+}
+
+.sidebar {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+}
+
+.sidebar-open {
+  transform: translateX(0);
+}
+
+.sidebar-closed {
+  transform: translateX(-100%);
 }
