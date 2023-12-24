@@ -43,8 +43,15 @@ async function login() {
 
         if (response.ok) {
             let data = await response.json();
+            console.log(data);
             if (data.status === 200) {
-                window.location.href = "/home";
+                const user = {
+                    userId: data.userId,
+                    userName: data.userName,
+                    userRole: data.userRole,
+                };
+                localStorage.setItem('User', user);
+                window.location.href = "/";
             }
         } else {
             document.getElementById("loginChecker").innerHTML = "Incorrect username or password";
