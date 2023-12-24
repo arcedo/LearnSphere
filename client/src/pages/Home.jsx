@@ -1,13 +1,19 @@
 function isLogged() {
-    return true;
+    return localStorage.getItem('loggedUser') ? true : false;
 }
 
 function Home() {
-    return (
-        <div>
-            <h1 className="text-red-300">Home</h1>
-        </div>
-    );
+    if (!isLogged()) {
+        window.location.href = "/login";
+    } else {
+        return (
+            <section id="Home" className="w-full">
+                <div>
+                    <h4>Project1 - </h4>
+                </div>
+            </section>
+        );
+    }
 };
 
 export default Home;

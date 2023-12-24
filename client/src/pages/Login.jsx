@@ -42,15 +42,14 @@ async function login() {
         let response = await fetch("http://localhost:3001/auth", options);
 
         if (response.ok) {
-            let data = await response.json();
-            console.log(data);
-            if (data.status === 200) {
+            let responseData = await response.json();
+            if (responseData.status === 200) {
                 const user = {
-                    userId: data.userId,
-                    userName: data.userName,
-                    userRole: data.userRole,
+                    userId: responseData.data[0].idStudent,
+                    userName: responseData.data[0].userName,
+                    userRole: responseData.data[0].userRole,
                 };
-                localStorage.setItem('User', user);
+                localStorage.setItem('loggedUser', JSON.stringify(user));
                 window.location.href = "/";
             }
         } else {
