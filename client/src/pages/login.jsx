@@ -1,5 +1,5 @@
-import Background from './assets/img/background.svg';
-import Logo from './assets/img/logo.svg';
+import Background from '../assets/img/background.svg';
+import Logo from '../assets/img/logo.svg';
 
 function printLogin() {
     return (
