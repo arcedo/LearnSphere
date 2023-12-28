@@ -181,3 +181,7 @@ code {
 #home {
   background-color: #131313;
 }
+
+#accordion > span {
+  display: none !important;
+}
