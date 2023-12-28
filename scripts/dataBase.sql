@@ -1,11 +1,11 @@
 -- CREATE USER AND DATABASE for learnSphere
 DROP DATABASE IF EXISTS learnSphere;
 CREATE DATABASE learnSphere;
-/*
-CREATE USER 'learnSphere'@'%' IDENTIFIED BY 'y0uNever$ee4CumM4n';
+
+/*CREATE USER 'learnSphere'@'%' IDENTIFIED BY 'y0uNever$ee4CumM4n';
 GRANT ALL PRIVILEGES ON learnSphere.* TO 'learnSphere'@'%';
-FLUSH PRIVILEGES;
-*/
+FLUSH PRIVILEGES;*/
+
 USE learnSphere;
 -- TEACHER Table
 CREATE TABLE teacher (
