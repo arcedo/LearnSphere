@@ -45,9 +45,9 @@ async function login() {
             let responseData = await response.json();
             if (responseData.status === 200) {
                 const user = {
-                    userId: responseData.data[0].idStudent,
-                    userName: responseData.data[0].userName,
-                    userRole: responseData.data[0].userRole,
+                    userType: responseData.data[0].userType,
+                    userId: responseData.data[0].id,
+                    userName: username,
                 };
                 localStorage.setItem('loggedUser', JSON.stringify(user));
                 window.location.href = "/";

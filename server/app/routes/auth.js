@@ -49,13 +49,13 @@ const database = require('../database/dbConnection.js');
 router.post('/', async (req, res) => {
     try {
         let result = await database.getPromise().query(
-            'SELECT * FROM student WHERE userName LIKE ? AND userPassword LIKE ?;',
+            'SELECT idStudent AS id FROM student WHERE userName LIKE ? AND userPassword LIKE ?;',
             [req.body.userName, req.body.userPassword]
         );
 
         if (result[0].length === 0) {
             result = await database.getPromise().query(
-                'SELECT * FROM teacher WHERE userName LIKE ? AND userPassword LIKE ?;',
+                'SELECT idTeacher AS id FROM teacher WHERE userName LIKE ? AND userPassword LIKE ?;',
                 [req.body.userName, req.body.userPassword]
             );
             if (result[0].length !== 0) {
