@@ -109,3 +109,6 @@ INSERT INTO teacher (dni, firstName, lastName, phoneNumber, email, userName, use
 VALUES ('48512304J', 'Marcos', 'Velteo', 650453212, 'marcos.venteo@lsphere.net', 'marvel', 'venom123');
 INSERT INTO teacher (dni, firstName, lastName, phoneNumber, email, userName, userPassword) 
 VALUES ('41312303K', 'Alex', 'Marín', 623126785, 'alex.marin@lsphere.net', 'alemar', 'pikachu69');
+INSERT INTO studentGroup (name) VALUES ('DAW2');
+INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup)
+VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword', 'DAW2');
