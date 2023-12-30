@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import MyButton from '../components/MyButton';
 export default function Settings() {
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
     const pullSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
