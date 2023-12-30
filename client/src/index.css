@@ -113,21 +113,30 @@ code {
   transform: translateX(-100%);
 }
 
-@keyframes rotateHover1 {
-  from {
-    transform: translateX(0rem) translateY(0.18rem) rotate(0deg) translateZ(0px);
-  }
-  to {
-    transform: translateX(0.25rem) translateY(0.18rem) rotate(-45deg) translateZ(0px);
-  }
-}
-
 @keyframes rotateUnhover1 {
   from {
     transform: translateX(0.25rem) translateY(0.18rem) rotate(-45deg) translateZ(0px);
   }
   to {
     transform: translateX(0rem) translateY(0.18rem) rotate(0deg) translateZ(0px);
+  }
+}
+
+@keyframes rotateUnhover2 {
+  from {
+    transform: translateX(0.25rem) translateY(-0.18rem) rotate(45deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0rem) translateY(-0.18rem) rotate(0deg) translateZ(0px);
+  }
+}
+
+@keyframes rotateHover1 {
+  from {
+    transform: translateX(0rem) translateY(0.18rem) rotate(0deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0.25rem) translateY(0.18rem) rotate(-45deg) translateZ(0px);
   }
 }
 
@@ -140,12 +149,21 @@ code {
   }
 }
 
-@keyframes rotateUnhover2 {
+@keyframes rotateHover1Click {
   from {
-    transform: translateX(0.25rem) translateY(-0.18rem) rotate(45deg) translateZ(0px);
+    transform: translateX(0rem) translateY(-0.18rem) rotate(0deg) translateZ(0px);
   }
   to {
+    transform: translateX(0.25rem) translateY( 0.2rem) rotate(45deg) translateZ(0px);
+  }
+}
+
+@keyframes rotateHover2Click {
+  from {
     transform: translateX(0rem) translateY(-0.18rem) rotate(0deg) translateZ(0px);
+  }
+  to {
+    transform: translateX(0.25rem) translateY(-0.13rem) rotate(-45deg) translateZ(0px);
   }
 }
 
@@ -165,6 +183,13 @@ code {
   animation: rotateUnhover2 0.15s ease-in-out forwards;
 }
 
+.rotate-hover-1-click {
+  animation: rotateHover1Click 0.15s ease-in-out forwards !important;
+}
+.rotate-hover-2-click {
+  animation: rotateHover2Click 0.15s ease-in-out forwards !important;
+}
+
 .sidebar {
   transition: transform 0.3s ease-in-out;
   /* transform: translateX(-100%); */
@@ -179,7 +204,7 @@ code {
   display: none;
 }
 
-#home {
+.bgPrincipal {
   background-color: #131313;
 }
 

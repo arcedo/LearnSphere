@@ -9,33 +9,48 @@ import {
     AccordionBody,
 } from "@material-tailwind/react";
 
-function isLogged() {
-    return localStorage.getItem('loggedUser') ? true : false;
-}
-
+import { getLoggedUser } from '../utils/auth';
 
 function Home() {
+
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [open, setOpen] = useState(1);
-
-    const handleOpen = (value) => setOpen(open === value ? 0 : value);
-
-    if (!isLogged()) {
-        window.location.href = "/login";
-        return null; // Agrega un return null para evitar el código no alcanzable
-    }
-
     const pullSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
 
+    const [open, setOpen] = useState(1);
+    const handleOpen = (value) => setOpen(open === value ? 0 : value);
+
+
+    const exampleList = [
+        {
+            id: 1,
+            title: "Project 1",
+        },
+        {
+            id: 2,
+            title: "Project 2",
+        },
+        {
+            id: 3,
+            title: "Project 3",
+        },
+        {
+            id: 4,
+            title: "Project 4",
+        },
+        {
+            id: 5,
+            title: "Project 5",
+        }
+    ]
     return (
         <div> 
-        <Header/>
-        <section id="home" className="flex w-full h-screen pt-20 text-white">
-            <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Header title={'Home'}/>
+        <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
+            <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={exampleList} />
             <MyButton onButtonClick={pullSidebar} />
-            <div className='w-11/12 mx-auto px-5 py-10'>
+            <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
                 <div className='flex items-center gap-4'>
                     <h4 className='font-sora text-4xl font-extrabold'>Project1</h4>
                 </div>
