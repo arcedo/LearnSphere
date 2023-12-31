@@ -112,3 +112,5 @@ VALUES ('41312303K', 'Alex', 'Marín', 623126785, 'alex.marin@lsphere.net', 'ale
 INSERT INTO studentGroup (name) VALUES ('DAW2');
 INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup)
 VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword', 'DAW2');
+INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup)
+VALUES ('12345678F', 'Jordi', 'Torrella', 677067346, 'jortor@lsphere.net', 'jortor', 'P@ssword', 'DAW2');

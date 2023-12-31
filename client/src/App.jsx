@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Error from './pages/Error';
 import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 
 import isLogged from './utils/auth';
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
           <>
             <Route path="/" element={<Home />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
           </>
         ) : (
           <Route path="/*" element={<Navigate to="/login" />} />

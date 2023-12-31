@@ -2,6 +2,11 @@ import Background from '../assets/img/background.svg';
 import Logo from '../assets/img/logo.svg';
 
 function printLogin() {
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+          login();
+        }
+    };
     return (
         <div className="flex justify-center items-center w-screen h-screen bg-cover" style={{ backgroundImage: "url(" + Background + ")" }}>
             <div className='flex flex-col justify-center items-center gap-y-3 w-1/4'>
@@ -17,7 +22,7 @@ function printLogin() {
                     </div>
                     <div className="flex flex-col">
                         <label>Password:</label>
-                        <input className='rounded-3xl px-3 py-1 text-black' type="password" name="password" />
+                        <input className='rounded-3xl px-3 py-1 text-black' type="password" name="password" onKeyPress={handleKeyPress}/>
                     </div>
                     <button className="rounded-3xl border-2 border-white py-1.5 px-5 hover:bg-white hover:text-black transition-all duration-300" onClick={login}>Login</button>
                 </div>
@@ -54,6 +59,7 @@ async function login() {
             }
         } else {
             document.getElementById("loginChecker").innerHTML = "Incorrect username or password";
+            document.getElementsByName("password")[0].value = "";
             console.error('Server returned an error:', response.status);
         }
     } catch (error) {
