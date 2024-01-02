@@ -27,9 +27,13 @@ const database = require('../database/dbConnection.js');
  *           type: string
  *         userPassword:
  *           type: string
+ *         profilePicture:
+ *           type: string
+ *         bio:
+ *           type: string
  *         idStudentGroup:
  *           type: string
- *       required: ['dni', 'firstName', 'lastName', 'phoneNumber', 'email', 'userName', 'userPassword', 'idStudentGroup']
+ *       required: ['dni', 'firstName', 'lastName', 'phoneNumber', 'email', 'userName', 'userPassword', 'profilePicture', 'bio', 'idStudentGroup']
  */
 
 
@@ -132,10 +136,12 @@ router.post('/', async (req, res) => {
             student.email,
             student.userName,
             student.userPassword,
+            student.profilePicture,
+            student.bio,
             student.idStudentGroup
         ]);
 
-        const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup) VALUES ?';
+        const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
         const result = await database.getPromise().query(sql, [values]);
 
         res.status(200).json(result[0]); // Assuming result is an array of rows
@@ -175,8 +181,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, idStudentGroup = ? WHERE idStudent = ?;',
-            [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.idStudentGroup, req.params.id]);
+            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, profilePicture = ?, bio = ?, idStudentGroup = ? WHERE idStudent = ?;',
+            [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.profilePicture, req.body.bio, req.body.idStudentGroup, req.params.id]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);

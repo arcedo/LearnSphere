@@ -47,6 +47,8 @@ CREATE TABLE student (
 	userName VARCHAR(6) UNIQUE NOT NULL,
 	-- ¿HASH PASSWORD?
 	userPassword VARCHAR(255) NOT NULL,
+	profilePicture VARCHAR(255),
+	bio VARCHAR(500),
 	idStudentGroup VARCHAR(50) NOT NULl,
 	PRIMARY KEY (idStudent),
 	FOREIGN KEY (idStudentGroup) REFERENCES studentGroup(name)
@@ -110,7 +112,7 @@ VALUES ('48512304J', 'Marcos', 'Velteo', 650453212, 'marcos.venteo@lsphere.net',
 INSERT INTO teacher (dni, firstName, lastName, phoneNumber, email, userName, userPassword) 
 VALUES ('41312303K', 'Alex', 'Marín', 623126785, 'alex.marin@lsphere.net', 'alemar', 'pikachu69');
 INSERT INTO studentGroup (name) VALUES ('DAW2');
-INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup)
-VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword', 'DAW2');
-INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, idStudentGroup)
-VALUES ('12345678F', 'Jordi', 'Torrella', 677067346, 'jortor@lsphere.net', 'jortor', 'P@ssword', 'DAW2');
+INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)
+VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword',  '', '', 'DAW2');
+INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)
+VALUES ('12345678F', 'Jordi', 'Torrella', 677067346, 'jortor@lsphere.net', 'jortor', 'P@ssword', '', '', 'DAW2');

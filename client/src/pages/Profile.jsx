@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MyButton from '../components/MyButton';
 import Header from '../components/Header';
 import Skills from '../components/Skills';
+import ProfileImage from '../assets/profilePictures/profile1.png';
 
 import { getLoggedUser } from '../utils/auth';
 
@@ -36,6 +37,8 @@ function Profile() {
             <Header title={'Profile'}/>
             <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
                 <div className='w-11/12 mx-auto pl-5 pr-10 py-10'> 
+                    <img src={ProfileImage} alt="Profile Picture" />
+                    <input type="file" name="profilePicture" id="profilePicture" />
                     <h4 className='font-sora text-4xl font-extrabold'>{userFullName}</h4>
                     <h4>@{getLoggedUser().name}</h4>
                 </div>
