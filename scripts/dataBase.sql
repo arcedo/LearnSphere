@@ -32,6 +32,7 @@ CREATE TABLE project (
 	description VARCHAR(500) NOT NULL,
 	idTeacher BIGINT UNSIGNED NOT NULL,
 	idStudentGroup VARCHAR(50) NOT NULL,
+	activeProject BOOLEAN NOT NULL,
 	PRIMARY KEY (idProject),
 	FOREIGN KEY (idTeacher) REFERENCES teacher(idTeacher),
 	FOREIGN KEY (idStudentGroup) REFERENCES studentGroup(name)
