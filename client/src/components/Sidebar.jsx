@@ -6,7 +6,7 @@ import {
   ListItem,
 } from "@material-tailwind/react";
 
-export default function Sidebar({ isOpen, onClose, listContent, onItemClick }) {
+export default function Sidebar({ isOpen, onClose, listContent, selectedItem, onItemClick }) {
   const sidebarClassName = `w-80 z-20 ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`;
 
   return (
@@ -19,7 +19,7 @@ export default function Sidebar({ isOpen, onClose, listContent, onItemClick }) {
         </div>
         <List className='white'>
           {listContent.map((item) => (
-            <ListItem key={item.id} onClick={() => onItemClick(item)}>
+            <ListItem key={item.id} onClick={() => onItemClick(item)} className={selectedItem === item.title ? 'bg-white text-black' : ''}>
               {item.title}
             </ListItem>
           ))}

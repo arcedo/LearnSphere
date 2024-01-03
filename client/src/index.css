@@ -211,3 +211,7 @@ code {
 #accordion > span {
   display: none !important;
 }
+
+img{
+  max-width: none !important;
+}

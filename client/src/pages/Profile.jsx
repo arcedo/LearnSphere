@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import MyButton from '../components/MyButton';
 import Header from '../components/Header';
 import Skills from '../components/Skills';
-import ProfileImage from '../assets/profilePictures/profile1.png';
-
 import { getLoggedUser } from '../utils/auth';
+import { Link } from 'react-router-dom';
 
-async function getFullName() {
+async function getUserData() {
     try {
-        let response = await fetch("http://localhost:3001/students/" + getLoggedUser().id);
+        const userId = getLoggedUser().id;
+        const response = await fetch(`http://localhost:3001/students/${userId}`);
+        
         if (response.ok) {
-            let responseData = await response.json();
-            return responseData[0].firstName + ' ' + responseData[0].lastName;
+            const userData = await response.json();
+            console.log(userData[0]);
+            return userData[0];
         } else {
             console.error('Server returned an error:', response.status);
         }
@@ -21,26 +22,36 @@ async function getFullName() {
 }
 
 function Profile() {
-    const [userFullName, setUserFullName] = useState('');
+    const [userData, setUserData] = useState({
+        firstName: '',
+        lastName: '',
+        profilePicture: '',
+        bio: '',
+    });
 
     useEffect(() => {
-        async function fetchFullName() {
-            const fullName = await getFullName();
-            setUserFullName(fullName);
+        async function fetchUserData() {
+            const data = await getUserData();
+            setUserData(data);
         }
 
-        fetchFullName();
+        fetchUserData();
     }, []);
+
+    const { firstName, lastName, profilePicture, bio } = userData;
 
     return (
         <div>
             <Header title={'Profile'}/>
             <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
                 <div className='w-11/12 mx-auto pl-5 pr-10 py-10'> 
-                    <img src={ProfileImage} alt="Profile Picture" />
-                    <input type="file" name="profilePicture" id="profilePicture" />
-                    <h4 className='font-sora text-4xl font-extrabold'>{userFullName}</h4>
+                    <img src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
+                    <h4 className='font-sora text-4xl font-extrabold'>{`${firstName} ${lastName}`}</h4>
                     <h4>@{getLoggedUser().name}</h4>
+                    <p>{bio}</p>
+                    <Link to='/settings'>
+                        <button className='border-l-white border-2 border-radius rounded-md px-4 py-2 hover:bg-white hover:text-black transition-all'>Edit</button>
+                    </Link>
                 </div>
             </section>
         </div>

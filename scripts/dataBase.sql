@@ -114,6 +114,6 @@ INSERT INTO teacher (dni, firstName, lastName, phoneNumber, email, userName, use
 VALUES ('41312303K', 'Alex', 'Marín', 623126785, 'alex.marin@lsphere.net', 'alemar', 'pikachu69');
 INSERT INTO studentGroup (name) VALUES ('DAW2');
 INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)
-VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword',  '', '', 'DAW2');
+VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword',  'src/assets/profilePictures/maresp.png', 'Powered by Marcel', 'DAW2');
 INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)
-VALUES ('12345678F', 'Jordi', 'Torrella', 677067346, 'jortor@lsphere.net', 'jortor', 'P@ssword', '', '', 'DAW2');
+VALUES ('12345678F', 'Jordi', 'Torrella', 677067346, 'jortor@lsphere.net', 'jortor', 'P@ssword', 'src/assets/profilePictures/jortor.png', 'Follar follar follar', 'DAW2');
