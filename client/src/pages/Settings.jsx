@@ -48,7 +48,7 @@ export default function Settings() {
       <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
         <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={exampleList} selectedItem={selectedItem} onItemClick={handleItemClick} />
         <MyButton onButtonClick={pullSidebar} />
-        <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10">
+        <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
           {selectedItem === "Account" && <AccountSettings />}
           {selectedItem === "Students" && <StudentsSettings />}
           {selectedItem === "Skills" && <SkillsSettings />}
