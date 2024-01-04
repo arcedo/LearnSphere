@@ -117,3 +117,7 @@ INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, use
 VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword',  'src/assets/profilePictures/maresp.png', 'Powered by Marcel', 'DAW2');
 INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)
 VALUES ('12345678F', 'Jordi', 'Torrella', 677067346, 'jortor@lsphere.net', 'jortor', 'P@ssword', 'src/assets/profilePictures/jortor.png', 'Follar follar follar', 'DAW2');
+INSERT INTO project  (title, description, idTeacher, idStudentGroup, activeProject)
+VALUES ('M06', 'Learn to use JavaScript employing good practices and creating projects that can be applied in the real world.', 1,'DAW2',1);
+INSERT INTO project  (title, description, idTeacher, idStudentGroup, activeProject)
+VALUES ('M09', 'Learn how to use design tools to prototype your applications and then develop them.', 2,'DAW2',0);
