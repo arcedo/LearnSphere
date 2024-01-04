@@ -201,7 +201,7 @@ router.delete('/:idProject', async (req, res) => {
  *         name: idStudentGroup
  *         description: ID of the student group
  *         required: true
- *         type: integer
+ *         type: string
  *     responses:
  *       200:
  *         description: Successful operation
@@ -215,7 +215,7 @@ router.delete('/:idProject', async (req, res) => {
 router.get('/group/:idStudentGroup', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'SELECT * FROM project WHERE idStudentGroup = ?;',
+            'SELECT idProject AS id, title, description, idTeacher, activeProject FROM project WHERE idStudentGroup = ?;',
             [req.params.idStudentGroup]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows
@@ -237,7 +237,7 @@ router.get('/group/:idStudentGroup', async (req, res) => {
  *         name: idStudentGroup
  *         description: ID of the student group
  *         required: true
- *         type: integer
+ *         type: string
  *     responses:
  *       200:
  *         description: Successful operation

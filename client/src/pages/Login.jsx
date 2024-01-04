@@ -33,6 +33,7 @@ function Login() {
                         type: responseData.data[0].userType,
                         id: responseData.data[0].id,
                         name: username,
+                        group: responseData.data[0].userGroup,
                     };
                     localStorage.setItem('loggedUser', JSON.stringify(user));
                     navigate("/");
