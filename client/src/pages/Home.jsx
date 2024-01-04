@@ -23,15 +23,24 @@ async function getProjectByStudentId(groupId) {
 }
 function Home() {
 
+    //Sidebar open/closed
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const pullSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
 
+    //Accordion
     const [open, setOpen] = useState(1);
     const handleOpen = (value) => setOpen(open === value ? 0 : value);
-    let [selectableProjects, setSelectableProjects] = useState([]);
 
+    //Selected item in sidebar
+    const [selectedItem, setSelectedItem] = useState(null);
+    const handleSidebarItemClick = (item) => {
+        setSelectedItem(item.title);
+    };
+
+    //Get selectable projects
+    let [selectableProjects, setSelectableProjects] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -47,11 +56,20 @@ function Home() {
         fetchData();
     }, []);
 
+    // Default selected sidebar
+    useEffect(() => {
+        // This effect runs when selectableProjects changes
+        const defaultItem = selectableProjects.find(project => project.activeProject);
+        if (defaultItem) {
+            setSelectedItem(defaultItem.title);
+        }
+    }, [selectableProjects]);
+
     return (
         <div>
             <Header title={'Home'} />
             <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
-                <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} />
+                <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                 <MyButton onButtonClick={pullSidebar} />
                 <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
                     <div className={`${getLoggedUser().type === 'student' ? 'justify-between' : ''} flex items-center gap-4`}>

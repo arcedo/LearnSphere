@@ -8,10 +8,9 @@ async function getUserData() {
     try {
         const userId = getLoggedUser().id;
         const response = await fetch(`http://localhost:3001/students/${userId}`);
-        
+
         if (response.ok) {
             const userData = await response.json();
-            console.log(userData[0]);
             return userData[0];
         } else {
             console.error('Server returned an error:', response.status);
@@ -42,9 +41,9 @@ function Profile() {
 
     return (
         <div>
-            <Header title={'Profile'}/>
+            <Header title={'Profile'} />
             <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
-                <div className='w-11/12 mx-auto pl-5 pr-10 py-10'> 
+                <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
                     <img src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
                     <h4 className='font-sora text-4xl font-extrabold'>{`${firstName} ${lastName}`}</h4>
                     <h4>@{getLoggedUser().name}</h4>

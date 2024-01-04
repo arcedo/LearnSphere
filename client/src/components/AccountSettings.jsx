@@ -5,10 +5,9 @@ async function getUserData() {
     try {
         const userId = getLoggedUser().id;
         const response = await fetch(`http://localhost:3001/students/${userId}`);
-        
+
         if (response.ok) {
             const userData = await response.json();
-            console.log(userData[0]);
             return userData[0];
         } else {
             console.error('Server returned an error:', response.status);
@@ -145,17 +144,17 @@ export default function AccountSettings() {
             <h2 className='font-sora text-4xl font-extrabold'>Account</h2>
             <div className='grid grid-cols-2'>
                 <div className='w-3/4'>
-                    {getLoggedUser().type === 'student' ? 
-                    <div>
-                        <h3 className='font-sora text-xl font-bold mt-4'>Bio</h3>
-                        <textarea
-                            className='w-full h-32 p-2 rounded-md border-2 border-gray-800 bgPrincipal'
-                            style={{ resize: 'none' }}
-                            placeholder="Write something about yourself..."
-                            value={newBio}
-                            onChange={(e) => setNewBio(e.target.value)}
-                    ></textarea>
-                    </div> : ''}
+                    {getLoggedUser().type === 'student' ?
+                        <div>
+                            <h3 className='font-sora text-xl font-bold mt-4'>Bio</h3>
+                            <textarea
+                                className='w-full h-32 p-2 rounded-md border-2 border-gray-800 bgPrincipal'
+                                style={{ resize: 'none' }}
+                                placeholder="Write something about yourself..."
+                                value={newBio}
+                                onChange={(e) => setNewBio(e.target.value)}
+                            ></textarea>
+                        </div> : ''}
                     <h3 className='font-sora text-xl font-bold mt-12'>Current password</h3>
                     <input
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal'
@@ -181,43 +180,43 @@ export default function AccountSettings() {
                         <button
                             className='border-l-white border-2 border-radius rounded-md mt-4 px-4 py-2 hover:bg-white hover:text-black transition-all'
                             onClick={handleSaveChanges}
-                            >
+                        >
                             Save changes
                         </button>
                         {passwordUpdateMessage && (
                             passwordUpdateMessage === 'Changes saved successfully!' ?
-                            <p className='text-green-500 mt-4'>{passwordUpdateMessage}{reloadPage()}</p> :
-                            <p className='text-red-500 mt-4'>{passwordUpdateMessage}</p>
+                                <p className='text-green-500 mt-4'>{passwordUpdateMessage}{reloadPage()}</p> :
+                                <p className='text-red-500 mt-4'>{passwordUpdateMessage}</p>
                         )}
                     </div>
                 </div>
-                {getLoggedUser().type === 'student' ? 
-                <div className='w-auto flex flex-col justify-center items-center' id='imageDiv'>
-                    <label
-                        className={`relative rounded-full w-80 h-80 cursor-pointer ${hovered ? 'hovered' : ''}`}
-                        onMouseEnter={handleImageHover}
-                        onMouseLeave={handleImageHover}
-                        onClick={handleImageClick}
-                    >
-                        <img
-                            className='rounded-full w-80 h-80'
-                            src={newProfilePicture || `http://localhost:5173/${profilePicture}`}
-                            alt="Profile Picture"
+                {getLoggedUser().type === 'student' ?
+                    <div className='w-auto flex flex-col justify-center items-center' id='imageDiv'>
+                        <label
+                            className={`relative rounded-full w-80 h-80 cursor-pointer ${hovered ? 'hovered' : ''}`}
+                            onMouseEnter={handleImageHover}
+                            onMouseLeave={handleImageHover}
+                            onClick={handleImageClick}
+                        >
+                            <img
+                                className='rounded-full w-80 h-80'
+                                src={newProfilePicture || `http://localhost:5173/${profilePicture}`}
+                                alt="Profile Picture"
+                            />
+                            {hovered && (
+                                <div className='absolute rounded-full inset-0 flex items-center justify-center bg-black bg-opacity-60'>
+                                    <span className='text-white text-xl text-center'>Choose<br></br> new image</span>
+                                </div>
+                            )}
+                        </label>
+                        <input
+                            id='imageInput'
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className='hidden'
                         />
-                        {hovered && (
-                            <div className='absolute rounded-full inset-0 flex items-center justify-center bg-black bg-opacity-60'>
-                                <span className='text-white text-xl text-center'>Choose<br></br> new image</span>
-                            </div>
-                        )}
-                    </label>
-                    <input
-                        id='imageInput'
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className='hidden'
-                    />
-                </div> : ''}
+                    </div> : ''}
             </div>
         </div>
     );

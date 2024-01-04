@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
 } from "@material-tailwind/react";
+import currentProject from "../assets/img/currentProject.svg"
 
 export default function Sidebar({ isOpen, onClose, listContent, selectedItem, onItemClick }) {
   const sidebarClassName = `w-80 z-20 ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`;
@@ -19,12 +20,13 @@ export default function Sidebar({ isOpen, onClose, listContent, selectedItem, on
         </div>
         <List className='white'>
           {listContent.map((item) => (
-            <ListItem key={item.id} onClick={() => onItemClick(item)} className={selectedItem === item.title ? 'bg-white text-black' : ''}>
+            <ListItem key={item.id} onClick={() => onItemClick(item)} className={`${selectedItem === item.title ? 'bg-white text-black' : ''} flex items-center justify-between w-10/12 mx-auto text-xl`} >
               {item.title}
+              {item.activeProject ? (<img src={currentProject} alt='Current project' />) : null}
             </ListItem>
           ))}
         </List>
       </Card>
-    </div>
+    </div >
   );
 }
