@@ -215,3 +215,8 @@ code {
 img{
   max-width: none !important;
 }
+
+.bgListItem:hover, .bgListItem:focus, .bgListItem:active{
+  background-color: var(--white) !important;
+  color: var(--black) !important;
+}

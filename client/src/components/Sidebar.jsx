@@ -20,7 +20,7 @@ export default function Sidebar({ isOpen, onClose, listContent, selectedItem, on
         </div>
         <List className='white'>
           {listContent.map((item) => (
-            <ListItem key={item.id} onClick={() => onItemClick(item)} className={`${selectedItem === item.title ? 'bg-white text-black' : ''} flex items-center justify-between w-10/12 mx-auto text-xl`} >
+            <ListItem key={item.id} onClick={() => onItemClick(item)} className={`${selectedItem === item.title ? 'bg-white text-black' : ''} flex items-center justify-between w-10/12 mx-auto text-xl bgListItem`} >
               {item.title}
               {item.activeProject ? (<img src={currentProject} alt='Current project' />) : null}
             </ListItem>
