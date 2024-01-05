@@ -121,3 +121,31 @@ INSERT INTO project  (title, description, idTeacher, idStudentGroup, activeProje
 VALUES ('M06', 'Learn to use JavaScript employing good practices and creating projects that can be applied in the real world.', 1,'DAW2',1);
 INSERT INTO project  (title, description, idTeacher, idStudentGroup, activeProject)
 VALUES ('M09', 'Learn how to use design tools to prototype your applications and then develop them.', 2,'DAW2',0);
+INSERT INTO skill (skillName, idProject, globalPercentage) 
+VALUES ('JavaScript', 1, 45);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('HTML', 1, 25);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('CSS', 1, 20);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('Class Work', 1, 10);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('Design', 2, 45);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('HTML', 2, 10);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('CSS', 2, 35);
+INSERT INTO skill (skillName, idProject, globalPercentage)
+VALUES ('Class Work', 2, 10);
+INSERT INTO activity (name, description, idProject)
+VALUES ('Local Storage', 'Create a christmas themed web using local storage to save persistent data.', 1);
+INSERT INTO activity (name, description, idProject)
+VALUES ('Objects JSON', 'Create a simple page using Objects with Arrays.', 1);
+INSERT INTO activity (name, description, idProject)
+VALUES ('API', 'Create a page using an API.', 1);
+INSERT INTO activity (name, description, idProject)
+VALUES ('Design', 'Create a design for a web page.', 2);
+INSERT INTO activity (name, description, idProject)
+VALUES ('HTML', 'Create a simple page using HTML and CSS.', 2);
+INSERT INTO activity (name, description, idProject)
+VALUES ('Portfolio', 'Create a design and develop the desing using HTML, CSS or a framework to achive this.', 2);
