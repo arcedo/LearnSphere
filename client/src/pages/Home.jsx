@@ -47,31 +47,35 @@ function Home() {
     };
 
     //Displayed project
-    const [displayedProject, setDisplayedProject] = useState({ skills: [], activities: [] });
+    const [displayedProject, setDisplayedProject] = useState({ id: 0, activeProject: 0, skills: [], activities: [] });
 
     //Selected item in sidebar (onClick)
     const [selectedItem, setSelectedItem] = useState(null);
     const handleSidebarItemClick = (item) => {
-        setSelectedItem(item.title);
-        const fetchData = async () => {
-            setDisplayedProject({
-                ...item,
-                skills: await getSkillsByProjectId(item.id),
-                activities: await getActivitiesByProjectId(item.id)
-            });
+        if (item.title === 'Add Project') {
+            //TODO: Add project popup
+        } else {
+            setSelectedItem(item.title);
+            const fetchData = async () => {
+                setDisplayedProject({
+                    ...item,
+                    skills: await getSkillsByProjectId(item.id),
+                    activities: await getActivitiesByProjectId(item.id)
+                });
+            }
+            fetchData();
         }
-        fetchData();
     };
 
     //Get selectable projects
-    let [selectableProjects, setSelectableProjects] = useState([]);
+    const [selectableProjects, setSelectableProjects] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (getLoggedUser().type === 'student') {
-                    setSelectableProjects(await getProjectByStudentId(getLoggedUser().group));
+                    setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group), { id: 0, title: 'Add Project' }]);
                 } else {
-                    setSelectableProjects(await getAllProjects());
+                    setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
                 }
             } catch (error) {
                 console.log(error);
@@ -97,6 +101,27 @@ function Home() {
         }
     }, [selectableProjects]);
 
+    async function setProjectActive(idProject) {
+        try {
+            const response = await fetch(`http://localhost:3001/projects/${idProject}/activate`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status !== 200) {
+                console.error(`Failed to activate project. Status: ${response.status}`);
+                // Handle the error or show a user-friendly message
+            }
+            setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
+            const currentSelected = selectableProjects.find(project => project.id === idProject);
+            setDisplayedProject({ ...currentSelected, skills: displayedProject.skills, activities: displayedProject.activities });
+        } catch (error) {
+            console.error('Error while activating project:', error);
+            // Handle the error or show a user-friendly message
+        }
+    }
+    console.log(selectableProjects);
     console.log(displayedProject);
     return (
         <div>
@@ -107,7 +132,8 @@ function Home() {
                 <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
                     <div className={`${getLoggedUser().type === 'student' ? 'justify-between' : ''} flex items-center gap-4`}>
                         <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
-                        {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : <button className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'> Set Active</button>}
+                        {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : null}
+                        {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-2 font-sans font-extrabold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : null}
                     </div>
                     <p className='pb-2.5 pt-1.5'>{displayedProject.description}</p>
                     <div className='flex items-center gap-3 flex-wrap w-1/2 pt-5 pb-5'>

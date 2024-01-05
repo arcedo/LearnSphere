@@ -384,4 +384,78 @@ router.delete(':/idProject/skills/:idSkill', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /projects/{idProject}/deactivate:
+ *   put:
+ *     tags:
+ *       - Projects
+ *     summary: Deactivate a project
+ *     parameters:
+ *       - in: path
+ *         name: idProject
+ *         description: ID of the project
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           $ref: '#/definitions/schemas/Skill'
+ *       500:
+ *         description: Internal Server Error
+ */
+router.put('/:idProject/deactivate', async (req, res) => {
+    try {
+        const result = await database.getPromise().query(
+            'UPDATE project SET activeProject = 0 WHERE idProject = ?;',
+            [req.params.idProject]
+        );
+        res.status(200).json(result[0]); // Assuming result is an array of rows
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
+});
+
+/**
+ * @swagger
+ * /projects/{idProject}/activate:
+ *   put:
+ *     tags:
+ *       - Projects
+ *     summary: Activate a project
+ *     parameters:
+ *       - in: path
+ *         name: idProject
+ *         description: ID of the project
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           $ref: '#/definitions/schemas/Skill'
+ *       500:
+ *         description: Internal Server Error
+ */
+router.put('/:idProject/activate', async (req, res) => {
+    try {
+        const deactivateCurrentActive = await database.getPromise().query(
+            'UPDATE project SET activeProject = 0 WHERE activeProject = 1;'
+        );
+        console.log(deactivateCurrentActive);
+        if (deactivateCurrentActive) {
+            const result = await database.getPromise().query(
+                'UPDATE project SET activeProject = 1 WHERE idProject = ?;',
+                [req.params.idProject]
+            );
+            res.status(200).json(result[0]); // Assuming result is an array of rows
+        }
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
+});
+
 module.exports = router;
