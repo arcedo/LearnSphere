@@ -5,9 +5,9 @@ export default function Skills({ skillName, globalPercentage }) {
 
     return (
         <div
-        className="w-fit min-w-20 py-1 text-sm rounded-full border-2 border-white text-white flex justify-center items-center transition-all duration-300"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+            className="w-fit min-w-28 py-1.5 text-md rounded-full border-2 border-white text-white flex justify-center items-center transition-all duration-300"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <strong className={isHovered ? 'hidden' : ''}>
                 {skillName}

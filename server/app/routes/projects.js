@@ -43,7 +43,7 @@ const database = require('../database/dbConnection.js');
  */
 router.get('/', async (req, res) => {
     try {
-        const result = await database.getPromise().query('SELECT * FROM project;');
+        const result = await database.getPromise().query('SELECT idProject AS id, title, description, idTeacher, activeProject FROM project;');
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
@@ -74,7 +74,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:idProject', async (req, res) => {
     try {
-        const result = await database.getPromise().query('SELECT * FROM project WHERE idProject = ?;', [req.params.idProject]);
+        const result = await database.getPromise().query('SELECT idProject AS id, title, description, idTeacher, activeProject FROM project WHERE idProject = ?;', [req.params.idProject]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
@@ -227,17 +227,17 @@ router.get('/group/:idStudentGroup', async (req, res) => {
 
 /**
  * @swagger
- * /projects/group/{idStudentGroup}:
+ * /projects/{idProject}/skills:
  *   get:
  *     tags:
  *       - Projects
- *     summary: Get projects by student group ID
+ *     summary: Get skills from one project
  *     parameters:
  *       - in: path
- *         name: idStudentGroup
- *         description: ID of the student group
+ *         name: idProject
+ *         description: ID of the project
  *         required: true
- *         type: string
+ *         type: integer
  *     responses:
  *       200:
  *         description: Successful operation
