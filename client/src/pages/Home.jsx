@@ -3,6 +3,7 @@ import MyButton from '../components/MyButton';
 import Header from '../components/Header';
 import Skills from '../components/Skills';
 import Sidebar from '../components/Sidebar';
+import AddProject from '../components/AddProject';
 import {
     Accordion,
     AccordionHeader,
@@ -51,21 +52,27 @@ function Home() {
 
     //Selected item in sidebar (onClick)
     const [selectedItem, setSelectedItem] = useState(null);
+    const [isAddProjectDivVisible, setAddProjectDivVisible] = useState(false);
     const handleSidebarItemClick = (item) => {
         if (item.title === 'Add Project') {
-            //TODO: Add project popup
-        } else {
-            setSelectedItem(item.title);
-            const fetchData = async () => {
-                setDisplayedProject({
-                    ...item,
-                    skills: await getSkillsByProjectId(item.id),
-                    activities: await getActivitiesByProjectId(item.id)
-                });
-            }
-            fetchData();
+            setAddProjectDivVisible(true);
+            setTimeout(() => {
+              const addProjectDiv = document.getElementById('addProjectDiv');
+              addProjectDiv.classList.add('animate-fadeIn');
+              addProjectDiv.classList.remove('hidden');  // Remove 'hidden' class
+            }, 20);
+          } else {
+          setSelectedItem(item.title);
+          const fetchData = async () => {
+            setDisplayedProject({
+              ...item,
+              skills: await getSkillsByProjectId(item.id),
+              activities: await getActivitiesByProjectId(item.id),
+            });
+          };
+          fetchData();
         }
-    };
+      };
 
     //Get selectable projects
     const [selectableProjects, setSelectableProjects] = useState([]);
@@ -121,19 +128,25 @@ function Home() {
             // Handle the error or show a user-friendly message
         }
     }
-    console.log(selectableProjects);
-    console.log(displayedProject);
+    // console.log(selectableProjects);
+    // console.log(displayedProject);
     return (
         <div>
             <Header title={'Home'} />
-            <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
+            <section className="flex w-full h-screen pt-20 text-white bgPrincipal relative">
+                {isAddProjectDivVisible && (
+                    <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddProjectDivVisible(false)}></div>
+                )}
+                <div id='addProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <AddProject />
+                </div>
                 <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                 <MyButton onButtonClick={pullSidebar} />
-                <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
+                <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto'>
                     <div className={`${getLoggedUser().type === 'student' ? 'justify-between' : ''} flex items-center gap-4`}>
                         <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
                         {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : null}
-                        {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-2 font-sans font-extrabold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : null}
+                        {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : <p className='font-bold mt-3'>Currently active</p>}
                     </div>
                     <p className='pb-2.5 pt-1.5'>{displayedProject.description}</p>
                     <div className='flex items-center gap-3 flex-wrap w-1/2 pt-5 pb-5'>

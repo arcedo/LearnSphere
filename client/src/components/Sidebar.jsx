@@ -9,7 +9,7 @@ import currentProject from "../assets/img/currentProject.svg"
 import plus from "../assets/img/plus.svg"
 
 export default function Sidebar({ isOpen, onClose, listContent, selectedItem, onItemClick }) {
-  const sidebarClassName = `w-80 z-20 ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`;
+  const sidebarClassName = `w-80 z-10 ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`;
 
   return (
     <div className={sidebarClassName}>
@@ -19,7 +19,7 @@ export default function Sidebar({ isOpen, onClose, listContent, selectedItem, on
             LearnSphere
           </Typography>
         </div>
-        <List className='white'>
+        <List className='white overflow-auto'>
           {listContent.map((item) => (
             <ListItem key={item.id} onClick={() => onItemClick(item)} className={`${selectedItem === item.title ? 'bg-white text-black' : ''} flex items-center justify-between w-10/12 mx-auto text-xl bgListItem ${item.title === 'Add Project' ? 'mt-20 border-2 border-white w-full justify-center gap-2.5' : null}`} >
               {item.title === 'Add Project' ? (<img src={plus} alt='Add a new project' />) : null}

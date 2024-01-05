@@ -113,6 +113,7 @@ VALUES ('48512304J', 'Marcos', 'Velteo', 650453212, 'marcos.venteo@lsphere.net',
 INSERT INTO teacher (dni, firstName, lastName, phoneNumber, email, userName, userPassword) 
 VALUES ('41312303K', 'Alex', 'Marín', 623126785, 'alex.marin@lsphere.net', 'alemar', 'pikachu69');
 INSERT INTO studentGroup (name) VALUES ('DAW2');
+INSERT INTO studentGroup (name) VALUES ('ASIX');
 INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)
 VALUES ('24362738H', 'Marcel', 'Esplugas', 625720265, 'maresp@lsphere.net', 'maresp', 'P@ssword',  'src/assets/profilePictures/maresp.png', 'Powered by Marcel', 'DAW2');
 INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup)

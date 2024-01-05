@@ -8,7 +8,7 @@ import { getLoggedUser } from '../utils/auth';
 
 function Header({title}) {
   return (
-    <header className="w-full h-20 fixed bg-black flex justify-between items-center py-3 px-5">
+    <header className="w-full h-20 z-20 fixed bg-black flex justify-between items-center py-3 px-5">
       <div className='w-fit flex justify-center items-center gap-4'>
         <Link to='/' >
           <img src={logo} alt="" />
