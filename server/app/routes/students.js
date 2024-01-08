@@ -178,6 +178,41 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
+
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join(__dirname, '../../../client/src/assets/profilePictures/'));
+    },
+    filename: function (req, file, cb) {
+      const user = req.body.userName;
+  
+      // Force the file extension to be '.png'
+      const newFilename = `${user}.png`;
+      cb(null, newFilename);
+    }
+  });
+  
+  const upload = multer({ storage: storage });
+
+router.put('/:id', upload.single('profilePicture'), (req, res) => {
+    try {
+        // Check if a file is uploaded
+        if (req.file && req.file.filename) {
+            // No need to update the database, just send a success response
+            res.status(200).json({ message: 'Profile picture updated successfully' });
+        } else {
+            console.error('No file uploaded or filename is undefined.');
+            res.status(400).send('No file uploaded or filename is undefined.');
+        }
+    } catch (err) {
+        console.error('Error updating profile picture:', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 router.put('/:id', async (req, res) => {
     try {
         const result = await database.getPromise().query(

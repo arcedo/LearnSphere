@@ -80,7 +80,7 @@ function Home() {
         const fetchData = async () => {
             try {
                 if (getLoggedUser().type === 'student') {
-                    setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group), { id: 0, title: 'Add Project' }]);
+                    setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group)]);
                 } else {
                     setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
                 }
@@ -144,9 +144,13 @@ function Home() {
                 <MyButton onButtonClick={pullSidebar} />
                 <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto'>
                     <div className={`${getLoggedUser().type === 'student' ? 'justify-between' : ''} flex items-center gap-4`}>
-                        <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
+                        <div className='flex gap-2'>
+                            <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
+                            {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : ""} 
+                            {displayedProject.activeProject ? <p className='font-bold mt-3'>Currently active</p> : ""}
+                            
+                        </div>
                         {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : null}
-                        {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : <p className='font-bold mt-3'>Currently active</p>}
                     </div>
                     <p className='pb-2.5 pt-1.5'>{displayedProject.description}</p>
                     <div className='flex items-center gap-3 flex-wrap w-1/2 pt-5 pb-5'>
