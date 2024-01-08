@@ -8,33 +8,12 @@ import Profile from './pages/Profile';
 
 import isLogged from './utils/auth';
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const result = await isLogged();
-      setIsLoggedIn(result);
-    };
-
-    checkLoginStatus();
-  }, []);
-
-  if (isLoggedIn === null) {
-    // Waiting for the asynchronous check to complete
-    return null;
-  }
   return (
     <Router>
       <Routes>
-        {isLoggedIn ? (
-          <>
-            <Route path="/" element={<Home />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
-          </>
-        ) : (
-          <Route path="/*" element={<Navigate to="/login" />} />
-        )}
+        <Route path="/" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<Error />} />
       </Routes>
