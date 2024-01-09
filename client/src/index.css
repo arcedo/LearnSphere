@@ -218,7 +218,6 @@ img{
 }
 .bgListItem:hover{
   background-color: var(--white) !important;
-  opacity: 0.8 !important;
   color: var(--black) !important;
 }
 
