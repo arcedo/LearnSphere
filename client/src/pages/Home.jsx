@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Skills from '../components/Skills';
 import Sidebar from '../components/Sidebar';
 import AddProject from '../components/AddProject';
+import DeleteProject from '../components/DeleteProject';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import {
     Accordion,
@@ -63,6 +64,16 @@ async function addProject() {
     }
 };
 
+async function deleteProject(idProject) {
+    const response = await fetch(`http://localhost:3001/projects/${idProject}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        }
+    });
+    return await response.json();
+}
+
 function Home() {
     //Sidebar open/closed
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -81,7 +92,6 @@ function Home() {
 
     //Selected item in sidebar (onClick)
     const [selectedItem, setSelectedItem] = useState(null);
-    const [isAddProjectDivVisible, setAddProjectDivVisible] = useState(false);
     const handleSidebarItemClick = (item) => {
         if (item.title === 'Add Project') {
             setAddProjectDivVisible(true);
@@ -137,6 +147,8 @@ function Home() {
         }
     }, [selectableProjects]);
 
+    // Add project div visible or not
+    const [isAddProjectDivVisible, setAddProjectDivVisible] = useState(false);
     //Add Project
     const [projectAdded, setProjectAdded] = useState({});
 
@@ -165,6 +177,46 @@ function Home() {
         }
     }
 
+    // Delete project div visible or not
+    const [isDeleteProjectDivVisible, setDeleteProjectDivVisible] = useState(false);
+    const handleDeleteProjectDivVisible = () => {
+        setDeleteProjectDivVisible(true);
+        setTimeout(() => {
+            const deleteProjectDiv = document.getElementById('deleteProjectDiv');
+            deleteProjectDiv.classList.add('animate-fadeIn');
+            deleteProjectDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+    const closeDeleteProjectDivVisible = () => {
+        setDeleteProjectDivVisible(false);
+    }
+    const handleDeleteProjectClick = async () => {
+        try {
+            const result = await deleteProject(displayedProject.id);
+            if (result.affectedRows > 0) {
+                setDeleteProjectDivVisible(false);
+                try {
+                    if (getLoggedUser().type === 'student') {
+                        setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group)]);
+                    } else {
+                        setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
+                    }
+                    setSelectedItem(selectableProjects[0].title);
+                    setDisplayedProject({
+                        ...selectableProjects[0],
+                        skills: await getSkillsByProjectId(selectableProjects[0].id),
+                        activities: await getActivitiesByProjectId(selectableProjects[0].id),
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Set project active
     async function setProjectActive(idProject) {
         try {
             const response = await fetch(`http://localhost:3001/projects/${idProject}/activate`, {
@@ -199,20 +251,25 @@ function Home() {
                     <div id='addProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddProject submitProjectFunction={handleAddProjectClick} projectAdded={projectAdded} />
                     </div>
+                    {isDeleteProjectDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteProjectDivVisible(false)}></div>
+                    )}
+                    <div id='deleteProjectDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <DeleteProject projectName={displayedProject.title} submitFunction={handleDeleteProjectClick} setNotVisible={closeDeleteProjectDivVisible} />
+                    </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto'>
-                        <div className={`${getLoggedUser().type === 'student' ? 'justify-between' : ''} flex items-center gap-4`}>
+                        <div className={`flex items-center gap-4 justify-between`}>
                             <div className='flex gap-2'>
                                 <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
                                 {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : ""}
                                 {displayedProject.activeProject ? <p className='font-bold mt-3'>Currently active</p> : ""}
-
                             </div>
-                            {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : null}
+                            {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : <button onClick={handleDeleteProjectDivVisible} className='border-2 border-white hover:bg-red-800 hover:border-red-800 transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>Delete</button>}
                         </div>
                         <p className='pb-2.5 pt-1.5'>{displayedProject.description}</p>
-                        <div className='flex items-center gap-3 flex-wrap w-1/2 pt-5 pb-5'>
+                        <div className='flex items-center gap-3 flex-wrap pt-5 pb-5'>
                             {displayedProject.skills.map((item) => (
                                 <Skills skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
                             ))}

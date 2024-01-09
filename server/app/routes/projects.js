@@ -178,11 +178,20 @@ router.put('/:idProject', async (req, res) => {
  */
 router.delete('/:idProject', async (req, res) => {
     try {
-        const result = await database.getPromise().query(
-            'DELETE FROM project WHERE idProject = ?;',
-            [req.params.idProject]
-        );
-        res.status(200).json(result[0]); // Assuming result is an array of rows
+        const idProject = req.params.idProject;
+        // Delete activityGrade related to the project
+        await database.getPromise().query('DELETE FROM activityGrade WHERE idActivity IN (SELECT idActivity FROM activity WHERE idProject = ?);', [idProject]);
+        // Delete activityPercentatge related to the project
+        await database.getPromise().query('DELETE FROM activityPercentatge WHERE idActivity IN (SELECT idActivity FROM activity WHERE idProject = ?);', [idProject]);
+        // Delete activity related to the project
+        await database.getPromise().query('DELETE FROM activity WHERE idProject = ?;', [idProject]);
+        // Delete skill related to the project
+        await database.getPromise().query('DELETE FROM skill WHERE idProject = ?;', [idProject]);
+        // Delete projectToStudent related to the project
+        await database.getPromise().query('DELETE FROM projectToStudent WHERE idProject = ?;', [idProject]);
+        // Delete project
+        const result = await database.getPromise().query('DELETE FROM project WHERE idProject = ?;', [idProject]);
+        res.status(200).json(result[0]);
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();
