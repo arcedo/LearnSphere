@@ -38,9 +38,9 @@ async function updateUserData(userId, updatedUserData) {
 }
 
 function reloadPage() {
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000);
+    // setTimeout(() => {
+    //     window.location.reload();
+    // }, 1000);
 }
 
 export default function AccountSettings() {
@@ -90,65 +90,76 @@ export default function AccountSettings() {
     const [newBio, setNewBio] = useState('');
     const handleSaveChanges = async () => {
         const userId = getLoggedUser().id;
-      
+    
         // Validate that new password and confirm new password match
         if (newPassword !== confirmNewPassword) {
-          setPasswordUpdateMessage('Password confirmation does not match');
-          return;
+            setPasswordUpdateMessage('Password confirmation does not match');
+            return;
         }
-      
+    
         // If a new password is provided, validate the old password
         if (newPassword && oldPassword !== userPassword) {
-          setPasswordUpdateMessage('Current password is incorrect');
-          return;
+            setPasswordUpdateMessage('Current password is incorrect');
+            return;
         }
-      
+    
+        // Create an object with updated user data excluding profilePicture
         const updatedUserData = {
-          idStudent,
-          dni,
-          firstName,
-          lastName,
-          phoneNumber,
-          email,
-          userPassword: newPassword || userPassword,
-          profilePicture,
-          bio: newBio,
-          idStudentGroup,
+            idStudent,
+            dni,
+            firstName,
+            lastName,
+            phoneNumber,
+            email,
+            userName,
+            userPassword: newPassword || userPassword,
+            bio: newBio,
+            idStudentGroup,
         };
-      
-        // Create a FormData object to handle file uploads
-        const formData = new FormData();
-      
-        // Append userName to the FormData object
-        formData.append('userName', userName);
-      
-        // Append other fields to the FormData object
-        Object.entries(updatedUserData).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
-      
-        // Append profilePicture as a file to the FormData object
-        formData.append('profilePicture', newProfilePicture);
-      
+    
+        setUserData((prevUserData) => ({ ...prevUserData, bio: newBio }));
+    
+        console.log('Updated User Data:', updatedUserData);
+        console.log('Profile Picture:', newProfilePicture);
+    
         try {
-          // Make a fetch request with the FormData object
-          const response = await fetch(`http://localhost:3001/students/${userId}`, {
-            method: 'PUT',
-            body: formData,
-          });
-      
-          if (response.ok) {
-            console.log('User data updated successfully');
-          } else {
-            console.error('Server returned an error:', response.status);
-          }
+            // Make a fetch request with the updated user data
+            await updateUserData(userId, updatedUserData);
+    
+            // Create a FormData object to handle file uploads
+            const formData = new FormData();
+    
+            // // Append userName to the FormData object
+            // formData.append('userName', userName);
+    
+            // Append other fields to the FormData object
+            Object.entries(updatedUserData).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+    
+            // Append profilePicture as a file to the FormData object
+            formData.append('profilePicture', newProfilePicture);
+    
+            console.log('FormData:', formData);
+    
+            // Make a fetch request with the FormData object to update only the profile picture
+            const response = await fetch(`http://localhost:3001/students/${userId}`, {
+                method: 'PUT',
+                body: formData,
+            });
+    
+            if (response.ok) {
+                console.log('Profile picture updated successfully');
+            } else {
+                console.error('Server returned an error:', response.status);
+            }
         } catch (error) {
-          console.error('An error occurred during the fetch:', error);
+            console.error('An error occurred during the fetch:', error);
         }
-      
+    
         setPasswordUpdateMessage('Changes saved successfully!');
-      };
-      
+    };
+    
 
     const [hovered, setHovered] = useState(false);
     const [newProfilePicture, setNewProfilePicture] = useState(null);
@@ -221,32 +232,34 @@ export default function AccountSettings() {
                     </div>
                 </div>
                 {getLoggedUser().type === 'student' ?
-                <div className='w-auto flex flex-col justify-center items-center' id='imageDiv'>
-                    <label
-                    className={`relative rounded-full w-80 h-80 cursor-pointer ${hovered ? 'hovered' : ''}`}
-                    onMouseEnter={handleImageHover}
-                    onMouseLeave={handleImageHover}
-                    onClick={handleImageClick}
-                    >
-                    <img
-                        className='rounded-full w-80 h-80'
-                        src={imagePreview || `http://localhost:5173/${profilePicture}`}
-                        alt="Profile Picture"
-                    />
-                    {hovered && (
-                        <div className='absolute rounded-full inset-0 flex items-center justify-center bg-black bg-opacity-60'>
-                        <span className='text-white text-xl text-center'>Choose<br></br> new image</span>
-                        </div>
-                    )}
-                    </label>
-                    <input
-                    id='imageInput'
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className='hidden'
-                    />
-                </div> : ''}
+                    <div className='w-auto flex flex-col justify-center items-center' id='imageDiv'>
+                        <label
+                            className={`relative rounded-full w-80 h-80 cursor-pointer ${hovered ? 'hovered' : ''}`}
+                            onMouseEnter={handleImageHover}
+                            onMouseLeave={handleImageHover}
+                            onClick={handleImageClick}
+                        >
+                            <img
+                                className='rounded-full w-80 h-80'
+                                src={imagePreview || `http://localhost:5173/${profilePicture}`}
+                                alt="Profile Picture"
+                            />
+                            {hovered && (
+                                <div className='absolute flex-col rounded-full inset-0 flex items-center justify-center bg-black bg-opacity-60'>
+                                    <span className='text-white text-xl text-center mb-1'>Choose<br></br> new image</span>
+                                    <hr></hr>
+                                    <span className='text-gray-400 text-center mt-1'>Square picture<br></br>is recommended</span>
+                                </div>
+                            )}
+                        </label>
+                        <input
+                            id='imageInput'
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className='hidden'
+                        />
+                    </div> : ''}
             </div>
         </div>
     );
