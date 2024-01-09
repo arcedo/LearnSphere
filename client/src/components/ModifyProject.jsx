@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import { getLoggedUser } from '../utils/auth';
 
 //TODO: add non repeatable project name
 
@@ -8,9 +7,8 @@ async function getAllGroups() {
     return await response.json();
 };
 
-export default function AddProject({ submitProjectFunction, projectAdded }) {
+export default function AddProject({ submitProjectFunction, projectModified, currentData }) {
     const [groups, setGroups] = useState([]);
-    const [selectedGroupId, setSelectedGroupId] = useState('');
     useEffect(() => {
         async function fetchGroups() {
             try {
@@ -24,23 +22,21 @@ export default function AddProject({ submitProjectFunction, projectAdded }) {
 
         fetchGroups();
     }, []);
-
     return (
         <div className='p-8'>
             <h2 className='font-sora text-4xl font-extrabold'>New project</h2>
             <div className='flex flex-col mt-8'>
-                <label htmlFor="title" className='font-sora font-bold text-xl'>Project name</label>
-                <input type="text" id="title" name="title" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
-                <label htmlFor="description" className='font-sora font-bold text-xl mt-4'>Project description</label>
-                <textarea name='description' id='description' className='w-full h-28 p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' type="text" style={{ resize: 'none' }} />
-                <label htmlFor="idGroup" className='font-sora font-bold text-xl mt-4'>Which group is it for?</label>
+                <label htmlFor="modTitle" className='font-sora font-bold text-xl'>Project name</label>
+                <input type="text" id="modTitle" defaultValue={currentData.title || ''} name="modTitle" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                <label htmlFor="modDescription" className='font-sora font-bold text-xl mt-4'>Project description</label>
+                <textarea name='modDescription' id='modDescription' className='w-full h-28 p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' type="text" style={{ resize: 'none' }} defaultValue={currentData.description || ''} />
+                <label htmlFor="modIdGroup" className='font-sora font-bold text-xl mt-4'>Which group is it for?</label>
                 <div>
                     <select
-                        name='idGroup'
-                        id='idGroup'
+                        name='modIdGroup'
+                        id='modIdGroup'
+                        defaultValue={currentData.idStudentGroup}
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
-                        value={selectedGroupId}
-                        onChange={(e) => setSelectedGroupId(e.target.value)}
                     >
                         <option value="" disabled>Select a group</option>
                         {groups.map((group, index) => (
@@ -50,10 +46,10 @@ export default function AddProject({ submitProjectFunction, projectAdded }) {
                 </div>
                 <div className='flex gap-3 justify-start items-center'>
                     <button onClick={submitProjectFunction} className='w-36 border-2 border-white rounded-md px-4 py-2 bgSidebar mt-8 hover:bg-white hover:text-black transition-all'>
-                        Add project
+                        Modify project
                     </button>
-                    {projectAdded.status === false ? (
-                        <strong className='text-red-800 text-md'>{projectAdded.error}</strong>
+                    {projectModified.status === false ? (
+                        <strong className='text-red-800 text-md'>{projectModified.error}</strong>
                     ) : null}
                 </div>
             </div>
