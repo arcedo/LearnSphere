@@ -184,46 +184,46 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, '../../../client/src/assets/profilePictures/'));
+        cb(null, path.join(__dirname, '../../../client/src/assets/profilePictures/'));
     },
     filename: function (req, file, cb) {
-      const user = req.body.userName;
-  
-      // Force the file extension to be '.png'
-      const newFilename = `${user}.png`;
-      cb(null, newFilename);
-    }
-  });
-  
-  const upload = multer({ storage: storage });
+        const user = req.body.userName;
 
-router.put('/:id', upload.single('profilePicture'), (req, res) => {
+        // Force the file extension to be '.png'
+        const newFilename = `${user}.png`;
+        cb(null, newFilename);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+router.put('/:id', upload.single('profilePicture'), async (req, res) => {
     try {
+        // Assuming req.params.id is the user ID
+        const userId = req.params.id;
+
         // Check if a file is uploaded
         if (req.file && req.file.filename) {
-            // No need to update the database, just send a success response
-            res.status(200).json({ message: 'Profile picture updated successfully' });
+            // Handle updating other user data in the database here
+            const result = await database.getPromise().query(
+                'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, bio = ?, idStudentGroup = ? WHERE idStudent = ?;',
+                [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.bio, req.body.idStudentGroup, userId]);
+
+            // Send a success response
+            res.status(200).json({ message: 'Profile picture and other data updated successfully' });
         } else {
-            console.error('No file uploaded or filename is undefined.');
-            res.status(400).send('No file uploaded or filename is undefined.');
+            const result = await database.getPromise().query(
+                'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, bio = ?, idStudentGroup = ? WHERE idStudent = ?;',
+                [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.bio, req.body.idStudentGroup, userId]);
+            res.status(200).json({ message: 'Other data updated successfully' });
+
         }
     } catch (err) {
-        console.error('Error updating profile picture:', err);
+        console.error('Error updating profile picture and other data:', err);
         res.status(500).send('Internal Server Error');
     }
 });
 
-router.put('/:id', async (req, res) => {
-    try {
-        const result = await database.getPromise().query(
-            'UPDATE student SET dni = ?, firstName = ?, lastName = ?, phoneNumber = ?, email = ?, userName = ?, userPassword = ?, profilePicture = ?, bio = ?, idStudentGroup = ? WHERE idStudent = ?;',
-            [req.body.dni, req.body.firstName, req.body.lastName, req.body.phoneNumber, req.body.email, req.body.userName, req.body.userPassword, req.body.profilePicture, req.body.bio, req.body.idStudentGroup, req.params.id]);
-        res.status(200).json(result[0]); // Assuming result is an array of rows
-    } catch (err) {
-        console.error('Unable to execute query to MySQL: ' + err);
-        res.status(500).send();
-    };
-});
 
 /**
  * @swagger
