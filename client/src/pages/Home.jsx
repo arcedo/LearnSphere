@@ -35,9 +35,6 @@ async function getActivitiesByProjectId(idProject) {
 }
 
 function Home() {
-    // Check if user is logged in
-
-
     //Sidebar open/closed
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const pullSidebar = () => {

@@ -38,9 +38,9 @@ async function updateUserData(userId, updatedUserData) {
 }
 
 function reloadPage() {
-    // setTimeout(() => {
-    //     window.location.reload();
-    // }, 1000);
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
 }
 
 export default function AccountSettings() {

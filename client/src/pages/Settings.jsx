@@ -6,7 +6,6 @@ import MyButton from '../components/MyButton';
 import { getLoggedUser } from '../utils/auth';
 import AccountSettings from '../components/AccountSettings';
 import StudentsSettings from '../components/StudentsSettings';
-import SkillsSettings from '../components/SkillsSettings';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 
 export default function Settings() {
@@ -36,8 +35,7 @@ export default function Settings() {
       ? [
         { id: 1, title: "Account" },
         { id: 2, title: "Students" },
-        { id: 3, title: "Skills" },
-        { id: 4, title: "Log out" },
+        { id: 3, title: "Log out" },
       ]
       : [
         { id: 1, title: "Account" },
@@ -53,7 +51,6 @@ export default function Settings() {
           <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
             {selectedItem === "Account" && <AccountSettings />}
             {selectedItem === "Students" && <StudentsSettings />}
-            {selectedItem === "Skills" && <SkillsSettings />}
           </div>
         </section>
       </div>
