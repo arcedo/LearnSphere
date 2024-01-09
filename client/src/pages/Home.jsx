@@ -34,6 +34,35 @@ async function getActivitiesByProjectId(idProject) {
     return await response.json();
 }
 
+async function addProject() {
+    const project = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        idTeacher: getLoggedUser().id,
+        idStudentGroup: document.getElementById('idGroup').options[document.getElementById('idGroup').selectedIndex].value,
+    }
+    if (!project.title || !project.description || !project.idStudentGroup) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(project)
+            }
+            const response = await fetch(`http://localhost:3001/projects`, options);
+            if (response.status === 200) {
+                return await response.json();
+            } else return { status: false, error: 'Error adding project' }
+        } catch (error) {
+            console.error('Error adding project:', error);
+            return { status: false, error: 'Error adding project' };
+        }
+    }
+};
+
 function Home() {
     // Check if user is logged in
 
@@ -88,7 +117,7 @@ function Home() {
                     setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         };
         fetchData();
@@ -110,6 +139,31 @@ function Home() {
             fetchData();
         }
     }, [selectableProjects]);
+
+    //Add Project
+    const [projectAdded, setProjectAdded] = useState({});
+
+    //Handle click on add project 
+    const handleAddProjectClick = async () => {
+        try {
+            const result = await addProject();
+            setProjectAdded(result);
+            if (result.status !== false) {
+                setAddProjectDivVisible(false);
+                try {
+                    if (getLoggedUser().type === 'student') {
+                        setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group)]);
+                    } else {
+                        setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function setProjectActive(idProject) {
         try {
@@ -143,7 +197,7 @@ function Home() {
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddProjectDivVisible(false)}></div>
                     )}
                     <div id='addProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <AddProject />
+                        <AddProject submitProjectFunction={handleAddProjectClick} projectAdded={projectAdded} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
