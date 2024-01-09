@@ -43,7 +43,7 @@ const database = require('../database/dbConnection.js');
  */
 router.get('/', async (req, res) => {
     try {
-        const result = await database.getPromise().query('SELECT idProject AS id, title, description, idTeacher, activeProject FROM project;');
+        const result = await database.getPromise().query('SELECT idProject AS id, title, description, idTeacher, activeProject, idStudentGroup FROM project;');
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
@@ -74,7 +74,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:idProject', async (req, res) => {
     try {
-        const result = await database.getPromise().query('SELECT idProject AS id, title, description, idTeacher, activeProject FROM project WHERE idProject = ?;', [req.params.idProject]);
+        const result = await database.getPromise().query('SELECT idProject AS id, title, description, idTeacher, activeProject, idStudentGroup FROM project WHERE idProject = ?;', [req.params.idProject]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
@@ -147,7 +147,7 @@ router.post('/', async (req, res) => {
 router.put('/:idProject', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'UPDATE project SET title = ?, description = ?, idTeacher = ?, idStudentGroup = ?, WHERE idProject = ?;',
+            'UPDATE project SET title = ?, description = ?, idTeacher = ?, idStudentGroup = ? WHERE idProject = ?;',
             [req.body.title, req.body.description, req.body.idTeacher, req.body.idStudentGroup, req.params.idProject]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows

@@ -5,6 +5,7 @@ import Skills from '../components/Skills';
 import Sidebar from '../components/Sidebar';
 import AddProject from '../components/AddProject';
 import DeleteProject from '../components/DeleteProject';
+import ModifyProject from '../components/ModifyProject';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import {
     Accordion,
@@ -74,6 +75,35 @@ async function deleteProject(idProject) {
     return await response.json();
 }
 
+async function modifyProject(idProject) {
+    const project = {
+        title: document.getElementById('modTitle').value,
+        description: document.getElementById('modDescription').value,
+        idTeacher: getLoggedUser().id,
+        idStudentGroup: document.getElementById('modIdGroup').options[document.getElementById('modIdGroup').selectedIndex].value,
+    }
+    if (!project.title || !project.description || !project.idStudentGroup) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(project)
+            }
+            const response = await fetch(`http://localhost:3001/projects/${idProject}`, options);
+            if (response.status === 200) {
+                return await response.json();
+            } else return { status: false, error: 'Error modifying project' }
+        } catch (error) {
+            console.error('Error modifying project:', error);
+            return { status: false, error: 'Error modifying project' };
+        }
+    }
+};
+
 function Home() {
     //Sidebar open/closed
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -133,6 +163,7 @@ function Home() {
     // Default selected sidebar
     useEffect(() => {
         // This effect runs when selectableProjects changes
+        //const defaultItem = selectedItem ? null : selectableProjects.find(project => project.activeProject);
         const defaultItem = selectableProjects.find(project => project.activeProject);
         if (defaultItem) {
             setSelectedItem(defaultItem.title);
@@ -160,11 +191,7 @@ function Home() {
             if (result.status !== false) {
                 setAddProjectDivVisible(false);
                 try {
-                    if (getLoggedUser().type === 'student') {
-                        setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group)]);
-                    } else {
-                        setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
-                    }
+                    setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
                 } catch (error) {
                     console.error(error);
                 }
@@ -196,11 +223,7 @@ function Home() {
             if (result.affectedRows > 0) {
                 setDeleteProjectDivVisible(false);
                 try {
-                    if (getLoggedUser().type === 'student') {
-                        setSelectableProjects([...await getProjectByStudentId(getLoggedUser().group)]);
-                    } else {
-                        setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
-                    }
+                    setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
                     setSelectedItem(selectableProjects[0].title);
                     setDisplayedProject({
                         ...selectableProjects[0],
@@ -215,6 +238,37 @@ function Home() {
             console.error(error);
         }
     }
+
+    // Modify project div visible or not
+    const [isModifyProjectDivVisible, setModifyProjectDivVisible] = useState(false);
+    const [projectModified, setProjectModified] = useState({});
+    const handleModifyProjectDivVisible = () => {
+        setModifyProjectDivVisible(true);
+        setTimeout(() => {
+            const modifyProjectDiv = document.getElementById('modifyProjectDiv');
+            modifyProjectDiv.classList.add('animate-fadeIn');
+            modifyProjectDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+    const handleModifyProjectClick = async () => {
+        try {
+            const result = await modifyProject(displayedProject.id);
+            setProjectModified(result);
+            if (result.status !== false) {
+                setModifyProjectDivVisible(false);
+                const currentProjectIndex = selectableProjects.findIndex(project => project.id === displayedProject.id)
+                setSelectableProjects([...await getAllProjects(), { id: 0, title: 'Add Project' }]);
+                setSelectedItem(selectableProjects[currentProjectIndex].title);
+                setDisplayedProject({
+                    ...selectableProjects[currentProjectIndex],
+                    skills: await getSkillsByProjectId(selectableProjects[currentProjectIndex].id),
+                    activities: await getActivitiesByProjectId(selectableProjects[currentProjectIndex].id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     // Set project active
     async function setProjectActive(idProject) {
@@ -237,8 +291,8 @@ function Home() {
             // Handle the error or show a user-friendly message
         }
     }
-    // console.log(selectableProjects);
-    // console.log(displayedProject);
+    //console.log(selectableProjects);
+    //console.log(displayedProject);
     const loginStatus = LoginStatusChecker();
     if (loginStatus) {
         return (
@@ -257,21 +311,49 @@ function Home() {
                     <div id='deleteProjectDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteProject projectName={displayedProject.title} submitFunction={handleDeleteProjectClick} setNotVisible={closeDeleteProjectDivVisible} />
                     </div>
+                    {isModifyProjectDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyProjectDivVisible(false)}></div>
+                    )}
+                    <div id='modifyProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <ModifyProject submitProjectFunction={handleModifyProjectClick} projectModified={projectModified} currentData={{ title: displayedProject.title, description: displayedProject.description, idStudentGroup: displayedProject.idStudentGroup }} />
+                    </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto'>
                         <div className={`flex items-center gap-4 justify-between`}>
                             <div className='flex gap-2'>
                                 <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
-                                {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ? <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold' onClick={() => setProjectActive(displayedProject.id)}> Set Active</button> : ""}
-                                {displayedProject.activeProject ? <p className='font-bold mt-3'>Currently active</p> : ""}
+                                {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ?
+                                    <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold'
+                                        onClick={() => setProjectActive(displayedProject.id)}
+                                    >
+                                        Set Active
+                                    </button> : ""
+                                }
+                                {displayedProject.activeProject ?
+                                    <p className='font-bold mt-3'>Currently active</p> : ""
+                                }
                             </div>
-                            {getLoggedUser().type === 'student' ? <strong className='text-3xl font-sans font-extrabold'>N/A</strong> : <button onClick={handleDeleteProjectDivVisible} className='border-2 border-white hover:bg-red-800 hover:border-red-800 transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>Delete</button>}
+                            {getLoggedUser().type === 'student' ?
+                                <strong className='text-3xl font-sans font-extrabold'>N/A</strong>
+                                : <div className='flex items-center gap-3.5'>
+                                    <button onClick={handleModifyProjectDivVisible}
+                                        className='border-2 border-white hover:bg-white hover:text-black rounded-2xl px-5 py-2 font-sans transition-colors duration-300 font-extrabold'
+                                    >
+                                        Modify
+                                    </button>
+                                    <button onClick={handleDeleteProjectDivVisible}
+                                        className='border-2 border-white hover:bg-red-800 hover:border-red-800 transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            }
                         </div>
                         <p className='pb-2.5 pt-1.5'>{displayedProject.description}</p>
                         <div className='flex items-center gap-3 flex-wrap pt-5 pb-5'>
                             {displayedProject.skills.map((item) => (
-                                <Skills skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
+                                <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
                             ))}
                             {
                                 getLoggedUser().type === 'teacher' ?
