@@ -195,6 +195,9 @@ function Home() {
                 } catch (error) {
                     console.error(error);
                 }
+                document.getElementById('title').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('idGroup').value = '';
             }
         } catch (error) {
             console.error(error);
