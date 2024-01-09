@@ -48,6 +48,7 @@ function Profile() {
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
                         <img src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
                         <h4 className='font-sora text-4xl font-extrabold'>{`${firstName} ${lastName}`}</h4>
+                        <p>{userData.idStudentGroup}</p>
                         <h4>@{getLoggedUser().name}</h4>
                         <p>{bio}</p>
                         <Link to='/settings'>

@@ -15,6 +15,7 @@
 :root{
   --black: #0E070C;
   --white: #fefefe;
+  --gray: #E5E5E5;
   --sidebar: #222222;
 }
 
@@ -215,8 +216,13 @@ code {
 img{
   max-width: none !important;
 }
+.bgListItem:hover{
+  background-color: var(--white) !important;
+  opacity: 0.8 !important;
+  color: var(--black) !important;
+}
 
-.bgListItem:hover, .bgListItem:focus, .bgListItem:active{
+.bgListItem:focus, .bgListItem:active{
   background-color: var(--white) !important;
   color: var(--black) !important;
 }
