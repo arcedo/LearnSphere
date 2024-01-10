@@ -125,6 +125,9 @@ router.get('/:idStudent', async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
+const fs = require('fs');
+const path2 = require('path');
+
 router.post('/', async (req, res) => {
     try {
         const students = req.body.students;
@@ -136,10 +139,20 @@ router.post('/', async (req, res) => {
             student.email,
             student.userName,
             student.userPassword,
-            student.profilePicture,
+            `/src/assets/profilePictures/${student.userName}.png`,
             student.bio,
             student.idStudentGroup
         ]);
+
+        const defaultImagePath = path2.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
+        const profilePicturePath = path2.join(__dirname, '../../../client/src/assets/profilePictures/');
+
+        values.forEach(async (student) => {
+            const newImagePath = path.join(profilePicturePath, `${student[5]}.png`);
+            if (!fs.existsSync(newImagePath)) {
+                fs.copyFileSync(defaultImagePath, newImagePath);
+            }
+        });
 
         const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
         const result = await database.getPromise().query(sql, [values]);
@@ -150,6 +163,7 @@ router.post('/', async (req, res) => {
         res.status(500).send();
     }
 });
+
 
 /**
  * @swagger

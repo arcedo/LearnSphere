@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Edit from '../assets/img/pencil.svg';
 
-export default function StudentsSettings() {
+export default function StudentsSettings({handleAddStudentDivVisible}) {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
@@ -20,37 +21,40 @@ export default function StudentsSettings() {
 
   return (
     <div>
-      <div className='flex gap-4 justify-start items-center'>
+      <div className='flex items-center w-full mx-auto justify-between'>
         <h2 className='font-sora text-4xl font-extrabold'>Students</h2>
-        <button className='w-32 border-2 border-white rounded-md px-4 py-2 hover:bg-white hover:text-black transition-all'>
+        <button onClick={handleAddStudentDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
             Add student
         </button>
       </div>
-      <div className='flex flex-col mt-8'>
-        <table className='border-4 border-white'>
+      <div className='flex flex-col mt-8 rounded-xl border-4 border-white'>
+        <table className=''>
           <thead className='border-b-4 border-white'>
-            <tr className='text-left'>
-              <th className='font-sora font-bold text-xl'>First name</th>
-              <th className='font-sora font-bold text-xl'>Last name</th>
-              <th className='font-sora font-bold text-xl'>Username</th>
-              <th className='font-sora font-bold text-xl'>Email</th>
-              <th className='font-sora font-bold text-xl'>Phone</th>
-              <th className='font-sora font-bold text-xl'>Group</th>
+            <tr className='text-left font-sora font-bold text-xl'>
+              <th className='font-sora font-bold text-xl px-5'>First name</th>
+              <th className='pt-3 pb-3'>Last name</th>
+              <th className='pt-3 pb-3'>Username</th>
+              <th className='pt-3 pb-3'>Email</th>
+              <th className='pt-3 pb-3'>Phone</th>
+              <th className='pt-3 pb-3'>Group</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.idStudent} className='border-b-2 border-gray-700'>
-                <td className='font-sora pt-3 pb-3'>{student.firstName}</td>
+            {students.map((student, index) => (
+              <tr
+                key={student.idStudent}
+                className={`border-gray-700 ${index !== students.length - 1 ? 'border-b-2' : ''}`}
+              >
+                <td className='font-sora pt-3 pb-3 px-5'>{student.firstName}</td>
                 <td className='font-sora pt-3 pb-3'>{student.lastName}</td>
                 <td className='font-sora pt-3 pb-3'>{student.userName}</td>
                 <td className='font-sora pt-3 pb-3'>{student.email}</td>
                 <td className='font-sora pt-3 pb-3'>{student.phoneNumber}</td>
                 <td className='font-sora pt-3 pb-3'>{student.idStudentGroup}</td>
                 <td className='font-sora pt-3 pb-3'>
-                  <button className='border-2 border-white rounded-md px-4 py-2 hover:bg-white hover:text-black transition-all'>
-                    Edit
+                  <button>
+                    <img src={Edit} alt='edit' className='w-8 h-8' />
                   </button>
                 </td>
               </tr>

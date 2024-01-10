@@ -24,7 +24,7 @@ export default function AddProject({ submitProjectFunction, projectModified, cur
     }, []);
     return (
         <div className='p-8'>
-            <h2 className='font-sora text-4xl font-extrabold'>New project</h2>
+            <h2 className='font-sora text-4xl font-extrabold'>Modify project</h2>
             <div className='flex flex-col mt-8'>
                 <label htmlFor="modTitle" className='font-sora font-bold text-xl'>Project name</label>
                 <input type="text" id="modTitle" defaultValue={currentData.title || ''} name="modTitle" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />

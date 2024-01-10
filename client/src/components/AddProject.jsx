@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import { getLoggedUser } from '../utils/auth';
 
 //TODO: add non repeatable project name
 
