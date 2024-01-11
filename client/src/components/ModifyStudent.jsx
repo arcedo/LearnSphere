@@ -29,32 +29,32 @@ export default function AddStudent({ submitStudentFunction, studentModified, cur
                 <div className="flex flex-wrap gap-3.5">
                     <div className="w-5/12">
                         <label htmlFor="firstName" className='font-sora font-bold text-xl'>First name</label>
-                        <input type="text" id="firstName" name="firstName" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                        <input type="text" id="modFirstName" defaultValue={currentData.firstName || ''} name="firstName" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
                     </div>
                     <div className="w-5/12">
                         <label htmlFor="lastName" className='font-sora font-bold text-xl mt-4'>Last name</label>
-                        <input type="text" id="lastName" name="lastName" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                        <input type="text" id="modLastName" defaultValue={currentData.lastName || ''} name="lastName" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
                     </div>
                     <div className="w-5/12">
                         <label htmlFor="dni" className='font-sora font-bold text-xl mt-4'>DNI</label>
-                        <input type="text" id="dni" name="dni" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                        <input type="text" id="modDni"  defaultValue={currentData.dni || ''} name="dni" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
                     </div>
                     <div className="w-5/12">
                         <label htmlFor="phoneNumber" className='font-sora font-bold text-xl mt-4'>Phone number</label>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" pattern='[0-9]{9}' className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                        <input type="tel" id="modPhoneNumber" defaultValue={currentData.phoneNumber || ''} name="phoneNumber" pattern='[0-9]{9}' className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
                     </div>
                     <div className="w-5/12">
                         <label htmlFor="password" className='font-sora font-bold text-xl mt-4'>Starter password</label>
-                        <input type="text" id="password" name="password" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                        <input type="password" id="modPassword" defaultValue={currentData.password || ''} name="password" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
                     </div>
                     <div className="w-5/12">
                         <label htmlFor="idGroup" className='font-sora font-bold text-xl mt-4'>Group</label>
                         <div>
                             <select
                                 name='idGroup'
-                                id='idGroup'
+                                id='modIdGroup'
+                                defaultValue={currentData.idGroup || ''} 
                                 className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
-                                value={selectedGroupId}
                                 onChange={(e) => setSelectedGroupId(e.target.value)}
                             >
                                 <option value="" disabled>Select a group</option>
@@ -73,8 +73,8 @@ export default function AddStudent({ submitStudentFunction, studentModified, cur
                     >
                         Edit student
                     </button>
-                    {studentAdded.status === false ? (
-                        <strong className='text-red-800 text-md'>{studentAdded.error}</strong>
+                    {studentModified.status === false ? (
+                        <strong className='text-red-800 text-md'>{studentModified.error}</strong>
                     ) : null}
                 </div>
             </div>

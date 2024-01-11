@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Edit from '../assets/img/pencil.svg';
+import Delete from '../assets/img/delete.svg';
 
-export default function StudentsSettings({handleAddStudentDivVisible}) {
-  const [students, setStudents] = useState([]);
+export default function StudentsSettings({handleAddStudentDivVisible, handleModifyStudentDivVisible, handleDeleteStudentDivVisible, setStudents, students}) {
+  
 
   useEffect(() => {
     // Fetch data from the API
@@ -53,8 +54,11 @@ export default function StudentsSettings({handleAddStudentDivVisible}) {
                 <td className='font-sora pt-3 pb-3'>{student.phoneNumber}</td>
                 <td className='font-sora pt-3 pb-3'>{student.idStudentGroup}</td>
                 <td className='font-sora pt-3 pb-3'>
-                  <button>
-                    <img src={Edit} alt='edit' className='w-8 h-8' />
+                  <button onClick={() => handleModifyStudentDivVisible(student)}>
+                    <img src={Edit} alt='edit' className='w-8 h-8 mr-1' />
+                  </button>
+                  <button onClick={() => handleDeleteStudentDivVisible(student)}>
+                    <img src={Delete} alt='delete' className='w-8 h-8 ml-1' />
                   </button>
                 </td>
               </tr>

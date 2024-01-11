@@ -260,9 +260,10 @@ router.put('/:id', upload.single('profilePicture'), async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
     try {
-        const result = await database.getPromise().query(
-            'DELETE FROM student WHERE idStudent = ?;',
-            [req.params.id]);
+        const idStudent = req.params.id;
+        await database.getPromise().query('DELETE FROM activityGrade WHERE idStudent = ?;', [idStudent]);
+        await database.getPromise().query('DELETE FROM projectToStudent WHERE idStudent = ?;', [idStudent]);
+        const result = await database.getPromise().query('DELETE FROM student WHERE idStudent = ?;', [idStudent]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);

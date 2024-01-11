@@ -9,14 +9,15 @@ import StudentsSettings from '../components/StudentsSettings';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import AddStudent from '../components/AddStudent';
 import ModifyStudent from '../components/ModifyStudent';
+import DeleteStudent from '../components/DeleteStudent';
 
 async function addStudent() {
-  const firstNameInput = document.getElementById('firstName');
-  const lastNameInput = document.getElementById('lastName');
-  const dniInput = document.getElementById('dni');
-  const phoneNumberInput = document.getElementById('phoneNumber');
-  const passwordInput = document.getElementById('password');
-  const idGroupInput = document.getElementById('idGroup');
+  const firstNameInput = document.getElementById('addFirstName');
+  const lastNameInput = document.getElementById('addLastName');
+  const dniInput = document.getElementById('addDni');
+  const phoneNumberInput = document.getElementById('addPhoneNumber');
+  const passwordInput = document.getElementById('addPassword');
+  const idGroupInput = document.getElementById('addIdGroup');
 
   const firstName = firstNameInput.value;
   const lastName = lastNameInput.value;
@@ -77,6 +78,68 @@ async function addStudent() {
   }
 }
 
+async function modifyStudent(idStudent) {
+  const firstName = document.getElementById('modFirstName').value;
+  const lastName = document.getElementById('modLastName').value;
+  const dni = document.getElementById('modDni').value;
+  const phoneNumber = document.getElementById('modPhoneNumber').value;
+  const password = document.getElementById('modPassword').value;
+  const idGroup = document.getElementById('modIdGroup').value;
+
+  if (!firstName || !lastName || !dni || !phoneNumber || !password || !idGroup) {
+    return { status: false, error: 'Missing fields' };
+  } else {
+    const username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
+    const email = `${username}@lsphere.net`;
+    const profilePicture = `/src/assets/profilePictures/${username}.png`;
+    const bio = '';
+
+    const modifiedStudent = {
+      firstName,
+      lastName,
+      dni,
+      phoneNumber,
+      password,
+      idGroup,
+      userName: username,
+      email,
+      profilePicture,
+      bio,
+    };
+
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(modifiedStudent),
+      };
+      const response = await fetch(`http://localhost:3001/students/${idStudent}`, options);
+
+      if (response.status === 200) {
+        return await response.json();
+      } else {
+        return { status: false, error: 'Error modifying student' };
+      }
+    } catch (error) {
+      console.error('Error modifying student:', error);
+      return { status: false, error: 'Error modifying student' };
+    }
+  }
+}
+
+async function deleteStudent(idStudent) {
+  const response = await fetch(`http://localhost:3001/students/${idStudent}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+      }
+  });
+  return await response.json();
+}
+
+
 export default function Settings() {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -84,6 +147,10 @@ export default function Settings() {
 
   const [isAddStudentDivVisible, setAddStudentDivVisible] = useState(false);
   const [studentAdded, setStudentAdded] = useState(false);
+
+  const [studentClicked, setStudentClicked] = useState({});
+
+  const [students, setStudents] = useState([]);
 
   const handleAddStudentDivVisible = () => {
     setAddStudentDivVisible(true);
@@ -101,6 +168,13 @@ export default function Settings() {
           setStudentAdded(result);
           if (result.status !== false) {
               setAddStudentDivVisible(false);
+              try {
+                  const response = await fetch('http://localhost:3001/students');
+                  const data = await response.json();
+                  setStudents(data);
+              } catch (error) {
+                  console.error(error);
+              }
           }
       } catch (error) {
           console.error(error);
@@ -111,27 +185,66 @@ export default function Settings() {
   const [isModifyStudentDivVisible, setModifyStudentDivVisible] = useState(false);
   const [studentModified, setStudentModified] = useState({});
 
-  const handleModifyStudentDivVisible = () => {
+  const handleModifyStudentDivVisible = (student) => {
+    setStudentClicked(student);
     setModifyStudentDivVisible(true);
     setTimeout(() => {
-        const modifyStudentDiv = document.getElementById('modifyStudentDiv');
-        modifyStudentDiv.classList.add('animate-fadeIn');
-        modifyStudentDiv.classList.remove('hidden');  // Remove 'hidden' class
+      const modifyStudentDiv = document.getElementById('modifyStudentDiv');
+      modifyStudentDiv.classList.add('animate-fadeIn');
+      modifyStudentDiv.classList.remove('hidden'); // Remove 'hidden' class
     }, 20);
-  }
+  };
 
   const handleModifyStudentClick = async () => {
     try {
-        const result = await modifyProject();
+        const result = await modifyStudent(studentClicked.id);
         setStudentModified(result);
         if (result.status !== false) {
             setModifyStudentDivVisible(false);
-
+            try {
+                const response = await fetch('http://localhost:3001/students');
+                const data = await response.json();
+                setStudents(data);
+            } catch (error) {
+                console.error(error);
+            }
         }
     } catch (error) {
         console.error(error);
     }
   };
+
+  // Delete student div visible or not
+  const [isDeleteStudentDivVisible, setDeleteStudentDivVisible] = useState(false);
+  const handleDeleteStudentDivVisible = (student) => {
+      setStudentClicked(student);
+      setDeleteStudentDivVisible(true);
+      setTimeout(() => {
+          const deleteStudentDiv = document.getElementById('deleteStudentDiv');
+          deleteStudentDiv.classList.add('animate-fadeIn');
+          deleteStudentDiv.classList.remove('hidden');  // Remove 'hidden' class
+      }, 20);
+  }
+  const closeDeleteStudentDivVisible = () => {
+      setDeleteStudentDivVisible(false);
+  }
+  const handleDeleteStudentClick = async () => {
+      try {
+          const result = await deleteStudent(studentClicked.idStudent);
+          if (result.affectedRows > 0) {
+              setDeleteStudentDivVisible(false);
+              try {
+                  const response = await fetch('http://localhost:3001/students');
+                  const data = await response.json();
+                  setStudents(data);
+              } catch (error) {
+                  console.error(error);
+              }
+          }
+      } catch (error) {
+          console.error(error);
+      }
+  }
 
   useEffect(() => {
     const defaultItem = "Account";
@@ -162,7 +275,7 @@ export default function Settings() {
         { id: 1, title: "Account" },
         { id: 2, title: "Log out" },
       ];
-
+    console.log(studentClicked);
     return (
       <div>
         <Header title={'Settings'} />
@@ -176,17 +289,33 @@ export default function Settings() {
                   studentAdded={studentAdded}
               />
           </div>
-          {/* {isModifyStudentDivVisible && (
+          {isModifyStudentDivVisible && (
               <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyStudentDivVisible(false)}></div>
           )}
           <div id='modifyStudentDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-              <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} />
-          </div> */}
+              <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} currentData={{
+                  firstName: studentClicked.firstName,
+                  lastName: studentClicked.lastName,
+                  dni: studentClicked.dni,
+                  phoneNumber: studentClicked.phoneNumber,
+                  password: studentClicked.userPassword,
+                  idGroup: studentClicked.idStudentGroup
+              }}/>
+          </div>
+          {isDeleteStudentDivVisible && (
+              <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteStudentDivVisible(false)}></div>
+          )}
+          <div id='deleteStudentDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+              <DeleteStudent studentName={{
+                  firstName: studentClicked.firstName,
+                  lastName: studentClicked.lastName
+              }} submitFunction={handleDeleteStudentClick} setNotVisible={closeDeleteStudentDivVisible} />
+          </div>
           <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={exampleList} selectedItem={selectedItem} onItemClick={handleItemClick} />
           <MyButton onButtonClick={pullSidebar} />
           <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
             {selectedItem === "Account" && <AccountSettings />}
-            {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible}/>}
+            {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} setStudents={setStudents} students={students}/>}
           </div>
         </section>
       </div>
