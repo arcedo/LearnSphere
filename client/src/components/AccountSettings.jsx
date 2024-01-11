@@ -90,19 +90,19 @@ export default function AccountSettings() {
     const [newBio, setNewBio] = useState('');
     const handleSaveChanges = async () => {
         const userId = getLoggedUser().id;
-    
+
         // Validate that new password and confirm new password match
         if (newPassword !== confirmNewPassword) {
             setPasswordUpdateMessage('Password confirmation does not match');
             return;
         }
-    
+
         // If a new password is provided, validate the old password
         if (newPassword && oldPassword !== userPassword) {
             setPasswordUpdateMessage('Current password is incorrect');
             return;
         }
-    
+
         // Create an object with updated user data excluding profilePicture
         const updatedUserData = {
             idStudent,
@@ -116,38 +116,36 @@ export default function AccountSettings() {
             bio: newBio,
             idStudentGroup,
         };
-    
+
         setUserData((prevUserData) => ({ ...prevUserData, bio: newBio }));
-    
+
         console.log('Updated User Data:', updatedUserData);
         console.log('Profile Picture:', newProfilePicture);
-    
+
         try {
             // Make a fetch request with the updated user data
             await updateUserData(userId, updatedUserData);
-    
+
             // Create a FormData object to handle file uploads
             const formData = new FormData();
-    
+
             // // Append userName to the FormData object
             // formData.append('userName', userName);
-    
+
             // Append other fields to the FormData object
             Object.entries(updatedUserData).forEach(([key, value]) => {
                 formData.append(key, value);
             });
-    
+
             // Append profilePicture as a file to the FormData object
             formData.append('profilePicture', newProfilePicture);
-    
-            console.log('FormData:', formData);
-    
+
             // Make a fetch request with the FormData object to update only the profile picture
             const response = await fetch(`http://localhost:3001/students/${userId}`, {
                 method: 'PUT',
                 body: formData,
             });
-    
+
             if (response.ok) {
                 console.log('Profile picture updated successfully');
             } else {
@@ -156,10 +154,10 @@ export default function AccountSettings() {
         } catch (error) {
             console.error('An error occurred during the fetch:', error);
         }
-    
+
         setPasswordUpdateMessage('Changes saved successfully!');
     };
-    
+
 
     const [hovered, setHovered] = useState(false);
     const [newProfilePicture, setNewProfilePicture] = useState(null);

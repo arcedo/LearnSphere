@@ -27,54 +27,54 @@ async function addStudent() {
   const idStudentGroup = idGroupInput.options[idGroupInput.selectedIndex].value;
 
   if (!firstName || !lastName || !dni || !phoneNumber || !userPassword || !idStudentGroup) {
-      return { status: false, error: 'Missing fields' };
+    return { status: false, error: 'Missing fields' };
   } else {
-      const username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
-      const email = `${username}@lsphere.net`;
-      const profilePicture = `/src/assets/profilePictures/${username}.png`;
-      const bio = '';
+    const username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
+    const email = `${username}@lsphere.net`;
+    const profilePicture = `/src/assets/profilePictures/${username}.png`;
+    const bio = '';
 
-      const student = {
-          firstName,
-          lastName,
-          dni,
-          phoneNumber,
-          userPassword,
-          idStudentGroup,
-          userName: username,
-          email,
-          profilePicture,
-          bio,
-      };
+    const student = {
+      firstName,
+      lastName,
+      dni,
+      phoneNumber,
+      userPassword,
+      idStudentGroup,
+      userName: username,
+      email,
+      profilePicture,
+      bio,
+    };
 
-      try {
-          const options = {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json;charset=utf-8'
-              },
-              body: JSON.stringify({ students: [student] })
-          }
-
-          const response = await fetch(`http://localhost:3001/students`, options);
-
-          if (response.status === 200) {
-            // Reset input fields on successful submission
-            firstNameInput.value = '';
-            lastNameInput.value = '';
-            dniInput.value = '';
-            phoneNumberInput.value = '';
-            passwordInput.value = '';
-            idGroupInput.value = ''; // Reset the selected group as needed
-
-            return await response.json();
-          } else {
-              return { status: false, error: 'Error adding student' };
-          }
-      } catch (error) {
-          console.error('Error adding student:', error);
-          return { status: false, error: 'Error adding student' };
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({ students: [student] })
       }
+
+      const response = await fetch(`http://localhost:3001/students`, options);
+
+      if (response.status === 200) {
+        // Reset input fields on successful submission
+        firstNameInput.value = '';
+        lastNameInput.value = '';
+        dniInput.value = '';
+        phoneNumberInput.value = '';
+        passwordInput.value = '';
+        idGroupInput.value = ''; // Reset the selected group as needed
+
+        return await response.json();
+      } else {
+        return { status: false, error: 'Error adding student' };
+      }
+    } catch (error) {
+      console.error('Error adding student:', error);
+      return { status: false, error: 'Error adding student' };
+    }
   }
 }
 
@@ -83,30 +83,29 @@ async function modifyStudent(idStudent) {
   const lastName = document.getElementById('modLastName').value;
   const dni = document.getElementById('modDni').value;
   const phoneNumber = document.getElementById('modPhoneNumber').value;
-  const password = document.getElementById('modPassword').value;
-  const idGroup = document.getElementById('modIdGroup').value;
+  const userPassword = document.getElementById('modPassword').value;
+  const idStudentGroup = document.getElementById('modIdGroup').value;
+  const bio = document.getElementById('modBio').value;
 
-  if (!firstName || !lastName || !dni || !phoneNumber || !password || !idGroup) {
+  if (!firstName || !lastName || !dni || !phoneNumber || !userPassword || !idStudentGroup) {
     return { status: false, error: 'Missing fields' };
   } else {
     const username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
     const email = `${username}@lsphere.net`;
     const profilePicture = `/src/assets/profilePictures/${username}.png`;
-    const bio = '';
 
     const modifiedStudent = {
       firstName,
       lastName,
       dni,
       phoneNumber,
-      password,
-      idGroup,
+      userPassword,
+      idStudentGroup,
       userName: username,
       email,
       profilePicture,
       bio,
     };
-
     try {
       const options = {
         method: 'PUT',
@@ -131,10 +130,10 @@ async function modifyStudent(idStudent) {
 
 async function deleteStudent(idStudent) {
   const response = await fetch(`http://localhost:3001/students/${idStudent}`, {
-      method: 'DELETE',
-      headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-      }
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    }
   });
   return await response.json();
 }
@@ -155,30 +154,30 @@ export default function Settings() {
   const handleAddStudentDivVisible = () => {
     setAddStudentDivVisible(true);
     setTimeout(() => {
-        const addStudentDiv = document.getElementById('addStudentDiv');
-        addStudentDiv.classList.add('animate-fadeIn');
-        addStudentDiv.classList.remove('hidden');  // Remove 'hidden' class
+      const addStudentDiv = document.getElementById('addStudentDiv');
+      addStudentDiv.classList.add('animate-fadeIn');
+      addStudentDiv.classList.remove('hidden');  // Remove 'hidden' class
     }, 20);
   }
 
   const handleAddStudentClick = async () => {
-      try {
-          setAddStudentDivVisible(true);
-          const result = await addStudent();
-          setStudentAdded(result);
-          if (result.status !== false) {
-              setAddStudentDivVisible(false);
-              try {
-                  const response = await fetch('http://localhost:3001/students');
-                  const data = await response.json();
-                  setStudents(data);
-              } catch (error) {
-                  console.error(error);
-              }
-          }
-      } catch (error) {
+    try {
+      setAddStudentDivVisible(true);
+      const result = await addStudent();
+      setStudentAdded(result);
+      if (result.status !== false) {
+        setAddStudentDivVisible(false);
+        try {
+          const response = await fetch('http://localhost:3001/students');
+          const data = await response.json();
+          setStudents(data);
+        } catch (error) {
           console.error(error);
+        }
       }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // Modify student div visible or not
@@ -197,53 +196,53 @@ export default function Settings() {
 
   const handleModifyStudentClick = async () => {
     try {
-        const result = await modifyStudent(studentClicked.id);
-        setStudentModified(result);
-        if (result.status !== false) {
-            setModifyStudentDivVisible(false);
-            try {
-                const response = await fetch('http://localhost:3001/students');
-                const data = await response.json();
-                setStudents(data);
-            } catch (error) {
-                console.error(error);
-            }
+      const result = await modifyStudent(studentClicked.idStudent);
+      setStudentModified(result);
+      if (result.status !== false) {
+        setModifyStudentDivVisible(false);
+        try {
+          const response = await fetch('http://localhost:3001/students');
+          const data = await response.json();
+          setStudents(data);
+        } catch (error) {
+          console.error(error);
         }
+      }
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
   };
 
   // Delete student div visible or not
   const [isDeleteStudentDivVisible, setDeleteStudentDivVisible] = useState(false);
   const handleDeleteStudentDivVisible = (student) => {
-      setStudentClicked(student);
-      setDeleteStudentDivVisible(true);
-      setTimeout(() => {
-          const deleteStudentDiv = document.getElementById('deleteStudentDiv');
-          deleteStudentDiv.classList.add('animate-fadeIn');
-          deleteStudentDiv.classList.remove('hidden');  // Remove 'hidden' class
-      }, 20);
+    setStudentClicked(student);
+    setDeleteStudentDivVisible(true);
+    setTimeout(() => {
+      const deleteStudentDiv = document.getElementById('deleteStudentDiv');
+      deleteStudentDiv.classList.add('animate-fadeIn');
+      deleteStudentDiv.classList.remove('hidden');  // Remove 'hidden' class
+    }, 20);
   }
   const closeDeleteStudentDivVisible = () => {
-      setDeleteStudentDivVisible(false);
+    setDeleteStudentDivVisible(false);
   }
   const handleDeleteStudentClick = async () => {
-      try {
-          const result = await deleteStudent(studentClicked.idStudent);
-          if (result.affectedRows > 0) {
-              setDeleteStudentDivVisible(false);
-              try {
-                  const response = await fetch('http://localhost:3001/students');
-                  const data = await response.json();
-                  setStudents(data);
-              } catch (error) {
-                  console.error(error);
-              }
-          }
-      } catch (error) {
+    try {
+      const result = await deleteStudent(studentClicked.idStudent);
+      if (result.affectedRows > 0) {
+        setDeleteStudentDivVisible(false);
+        try {
+          const response = await fetch('http://localhost:3001/students');
+          const data = await response.json();
+          setStudents(data);
+        } catch (error) {
           console.error(error);
+        }
       }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
@@ -275,47 +274,39 @@ export default function Settings() {
         { id: 1, title: "Account" },
         { id: 2, title: "Log out" },
       ];
-    console.log(studentClicked);
     return (
       <div>
         <Header title={'Settings'} />
         <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
           {isAddStudentDivVisible && (
-              <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddStudentDivVisible(false)}></div>
+            <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddStudentDivVisible(false)}></div>
           )}
           <div id='addStudentDiv' className={`w-5/12 h-3/5 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-              <AddStudent
-                  submitStudentFunction={handleAddStudentClick}
-                  studentAdded={studentAdded}
-              />
+            <AddStudent
+              submitStudentFunction={handleAddStudentClick}
+              studentAdded={studentAdded}
+            />
           </div>
           {isModifyStudentDivVisible && (
-              <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyStudentDivVisible(false)}></div>
+            <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyStudentDivVisible(false)}></div>
           )}
           <div id='modifyStudentDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-              <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} currentData={{
-                  firstName: studentClicked.firstName,
-                  lastName: studentClicked.lastName,
-                  dni: studentClicked.dni,
-                  phoneNumber: studentClicked.phoneNumber,
-                  password: studentClicked.userPassword,
-                  idGroup: studentClicked.idStudentGroup
-              }}/>
+            <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} currentData={studentClicked} />
           </div>
           {isDeleteStudentDivVisible && (
-              <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteStudentDivVisible(false)}></div>
+            <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteStudentDivVisible(false)}></div>
           )}
           <div id='deleteStudentDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-              <DeleteStudent studentName={{
-                  firstName: studentClicked.firstName,
-                  lastName: studentClicked.lastName
-              }} submitFunction={handleDeleteStudentClick} setNotVisible={closeDeleteStudentDivVisible} />
+            <DeleteStudent studentName={{
+              firstName: studentClicked.firstName,
+              lastName: studentClicked.lastName
+            }} submitFunction={handleDeleteStudentClick} setNotVisible={closeDeleteStudentDivVisible} />
           </div>
           <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={exampleList} selectedItem={selectedItem} onItemClick={handleItemClick} />
           <MyButton onButtonClick={pullSidebar} />
           <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
             {selectedItem === "Account" && <AccountSettings />}
-            {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} setStudents={setStudents} students={students}/>}
+            {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} setStudents={setStudents} students={students} />}
           </div>
         </section>
       </div>

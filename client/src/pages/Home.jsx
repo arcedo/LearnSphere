@@ -142,7 +142,6 @@ async function deleteSkill(idSkill) {
                 'Content-Type': 'application/json;charset=utf-8'
             }
         });
-        console.log(response);
         return await response.json();
     } catch (error) {
         console.error('Error deleting skill:', error);

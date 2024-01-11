@@ -12,6 +12,20 @@
   src: url(./assets/fonts/Sora-VariableFont_wght.ttf) format("truetype");
 }
 
+::-webkit-scrollbar
+{
+	width: 6px;
+}
+::-webkit-scrollbar-track{
+    background-color: var(--sidebar);
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: var(--white);
+    border-radius: 555px;
+}
+
 :root{
   --black: #0E070C;
   --white: #fefefe;

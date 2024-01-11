@@ -1,5 +1,4 @@
 export default function deleteSkill({ setNotVisible, submitFunction, skills }) {
-    console.log(skills);
     return (
         <div className='p-8'>
             <h2 className='font-sora text-4xl font-extrabold'>Delete Skill</h2>
