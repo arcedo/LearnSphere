@@ -6,6 +6,8 @@ import Sidebar from '../components/Sidebar';
 import AddProject from '../components/AddProject';
 import DeleteProject from '../components/DeleteProject';
 import ModifyProject from '../components/ModifyProject';
+import AddSkill from '../components/AddSkill';
+import DeleteSkill from '../components/DeleteSkill';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import {
     Accordion,
@@ -103,6 +105,50 @@ async function modifyProject(idProject) {
         }
     }
 };
+
+async function addSkill(idProject) {
+    const skill = {
+        skillName: document.getElementById('skillName').value,
+        globalPercentage: document.getElementById('globalPercentage').value,
+        idProject: idProject
+    }
+    if (!skill.skillName || !skill.globalPercentage) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(skill)
+            }
+            const response = await fetch(`http://localhost:3001/skills`, options);
+            if (response.status === 200) {
+                return await response.json();
+            } else return { status: false, error: 'Error adding skill' }
+        } catch (error) {
+            console.error('Error adding skill:', error);
+            return { status: false, error: 'Error adding skill' };
+        }
+    }
+}
+
+async function deleteSkill(idSkill) {
+    try {
+        const response = await fetch(`http://localhost:3001/skills/${idSkill}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        });
+        console.log(response);
+        return await response.json();
+    } catch (error) {
+        console.error('Error deleting skill:', error);
+        return { status: false, error: 'Error deleting skill' };
+    }
+}
 
 function Home() {
     //Sidebar open/closed
@@ -270,6 +316,68 @@ function Home() {
         }
     };
 
+    // Add skill div visible or not
+    const [isAddSkillDivVisible, setAddSkillDivVisible] = useState(false);
+    //Add skill
+    const [skillAdded, setSkillAdded] = useState({});
+
+    const handleAddSkillDivVisible = () => {
+        setAddSkillDivVisible(true);
+        setTimeout(() => {
+            const deleteProjectDiv = document.getElementById('addSkillDiv');
+            deleteProjectDiv.classList.add('animate-fadeIn');
+            deleteProjectDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+
+    const handleAddSkillClick = async () => {
+        try {
+            const result = await addSkill(displayedProject.id);
+            setSkillAdded(result);
+            if (result.status !== false) {
+                setAddSkillDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+                document.getElementById('skillName').value = '';
+                document.getElementById('globalPercentage').value = '';
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Delete project div visible or not
+    const [isDeleteSkillDivVisible, setDeleteSkillDivVisible] = useState(false);
+    const handleDeleteSkillDivVisible = () => {
+        setDeleteSkillDivVisible(true);
+        setTimeout(() => {
+            const deleteProjectDiv = document.getElementById('deleteSkillDiv');
+            deleteProjectDiv.classList.add('animate-fadeIn');
+            deleteProjectDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+    const closeDeleteSkillDivVisible = () => {
+        setDeleteSkillDivVisible(false);
+    }
+    const handleDeleteSkillClick = async () => {
+        try {
+            const result = await deleteSkill(document.getElementById('selectableSkillsDelete').options[document.getElementById('selectableSkillsDelete').selectedIndex].value);
+            if (result.affectedRows > 0) {
+                setDeleteSkillDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     // Set project active
     async function setProjectActive(idProject) {
         try {
@@ -317,6 +425,18 @@ function Home() {
                     <div id='modifyProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifyProject submitProjectFunction={handleModifyProjectClick} projectModified={projectModified} currentData={{ title: displayedProject.title, description: displayedProject.description, idStudentGroup: displayedProject.idStudentGroup }} />
                     </div>
+                    {isAddSkillDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillDivVisible(false)}></div>
+                    )}
+                    <div id='addSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} />
+                    </div>
+                    {isDeleteSkillDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillDivVisible(false)}></div>
+                    )}
+                    <div id='deleteSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <DeleteSkill setNotVisible={closeDeleteSkillDivVisible} submitFunction={handleDeleteSkillClick} skills={displayedProject.skills} />
+                    </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto'>
@@ -338,12 +458,12 @@ function Home() {
                                 <strong className='text-3xl font-sans font-extrabold'>N/A</strong>
                                 : <div className='flex items-center gap-3.5'>
                                     <button onClick={handleModifyProjectDivVisible}
-                                        className='border-2 border-white hover:bg-white hover:text-black rounded-2xl px-5 py-2 font-sans transition-colors duration-300 font-extrabold'
+                                        className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-2xl px-5 py-2 font-sans transition-colors duration-300 font-extrabold'
                                     >
                                         Modify
                                     </button>
                                     <button onClick={handleDeleteProjectDivVisible}
-                                        className='border-2 border-white hover:bg-red-800 hover:border-red-800 transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'
+                                        className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'
                                     >
                                         Delete
                                     </button>
@@ -357,12 +477,14 @@ function Home() {
                             ))}
                             {
                                 getLoggedUser().type === 'teacher' ?
-                                    <button className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Add</button>
+                                    <button onClick={handleAddSkillDivVisible}
+                                        className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
                                     : null
                             }
                             {
                                 getLoggedUser().type === 'teacher' ?
-                                    <button className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Modify</button>
+                                    <button onClick={handleDeleteSkillDivVisible}
+                                        className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 rounded-full hover:text-white px-5 py-2 font-sans font-extrabold'>Delete</button>
                                     : null
                             }
                         </div>
