@@ -3,8 +3,6 @@ import Edit from '../assets/img/pencil.svg';
 import Delete from '../assets/img/delete.svg';
 
 export default function StudentsSettings({handleAddStudentDivVisible, handleModifyStudentDivVisible, handleDeleteStudentDivVisible, setStudents, students}) {
-  
-
   useEffect(() => {
     // Fetch data from the API
     const fetchData = async () => {

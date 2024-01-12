@@ -6,10 +6,12 @@ import MyButton from '../components/MyButton';
 import { getLoggedUser } from '../utils/auth';
 import AccountSettings from '../components/AccountSettings';
 import StudentsSettings from '../components/StudentsSettings';
+import GroupSettings from '../components/GroupSettings';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import AddStudent from '../components/AddStudent';
 import ModifyStudent from '../components/ModifyStudent';
 import DeleteStudent from '../components/DeleteStudent';
+import AddGroup from '../components/AddGroup';
 
 async function addStudent() {
   const firstNameInput = document.getElementById('addFirstName');
@@ -138,6 +140,43 @@ async function deleteStudent(idStudent) {
   return await response.json();
 }
 
+async function addGroup() {
+  const nameInput = document.getElementById('addName');
+  const name = nameInput.value;
+  
+  if (!name) {
+    return { status: false, error: 'Missing field' };
+  } else {
+    const group = {
+      name,
+    };
+
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(group)
+      }
+
+      const response = await fetch(`http://localhost:3001/groups`, options);
+
+      if (response.status === 200) {
+        // Reset input fields on successful submission
+        nameInput.value = '';
+
+        return await response.json();
+      } else {
+        return { status: false, error: 'Error adding group' };
+      }
+    }
+    catch (error) {
+      console.error('Error adding group:', error);
+      return { status: false, error: 'Error adding group' };
+    }
+  }
+}
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -146,10 +185,13 @@ export default function Settings() {
 
   const [isAddStudentDivVisible, setAddStudentDivVisible] = useState(false);
   const [studentAdded, setStudentAdded] = useState(false);
-
   const [studentClicked, setStudentClicked] = useState({});
-
   const [students, setStudents] = useState([]);
+
+  const [isAddGroupDivVisible, setAddGroupDivVisible] = useState(false);
+  const [groupAdded, setGroupAdded] = useState(false);
+  const [groupClicked, setGroupClicked] = useState({});
+  const [groups, setGroups] = useState([]);
 
   const handleAddStudentDivVisible = () => {
     setAddStudentDivVisible(true);
@@ -245,6 +287,36 @@ export default function Settings() {
     }
   }
 
+  // Add group div visible or not
+  const handleAddGroupDivVisible = () => {
+    setAddGroupDivVisible(true);
+    setTimeout(() => {
+      const addGroupDiv = document.getElementById('addGroupDiv');
+      addGroupDiv.classList.add('animate-fadeIn');
+      addGroupDiv.classList.remove('hidden');  // Remove 'hidden' class
+    }, 20);
+  }
+
+  const handleAddGroupClick = async () => {
+    try {
+      setAddGroupDivVisible(true);
+      const result = await addGroup();
+      setGroupAdded(result);
+      if (result.status !== false) {
+        setAddGroupDivVisible(false);
+        try {
+          const response = await fetch('http://localhost:3001/groups');
+          const data = await response.json();
+          setGroups(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const defaultItem = "Account";
     setSelectedItem(defaultItem);
@@ -268,7 +340,8 @@ export default function Settings() {
       ? [
         { id: 1, title: "Account" },
         { id: 2, title: "Students" },
-        { id: 3, title: "Log out" },
+        { id: 3, title: "Groups"},
+        { id: 4, title: "Log out" },
       ]
       : [
         { id: 1, title: "Account" },
@@ -302,11 +375,21 @@ export default function Settings() {
               lastName: studentClicked.lastName
             }} submitFunction={handleDeleteStudentClick} setNotVisible={closeDeleteStudentDivVisible} />
           </div>
+          {isAddGroupDivVisible && (
+            <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddGroupDivVisible(false)}></div>
+          )}
+          <div id='addGroupDiv' className={`w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddGroupDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+            <AddGroup
+              submitGroupFunction={handleAddGroupClick}
+              groupAdded={groupAdded}
+            />
+          </div>
           <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={exampleList} selectedItem={selectedItem} onItemClick={handleItemClick} />
           <MyButton onButtonClick={pullSidebar} />
           <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
             {selectedItem === "Account" && <AccountSettings />}
             {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} setStudents={setStudents} students={students} />}
+            {selectedItem === "Groups" && <GroupSettings handleAddGroupDivVisible={handleAddGroupDivVisible} setGroups={setGroups} groups={groups}/>}
           </div>
         </section>
       </div>
