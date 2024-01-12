@@ -31,6 +31,7 @@
   --white: #fefefe;
   --gray: #E5E5E5;
   --sidebar: #222222;
+  --brand: #8977bb;
 }
 
 .bgColor{
@@ -47,6 +48,17 @@
 
 .bgSidebar{
   background-color: var(--sidebar);
+}
+.logo{
+  stroke: var(--white);
+  fill: var(--white);
+  transition: all;
+  transition-duration: 0.3s;
+}
+.logo:hover{
+  transform: scale(0.9);
+  stroke: var(--brand);
+  fill: var(--brand);
 }
 
 body {

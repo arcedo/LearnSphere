@@ -181,13 +181,13 @@ export default function AccountSettings() {
     return (
         <div>
             <h2 className='font-sora text-4xl font-extrabold'>Account</h2>
-            <div className='grid grid-cols-2'>
-                <div className='w-3/4'>
+            <div className='flex pl-3 flex-col-reverse md:flex-row justify-around items-center'>
+                <div className='w-full md:w-1/2'>
                     {getLoggedUser().type === 'student' ?
                         <div>
                             <h3 className='font-sora text-xl font-bold mt-4'>Bio</h3>
                             <textarea
-                                className='w-full h-32 p-2 rounded-md border-2 border-gray-800 bgPrincipal'
+                                className='w-full max-w-96 h-32 p-2 rounded-md border-2 border-gray-800 bgPrincipal'
                                 style={{ resize: 'none' }}
                                 placeholder="Write something about yourself..."
                                 value={newBio}
@@ -196,21 +196,21 @@ export default function AccountSettings() {
                         </div> : ''}
                     <h3 className='font-sora text-xl font-bold mt-12'>Current password</h3>
                     <input
-                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal'
+                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal max-w-96'
                         type="password"
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.target.value)}
                     />
                     <h3 className='font-sora text-xl font-bold mt-2'>New password</h3>
                     <input
-                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal'
+                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal max-w-96'
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <h3 className='font-sora text-xl font-bold mt-2'>Confirm new password</h3>
                     <input
-                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal'
+                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal max-w-96'
                         type="password"
                         value={confirmNewPassword}
                         onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -230,15 +230,15 @@ export default function AccountSettings() {
                     </div>
                 </div>
                 {getLoggedUser().type === 'student' ?
-                    <div className='w-auto flex flex-col justify-center items-center' id='imageDiv'>
+                    <div className='w-full mt-5 md:mt-0 md:w-1/2 flex items-center md:items-start flex-col' id='imageDiv'>
                         <label
-                            className={`relative rounded-full w-80 h-80 cursor-pointer ${hovered ? 'hovered' : ''}`}
+                            className={`relative rounded-full w-60 h-60 md:w-80 md:h-80 cursor-pointer ${hovered ? 'hovered' : ''}`}
                             onMouseEnter={handleImageHover}
                             onMouseLeave={handleImageHover}
                             onClick={handleImageClick}
                         >
                             <img
-                                className='rounded-full w-80 h-80'
+                                className='rounded-full w-60 h-60 md:w-80 md:h-80'
                                 src={imagePreview || `http://localhost:5173/${profilePicture}`}
                                 alt="Profile Picture"
                             />
