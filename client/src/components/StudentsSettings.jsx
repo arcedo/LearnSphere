@@ -26,16 +26,16 @@ export default function StudentsSettings({handleAddStudentDivVisible, handleModi
             Add student
         </button>
       </div>
-      <div className='flex flex-col mt-8 rounded-xl border-4 border-white'>
+      <div className='flex flex-col mt-8 rounded-xl border-4 border-white overflow-auto'>
         <table className=''>
           <thead className='border-b-4 border-white'>
             <tr className='text-left font-sora font-bold text-xl'>
               <th className='font-sora font-bold text-xl px-5'>First name</th>
-              <th className='pt-3 pb-3'>Last name</th>
-              <th className='pt-3 pb-3'>Username</th>
-              <th className='pt-3 pb-3'>Email</th>
-              <th className='pt-3 pb-3'>Phone</th>
-              <th className='pt-3 pb-3'>Group</th>
+              <th className='pt-3 pb-3 pr-3'>Last name</th>
+              <th className='pt-3 pb-3 pr-3'>Username</th>
+              <th className='pt-3 pb-3 pr-3'>Email</th>
+              <th className='pt-3 pb-3 pr-3'>Phone</th>
+              <th className='pt-3 pb-3 pr-3'>Group</th>
               <th></th>
             </tr>
           </thead>
@@ -46,12 +46,12 @@ export default function StudentsSettings({handleAddStudentDivVisible, handleModi
                 className={`border-gray-700 ${index !== students.length - 1 ? 'border-b-2' : ''}`}
               >
                 <td className='font-sora pt-3 pb-3 px-5'>{student.firstName}</td>
-                <td className='font-sora pt-3 pb-3'>{student.lastName}</td>
-                <td className='font-sora pt-3 pb-3'>{student.userName}</td>
-                <td className='font-sora pt-3 pb-3'>{student.email}</td>
-                <td className='font-sora pt-3 pb-3'>{student.phoneNumber}</td>
-                <td className='font-sora pt-3 pb-3'>{student.idStudentGroup}</td>
-                <td className='font-sora pt-3 pb-3'>
+                <td className='font-sora pt-3 pb-3 pr-3'>{student.lastName}</td>
+                <td className='font-sora pt-3 pb-3 pr-3'>{student.userName}</td>
+                <td className='font-sora pt-3 pb-3 pr-3'>{student.email}</td>
+                <td className='font-sora pt-3 pb-3 pr-3'>{student.phoneNumber}</td>
+                <td className='font-sora pt-3 pb-3 pr-3'>{student.idStudentGroup}</td>
+                <td className='font-sora pt-3 pb-3 pr-3'>
                   <button onClick={() => handleModifyStudentDivVisible(student)}>
                     <img src={Edit} alt='edit' className='w-8 h-8 mr-1' />
                   </button>

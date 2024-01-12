@@ -8,6 +8,9 @@ import DeleteProject from '../components/DeleteProject';
 import ModifyProject from '../components/ModifyProject';
 import AddSkill from '../components/AddSkill';
 import DeleteSkill from '../components/DeleteSkill';
+import AddActivity from '../components/AddActivity';
+import ModifyActivity from '../components/ModifyActivity';
+import DeleteActivity from '../components/DeleteActivity';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import currentProject from "../assets/img/currentProject.svg"
 import {
@@ -378,6 +381,39 @@ function Home() {
         }
     }
 
+    // Add activity div visible or not
+    const [isAddActivityDivVisible, setAddActivityDivVisible] = useState(false);
+    const handleAddActivityDivVisible = () => {
+        setAddActivityDivVisible(true);
+        setTimeout(() => {
+            const addActivityDiv = document.getElementById('addActivityDiv');
+            addActivityDiv.classList.add('animate-fadeIn');
+            addActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+
+    // Modify activity div visible or not
+    const [isModifyActivityDivVisible, setModifyActivityDivVisible] = useState(false);
+    const handleModifyActivityDivVisible = () => {
+        setModifyActivityDivVisible(true);
+        setTimeout(() => {
+            const modifyActivityDiv = document.getElementById('modifyActivityDiv');
+            modifyActivityDiv.classList.add('animate-fadeIn');
+            modifyActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+
+    // Delete activity div visible or not
+    const [isDeleteActivityDivVisible, setDeleteActivityDivVisible] = useState(false);
+    const handleDeleteActivityDivVisible = () => {
+        setDeleteActivityDivVisible(true);
+        setTimeout(() => {
+            const deleteActivityDiv = document.getElementById('deleteActivityDiv');
+            deleteActivityDiv.classList.add('animate-fadeIn');
+            deleteActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+
     // Set project active
     async function setProjectActive(idProject) {
         try {
@@ -455,6 +491,24 @@ function Home() {
                     <div id='deleteSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteSkill setNotVisible={closeDeleteSkillDivVisible} submitFunction={handleDeleteSkillClick} skills={displayedProject.skills} />
                     </div>
+                    {isAddActivityDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddActivityDivVisible(false)}></div>
+                    )}
+                    <div id='addActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <AddActivity />
+                    </div>
+                    {isModifyActivityDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyActivityDivVisible(false)}></div>
+                    )}
+                    <div id='modifyActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <ModifyActivity />
+                    </div>
+                    {isDeleteActivityDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteActivityDivVisible(false)}></div>
+                    )}
+                    <div id='deleteActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <DeleteActivity />
+                    </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto font-montserrat font-medium'>
@@ -508,7 +562,7 @@ function Home() {
                         </div>
                         {getLoggedUser().type === 'teacher' ?
                             <div className='flex justify-end items-center pb-3'>
-                                <button className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Add</button>
+                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Add</button>
                             </div>
                             : null
                         }
@@ -538,8 +592,8 @@ function Home() {
                                             {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
                                                 onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                             }
-                                            <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
-                                            <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
+                                            <button onClick={handleModifyActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
+                                            <button onClick={handleDeleteActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
                                         </div>
                                         : null
                                     }
