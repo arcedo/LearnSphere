@@ -190,7 +190,6 @@ export default function Settings() {
 
   const [isAddGroupDivVisible, setAddGroupDivVisible] = useState(false);
   const [groupAdded, setGroupAdded] = useState(false);
-  const [groupClicked, setGroupClicked] = useState({});
   const [groups, setGroups] = useState([]);
 
   const handleAddStudentDivVisible = () => {
