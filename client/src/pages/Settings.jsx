@@ -143,7 +143,7 @@ async function deleteStudent(idStudent) {
 async function addGroup() {
   const nameInput = document.getElementById('addName');
   const name = nameInput.value;
-  
+
   if (!name) {
     return { status: false, error: 'Missing field' };
   } else {
@@ -340,7 +340,7 @@ export default function Settings() {
       ? [
         { id: 1, title: "Account" },
         { id: 2, title: "Students" },
-        { id: 3, title: "Groups"},
+        { id: 3, title: "Groups" },
         { id: 4, title: "Log out" },
       ]
       : [
@@ -354,7 +354,7 @@ export default function Settings() {
           {isAddStudentDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddStudentDivVisible(false)}></div>
           )}
-          <div id='addStudentDiv' className={`w-5/12 h-3/5 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='addStudentDiv' className={`w-1/2 h-3/5 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <AddStudent
               submitStudentFunction={handleAddStudentClick}
               studentAdded={studentAdded}
@@ -389,7 +389,7 @@ export default function Settings() {
           <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
             {selectedItem === "Account" && <AccountSettings />}
             {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} setStudents={setStudents} students={students} />}
-            {selectedItem === "Groups" && <GroupSettings handleAddGroupDivVisible={handleAddGroupDivVisible} setGroups={setGroups} groups={groups}/>}
+            {selectedItem === "Groups" && <GroupSettings handleAddGroupDivVisible={handleAddGroupDivVisible} setGroups={setGroups} groups={groups} />}
           </div>
         </section>
       </div>

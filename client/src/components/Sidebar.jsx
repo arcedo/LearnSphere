@@ -12,7 +12,7 @@ export default function Sidebar({ isOpen, onClose, listContent, selectedItem, on
   const sidebarClassName = `w-80 z-10 ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`;
 
   return (
-    <div className={sidebarClassName}>
+    <div className={`${sidebarClassName}`}>
       <Card className="h-full w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 rounded-none bgSidebar white font-montserrat">
         <div className="mb-2 p-4">
           <Typography variant="h5" className='font-sora font-extrabold'>

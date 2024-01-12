@@ -458,7 +458,7 @@ function Home() {
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto font-montserrat font-medium'>
-                        <div className={`flex items-center gap-4 justify-between`}>
+                        <div className={`flex flex-wrap items-center gap-4 justify-between`}>
                             <div className='flex gap-2'>
                                 <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
                                 {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ?
