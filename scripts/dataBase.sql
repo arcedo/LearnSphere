@@ -79,6 +79,7 @@ CREATE TABLE activity (
 	idActivity BIGINT UNSIGNED AUTO_INCREMENT,
 	idProject BIGINT UNSIGNED NOT NULL,
 	name VARCHAR(100) NOT NULL,
+	activeActivity BOOLEAN DEFAULT FALSE,
 	description VARCHAR(500) NOT NULL,
 	PRIMARY KEY (idActivity),
 	FOREIGN KEY (idProject) REFERENCES project(idProject)

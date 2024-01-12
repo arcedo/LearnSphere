@@ -339,4 +339,49 @@ router.delete('/:idActivity/skills/:idSkill', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /activities/{idProject}/activate/{idActivity}:
+ *   put:
+ *     tags:
+ *       - Activities
+ *     summary: Activate an Activity
+ *     parameters:
+ *       - in: path
+ *         name: idProject
+ *         description: ID of the activity to activate
+ *         required: true
+ *         type: integer
+ *       - in: path
+ *         name: idActivity
+ *         description: ID of the activity to activate
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *       500:
+ *         description: Internal Server Error
+ */
+router.put('/:idProject/activate/:idActivity', async (req, res) => {
+    try {
+        const deactivateCurrentActive = await database.getPromise().query(
+            'UPDATE activity SET activeActivity = 0 WHERE activeActivity = 1 AND idProject = ?;',
+            [req.params.idProject]
+        );
+        console.log(deactivateCurrentActive);
+        if (deactivateCurrentActive) {
+            const result = await database.getPromise().query(
+                'UPDATE activity SET activeActivity = 1 WHERE idActivity = ?;',
+                [req.params.idActivity]
+            );
+            res.status(200).json(result[0]); // Assuming result is an array of rows
+        }
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
+});
+
 module.exports = router;

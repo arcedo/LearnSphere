@@ -9,6 +9,7 @@ import ModifyProject from '../components/ModifyProject';
 import AddSkill from '../components/AddSkill';
 import DeleteSkill from '../components/DeleteSkill';
 import LoginStatusChecker from '../components/LogginStatusChecker';
+import currentProject from "../assets/img/currentProject.svg"
 import {
     Accordion,
     AccordionHeader,
@@ -398,6 +399,24 @@ function Home() {
             // Handle the error or show a user-friendly message
         }
     }
+    async function setActivityActive(idProject, idActivity) {
+        try {
+            const response = await fetch(`http://localhost:3001/activities/${idProject}/activate/${idActivity}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status !== 200) {
+                console.error(`Failed to activate activity. Status: ${response.status}`);
+                // Handle the error or show a user-friendly message
+            }
+            setDisplayedProject({ ...displayedProject, skills: displayedProject.skills, activities: await getActivitiesByProjectId(displayedProject.id) });
+        } catch (error) {
+            console.error('Error while activating activity:', error);
+            // Handle the error or show a user-friendly message
+        }
+    }
     //console.log(selectableProjects);
     //console.log(displayedProject);
     const loginStatus = LoginStatusChecker();
@@ -438,7 +457,7 @@ function Home() {
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
-                    <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto'>
+                    <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto font-montserrat font-medium'>
                         <div className={`flex items-center gap-4 justify-between`}>
                             <div className='flex gap-2'>
                                 <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
@@ -450,7 +469,7 @@ function Home() {
                                     </button> : ""
                                 }
                                 {displayedProject.activeProject ?
-                                    <p className='font-bold mt-3'>Currently active</p> : ""
+                                    <p className='font-bold text-lg mt-3'>Currently active</p> : ""
                                 }
                             </div>
                             {getLoggedUser().type === 'student' ?
@@ -469,7 +488,7 @@ function Home() {
                                 </div>
                             }
                         </div>
-                        <p className='pb-2.5 pt-1.5'>{displayedProject.description}</p>
+                        <p className='pb-2.5 font-montserrat font-semibold text-lg pt-1.5'>{displayedProject.description}</p>
                         <div className='flex items-center gap-3 flex-wrap pt-5 pb-5'>
                             {displayedProject.skills.map((item) => (
                                 <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
@@ -495,19 +514,20 @@ function Home() {
                         }
                         {displayedProject.activities.map((item, index) => (
                             <Accordion key={index} open={openIndex === index} className='border-2 border-white rounded-2xl px-5 mt-2.5'>
-                                <AccordionHeader id='accordion' onClick={() => handleOpen(index)} className='py-2.5 border-none flex justify-between items-center text-white hover:text-gray-200'>
+                                <AccordionHeader id='accordion' onClick={() => handleOpen(index)} className='py-2.5 border-none font-sora font-extrabold text-lg flex justify-between items-center text-white hover:text-gray-200'>
                                     <div className='flex items-center gap-2.5'>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="54" height="54" viewBox="0 0 24 24">
                                             <path fill="#fefefe" d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6z" />
                                         </svg>
                                         <h5 className='text-3xl'>{item.name}</h5>
+                                        {item.activeActivity ? <img src={currentProject} alt='Current project' /> : null}
                                     </div>
                                     {getLoggedUser().type === 'student' ?
                                         <strong className='pr-3.5 text-2xl'>N/A</strong>
                                         : null
                                     }
                                 </AccordionHeader>
-                                <AccordionBody className='px-3.5 pb-10'>
+                                <AccordionBody className='px-3.5 pb-10 font-montserrat font-semibold text-lg'>
                                     <div className='grid grid-cols-2 px-3.5 py-0'>
                                         <div className='text-xl text-gray-100 py-0'>
                                             <p>{item.description}</p>
@@ -515,8 +535,11 @@ function Home() {
                                     </div>
                                     {getLoggedUser().type === 'teacher' ?
                                         <div className='flex justify-end items-center gap-2.5'>
-                                            <button className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Modify</button>
-                                            <button className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Delete</button>
+                                            {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
+                                                onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
+                                            }
+                                            <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
+                                            <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
                                         </div>
                                         : null
                                     }
