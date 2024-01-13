@@ -17,7 +17,6 @@ export default function AddGroup({ submitGroupFunction, groupAdded}) {
                 console.error('Error fetching groups:', error);
             }
         }
-
         fetchGroups();
     }, []);
 

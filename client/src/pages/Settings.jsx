@@ -11,6 +11,7 @@ import LoginStatusChecker from '../components/LogginStatusChecker';
 import AddStudent from '../components/AddStudent';
 import ModifyStudent from '../components/ModifyStudent';
 import DeleteStudent from '../components/DeleteStudent';
+import ImportCSV from '../components/ImportCSV';
 import AddGroup from '../components/AddGroup';
 
 async function addStudent() {
@@ -178,6 +179,39 @@ async function addGroup() {
   }
 }
 
+async function addCsv() {
+  const csvInput = document.getElementById('csv');
+  const csvFile = csvInput.files[0];
+
+  if (!csvFile) {
+    return { status: false, error: 'Missing field' };
+  } else {
+    const formData = new FormData();
+    formData.append('csv', csvFile);
+
+    try {
+      const options = {
+        method: 'POST',
+        body: formData,
+      };
+
+      const response = await fetch(`http://localhost:3001/students/csv`, options);
+
+      if (response.status === 200) {
+        // Reset input fields on successful submission
+        csvInput.value = '';
+
+        return await response.json();
+      } else {
+        return { status: false, error: 'Error adding csv' };
+      }
+    } catch (error) {
+      console.error('Error adding csv:', error);
+      return { status: false, error: 'Error adding csv' };
+    }
+  }
+}
+
 export default function Settings() {
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -286,6 +320,30 @@ export default function Settings() {
     }
   }
 
+  // Import CSV div visible or not
+  const [isImportCsvDivVisible, setImportCsvDivVisible] = useState(false);
+  const [csvAdded, setCsvAdded] = useState(false);
+  const handleImportCsvVisible = () => {
+    setImportCsvDivVisible(true);
+    setTimeout(() => {
+      const importCsvDiv = document.getElementById('importCsvDiv');
+      importCsvDiv.classList.add('animate-fadeIn');
+      importCsvDiv.classList.remove('hidden');  // Remove 'hidden' class
+    }, 20);
+  }
+
+  const handleImportCsvClick = async (event) => {
+    await addCsv();
+    try {
+      const response = await fetch('http://localhost:3001/students');
+      const data = await response.json();
+      setStudents(data);
+    } catch (error) {
+      console.error(error);
+    }
+    setImportCsvDivVisible(false);
+  };
+  
   // Add group div visible or not
   const handleAddGroupDivVisible = () => {
     setAddGroupDivVisible(true);
@@ -374,6 +432,12 @@ export default function Settings() {
               lastName: studentClicked.lastName
             }} submitFunction={handleDeleteStudentClick} setNotVisible={closeDeleteStudentDivVisible} />
           </div>
+          {isImportCsvDivVisible && (
+            <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setImportCsvDivVisible(false)}></div>
+          )}
+          <div id='importCsvDiv' className={`w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isImportCsvDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+            <ImportCSV submitCsvFunction={handleImportCsvClick} csvAdded={csvAdded}/>
+          </div>
           {isAddGroupDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddGroupDivVisible(false)}></div>
           )}
@@ -387,7 +451,7 @@ export default function Settings() {
           <MyButton onButtonClick={pullSidebar} />
           <div className="settings-content w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto">
             {selectedItem === "Account" && <AccountSettings />}
-            {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} setStudents={setStudents} students={students} />}
+            {selectedItem === "Students" && <StudentsSettings handleAddStudentDivVisible={handleAddStudentDivVisible} handleModifyStudentDivVisible={handleModifyStudentDivVisible} handleDeleteStudentDivVisible={handleDeleteStudentDivVisible} handleImportCsvVisible={handleImportCsvVisible} setStudents={setStudents} students={students} />}
             {selectedItem === "Groups" && <GroupSettings handleAddGroupDivVisible={handleAddGroupDivVisible} setGroups={setGroups} groups={groups} />}
           </div>
         </section>

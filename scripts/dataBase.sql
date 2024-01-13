@@ -50,7 +50,7 @@ CREATE TABLE student (
 	userPassword VARCHAR(255) NOT NULL,
 	profilePicture VARCHAR(255),
 	bio VARCHAR(500),
-	idStudentGroup VARCHAR(50) NOT NULl,
+	idStudentGroup VARCHAR(50) NOT NULL,
 	PRIMARY KEY (idStudent),
 	FOREIGN KEY (idStudentGroup) REFERENCES studentGroup(name)
 );

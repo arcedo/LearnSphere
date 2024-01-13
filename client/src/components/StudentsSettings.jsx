@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Edit from '../assets/img/pencil.svg';
 import Delete from '../assets/img/delete.svg';
 
-export default function StudentsSettings({handleAddStudentDivVisible, handleModifyStudentDivVisible, handleDeleteStudentDivVisible, setStudents, students}) {
+export default function StudentsSettings({handleAddStudentDivVisible, handleModifyStudentDivVisible, handleDeleteStudentDivVisible, handleImportCsvVisible, setStudents, students}) {
   useEffect(() => {
     // Fetch data from the API
     const fetchData = async () => {
@@ -22,9 +22,14 @@ export default function StudentsSettings({handleAddStudentDivVisible, handleModi
     <div>
       <div className='flex items-center w-full mx-auto justify-between'>
         <h2 className='font-sora text-4xl font-extrabold'>Students</h2>
-        <button onClick={handleAddStudentDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
-            Add student
-        </button>
+        <div className='flex items-center justify-between gap-3'>
+          <button onClick={handleAddStudentDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
+              Add student
+          </button>
+          <button onClick={handleImportCsvVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
+              Import CSV
+          </button>
+        </div>
       </div>
       <div className='flex flex-col mt-8 rounded-xl border-4 border-white overflow-auto'>
         <table className=''>

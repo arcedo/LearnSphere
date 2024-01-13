@@ -164,6 +164,85 @@ router.post('/', async (req, res) => {
     }
 });
 
+const multer2 = require('multer');
+const fs2 = require('fs/promises');
+
+const storage2 = multer2.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'csvUploads/'); // Define your upload destination
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload2 = multer2({ storage: storage2 });
+
+router.post('/csv', upload2.single('csv'), async (req, res) => {
+  try {
+    const csvFilePath = req.file.path; // Use req.file to access the uploaded file
+    const students = [];
+
+    await fs2.readFile(csvFilePath, 'utf-8')
+      .then(data => {
+        return new Promise((resolve) => {
+          const rows = data.trim().split('\n');
+          const headers = rows[0].split(',');
+
+          for (let i = 1; i < rows.length; i++) {
+            const values = rows[i].split(',');
+            const student = {};
+
+            headers.forEach((header, index) => {
+              student[header] = values[index];
+            });
+
+            const firstNameShort = student.firstName.substring(0, 3).toLowerCase();
+            const lastNameShort = student.lastName.substring(0, 3).toLowerCase();
+
+            const userName = `${firstNameShort}${lastNameShort}`;
+            const email = `${userName}@lsphere.net`;
+
+            const profilePicturePath = `/src/assets/profilePictures/${userName}.png`;
+
+            students.push([
+              student.dni,
+              student.firstName,
+              student.lastName,
+              parseInt(student.phoneNumber),
+              email,
+              userName,
+              student.userPassword,
+              profilePicturePath,
+              student.bio,
+              student.idStudentGroup,
+            ]);
+          }
+
+          resolve();
+        });
+      });
+
+      const defaultImagePath = path.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
+      const profilePicturePath = path.join(__dirname, '../../../client/src/assets/profilePictures/');
+  
+      for (const student of students) {
+        const newImagePath = path.join(profilePicturePath, `${student[5]}.png`);
+        if (!fs.existsSync(newImagePath)) {
+          fs.copyFileSync(defaultImagePath, newImagePath);
+        }
+      }
+  
+      const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
+      const result = await database.getPromise().query(sql, [students]);
+  
+      res.status(200).json(result[0]); // Assuming result is an array of rows
+    } catch (err) {
+      console.error('Unable to import students from CSV: ' + err);
+      res.status(500).send();
+    }
+  });
+
 
 /**
  * @swagger
