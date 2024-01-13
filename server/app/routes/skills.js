@@ -103,13 +103,80 @@ router.get('/:id', async (req, res) => {
  *         description: Internal Server Error
  */
 
-router.post('/', async (req, res) => {
+const multer = require('multer');
+const path = require('path');
+
+// Multer configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../../../client/src/assets/skillIcons/'));
+    },
+    filename: function (req, file, cb) {
+        const fileName = req.body.skillName;
+
+        // Force the file extension to be '.png'
+        const newFilename = `${fileName}.png`;
+        cb(null, newFilename);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+router.post('/', upload.single('image'), async (req, res) => {
     try {
+        // Get the uploaded file information
+        const uploadedFile = req.file;
+
+        // Assuming you have other fields in the request body
+        const { idProject, skillName, globalPercentage } = req.body;
+
+        // Use the uploaded file path or filename as needed in your database query
+        const imagePath = `/src/assets/skillIcons/${uploadedFile.filename}`;
+
+        // Insert data into the database
         const result = await database.getPromise().query(
-            'INSERT INTO skill (idProject, skillName, globalPercentage) VALUES (?, ?, ?);',
-            [req.body.idProject, req.body.skillName, req.body.globalPercentage]
+            'INSERT INTO skill (idProject, skillName, globalPercentage, image) VALUES (?, ?, ?, ?);',
+            [idProject, skillName, globalPercentage, imagePath]
         );
+
         res.status(200).json(result[0]); // Assuming result is an array of rows
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
+});
+
+
+// route to update skill by ID
+const storage2 = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../../../client/src/assets/skillIcons/'));
+    },
+    filename: function (req, file, cb) {
+        const fileName = req.body.skillName;
+
+        // Force the file extension to be '.png'
+        const newFilename = `${fileName}.png`;
+        cb(null, newFilename);
+    }
+});
+
+const upload2 = multer({ storage: storage2 });
+
+router.put('/:idSkill', upload2.single('image'), async (req, res) => {
+    try {
+        const idSkill = req.params.idSkill;
+        const { skillName, idProject, globalPercentage } = req.body;
+
+        // Check if a file is uploaded
+        const imagePath = req.file ? req.file.path : null;
+
+        const result = await database.getPromise().query(
+            'UPDATE skill SET skillName = ?, idProject = ?, globalPercentage = ?, image = ? WHERE idSkill = ?;',
+            [skillName, idProject, globalPercentage, imagePath, idSkill]
+        );
+
+        res.status(200).json(result[0]);
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();

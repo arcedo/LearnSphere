@@ -116,22 +116,36 @@ async function addSkill(idProject) {
         skillName: document.getElementById('skillName').value,
         globalPercentage: document.getElementById('globalPercentage').value,
         idProject: idProject
+    };
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append('skillName', skill.skillName);
+    formData.append('globalPercentage', skill.globalPercentage);
+    formData.append('idProject', skill.idProject);
+
+    // Get the selected file from the input field
+    const imageInput = document.getElementById('imageInputSkill');
+    if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
     }
+
     if (!skill.skillName || !skill.globalPercentage) {
         return { status: false, error: 'Missing fields' };
     } else {
         try {
             const options = {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(skill)
-            }
+                body: formData  // Use the FormData object as the body
+            };
+
             const response = await fetch(`http://localhost:3001/skills`, options);
+
             if (response.status === 200) {
                 return await response.json();
-            } else return { status: false, error: 'Error adding skill' }
+            } else {
+                return { status: false, error: 'Error adding skill' };
+            }
         } catch (error) {
             console.error('Error adding skill:', error);
             return { status: false, error: 'Error adding skill' };
@@ -140,25 +154,40 @@ async function addSkill(idProject) {
 }
 
 async function modifySkill(idSkill) {
-    const skill = {
-        skillName: document.getElementById('modSkillName').value,
-        globalPercentage: document.getElementById('modGlobalPercentage').value,
+    const skillName = document.getElementById('modSkillName').value;
+    // TODO: Get the project ID from somewhere
+    const idProject = idSkill;
+    console.log(idProject);
+    const globalPercentage = document.getElementById('modGlobalPercentage').value;
+    const imageInput = document.getElementById('imageInputSkill');
+
+    // Use FormData to handle file uploads
+    const formData = new FormData();
+    formData.append('skillName', skillName);
+    formData.append('idProject', idProject);
+    formData.append('globalPercentage', globalPercentage);
+
+    // Check if a file is selected
+    if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
     }
-    if (!skill.skillName || !skill.globalPercentage) {
+
+    if (!skillName || !globalPercentage) {
         return { status: false, error: 'Missing fields' };
     } else {
         try {
             const options = {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(skill)
-            }
+                body: formData  // Use FormData object as the body for file uploads
+            };
+
             const response = await fetch(`http://localhost:3001/skills/${idSkill}`, options);
+
             if (response.status === 200) {
                 return await response.json();
-            } else return { status: false, error: 'Error modifying skill' }
+            } else {
+                return { status: false, error: 'Error modifying skill' };
+            }
         } catch (error) {
             console.error('Error modifying skill:', error);
             return { status: false, error: 'Error modifying skill' };
@@ -445,6 +474,8 @@ function Home() {
                 });
                 document.getElementById('skillName').value = '';
                 document.getElementById('globalPercentage').value = '';
+                document.getElementById('imageInputLabel').innerHTML = 'Image';
+                document.getElementById('imageInputSkill').value = ''; 
             }
         } catch (error) {
             console.error(error);
@@ -473,6 +504,10 @@ function Home() {
                     skills: await getSkillsByProjectId(displayedProject.id),
                     activities: await getActivitiesByProjectId(displayedProject.id),
                 });
+                document.getElementById('modSkillName').value = '';
+                document.getElementById('modGlobalPercentage').value = '';
+                document.getElementById('imageInputLabel').innerHTML = 'Image';
+                document.getElementById('imageInputSkill').value = '';
             }
         } catch (error) {
             console.error(error);
@@ -751,7 +786,7 @@ function Home() {
                             ) : (
                                 <>
                                     {displayedProject.skills.map((item) => (
-                                        <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
+                                        <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} image={item.image}/>
                                     ))}
                                     {getLoggedUser().type === 'teacher' && (
                                         <>
