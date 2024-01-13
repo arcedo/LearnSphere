@@ -809,7 +809,7 @@ function Home() {
                                                 onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                             }
                                             <button onClick={() => handleModifyActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
-                                            <button onClick={() => handleDeleteActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
+                                            <button onClick={() => handleDeleteActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
                                         </div>
                                         : null
                                     }
