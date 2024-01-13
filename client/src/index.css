@@ -28,6 +28,7 @@
 
 :root{
   --black: #0E070C;
+  --blackLogin: #131313;
   --white: #fefefe;
   --gray: #E5E5E5;
   --sidebar: #222222;
@@ -46,6 +47,10 @@
 
 .white{
   color: var(--white);
+}
+
+.bgLogin{
+  background-color: var(--blackLogin);
 }
 
 .bgBlack{

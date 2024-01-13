@@ -70,6 +70,7 @@ CREATE TABLE skill (
 	idProject BIGINT UNSIGNED NOT NULL,
 	skillName VARCHAR(100) NOT NULL,
 	globalPercentage TINYINT UNSIGNED NOT NULL,
+	image VARCHAR(255),
 	PRIMARY KEY (idSkill),
 	FOREIGN KEY (idProject) REFERENCES project(idProject)
 );
@@ -123,22 +124,22 @@ INSERT INTO project  (title, description, idTeacher, idStudentGroup, activeProje
 VALUES ('M06', 'Learn to use JavaScript employing good practices and creating projects that can be applied in the real world.', 1,'DAW2',1);
 INSERT INTO project  (title, description, idTeacher, idStudentGroup, activeProject)
 VALUES ('M09', 'Learn how to use design tools to prototype your applications and then develop them.', 2,'DAW2',0);
-INSERT INTO skill (skillName, idProject, globalPercentage) 
-VALUES ('JavaScript', 1, 45);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('HTML', 1, 25);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('CSS', 1, 20);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('Class Work', 1, 10);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('Design', 2, 45);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('HTML', 2, 10);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('CSS', 2, 35);
-INSERT INTO skill (skillName, idProject, globalPercentage)
-VALUES ('Class Work', 2, 10);
+INSERT INTO skill (skillName, idProject, globalPercentage, image) 
+VALUES ('JavaScript', 1, 45, '/src/assets/skillIcons/JavaScript.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('HTML', 1, 25, '/src/assets/skillIcons/HTML.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('CSS', 1, 20, '/src/assets/skillIcons/CSS.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('Class Work', 1, 10, '/src/assets/skillIcons/Class Work.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('Design', 2, 45, '/src/assets/skillIcons/Design.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('HTML', 2, 10, '/src/assets/skillIcons/HTML.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('CSS', 2, 35, '/src/assets/skillIcons/CSS.png');
+INSERT INTO skill (skillName, idProject, globalPercentage, image)
+VALUES ('Class Work', 2, 10, '/src/assets/skillIcons/Class Work.png');
 INSERT INTO activity (name, description, idProject)
 VALUES ('Local Storage', 'Create a christmas themed web using local storage to save persistent data.', 1);
 INSERT INTO activity (name, description, idProject)
