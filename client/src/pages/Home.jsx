@@ -7,6 +7,7 @@ import AddProject from '../components/AddProject';
 import DeleteProject from '../components/DeleteProject';
 import ModifyProject from '../components/ModifyProject';
 import AddSkill from '../components/AddSkill';
+import ModifySkill from '../components/ModifySkill';
 import DeleteSkill from '../components/DeleteSkill';
 import AddActivity from '../components/AddActivity';
 import ModifyActivity from '../components/ModifyActivity';
@@ -352,7 +353,18 @@ function Home() {
         }
     }
 
-    // Delete project div visible or not
+    // Modify skill div visible or not
+    const [isModifySkillDivVisible, setModifySkillDivVisible] = useState(false);
+    const handleModifySkillDivVisible = () => {
+        setModifySkillDivVisible(true);
+        setTimeout(() => {
+            const modifySkillDiv = document.getElementById('modifySkillDiv');
+            modifySkillDiv.classList.add('animate-fadeIn');
+            modifySkillDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+
+    // Delete skill div visible or not
     const [isDeleteSkillDivVisible, setDeleteSkillDivVisible] = useState(false);
     const handleDeleteSkillDivVisible = () => {
         setDeleteSkillDivVisible(true);
@@ -485,6 +497,12 @@ function Home() {
                     <div id='addSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} />
                     </div>
+                    {isModifySkillDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifySkillDivVisible(false)}></div>
+                    )}
+                    <div id='modifySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <ModifySkill />
+                    </div>
                     {isDeleteSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillDivVisible(false)}></div>
                     )}
@@ -544,25 +562,45 @@ function Home() {
                         </div>
                         <p className='pb-2.5 font-montserrat font-semibold text-lg pt-1.5'>{displayedProject.description}</p>
                         <div className='flex items-center gap-3 flex-wrap pt-5 pb-5'>
-                            {displayedProject.skills.map((item) => (
-                                <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
-                            ))}
-                            {
-                                getLoggedUser().type === 'teacher' ?
-                                    <button onClick={handleAddSkillDivVisible}
-                                        className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
-                                    : null
-                            }
-                            {
-                                getLoggedUser().type === 'teacher' ?
-                                    <button onClick={handleDeleteSkillDivVisible}
-                                        className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 rounded-full hover:text-white px-5 py-2 font-sans font-extrabold'>Delete</button>
-                                    : null
-                            }
+                            {displayedProject.skills.length === 0 ? (
+                                getLoggedUser().type === 'teacher' ? (
+                                    <button
+                                        onClick={handleAddSkillDivVisible}
+                                        className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
+                                        Add
+                                    </button>
+                                ) : null
+                            ) : (
+                                <>
+                                    {displayedProject.skills.map((item) => (
+                                        <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} />
+                                    ))}
+                                    {getLoggedUser().type === 'teacher' && (
+                                        <>
+                                            <button
+                                                onClick={handleAddSkillDivVisible}
+                                                className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
+                                                Add
+                                            </button>
+                                            <button
+                                                onClick={handleModifySkillDivVisible}
+                                                className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-full px-5 py-2 font-sans font-extrabold transition-colors duration-300'>
+                                                Modify
+                                            </button>
+                                            <button
+                                                onClick={handleDeleteSkillDivVisible}
+                                                className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 rounded-full hover:text-white transition-colors duration-300 px-5 py-2 font-sans font-extrabold'>
+                                                Delete
+                                            </button>
+                                        </>
+                                    )}
+                                </>
+                            )
+                        }
                         </div>
                         {getLoggedUser().type === 'teacher' ?
                             <div className='flex justify-end items-center pb-3'>
-                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold'>Add</button>
+                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
                             </div>
                             : null
                         }
@@ -592,8 +630,8 @@ function Home() {
                                             {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
                                                 onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                             }
-                                            <button onClick={handleModifyActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
-                                            <button onClick={handleDeleteActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
+                                            <button onClick={handleModifyActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
+                                            <button onClick={handleDeleteActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
                                         </div>
                                         : null
                                     }
