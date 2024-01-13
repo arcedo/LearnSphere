@@ -153,6 +153,77 @@ async function deleteSkill(idSkill) {
     }
 }
 
+async function addActivity(idProject) {
+    const activity = {
+        idProject: idProject,
+        name: document.getElementById('titleActivity').value,
+        description: document.getElementById('descriptionActivity').value,
+    }
+    if (!activity.idProject || !activity.name || !activity.description) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(activity)
+            }
+            const response = await fetch(`http://localhost:3001/activities`, options);
+            if (response.status === 200) {
+                return await response.json();
+            } else return { status: false, error: 'Error adding project' }
+        } catch (error) {
+            console.error('Error adding activity:', error);
+            return { status: false, error: 'Error adding activity' };
+        }
+    }
+}
+
+async function modifyActivity(idProject, idActivity) {
+    const activity = {
+        idProject: idProject,
+        name: document.getElementById('modTitleActivity').value,
+        description: document.getElementById('modDescriptionActivity').value,
+    }
+    if (!activity.idProject || !activity.name || !activity.description) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(activity)
+            }
+            const response = await fetch(`http://localhost:3001/activities/${idActivity}`, options);
+            if (response.status === 200) {
+                return await response.json();
+            } else return { status: false, error: 'Error modifying activity' }
+        } catch (error) {
+            console.error('Error modifying activity:', error);
+            return { status: false, error: 'Error modifying activity' };
+        }
+    }
+}
+
+async function deleteActivity(idActivity) {
+    try {
+        const response = await fetch(`http://localhost:3001/activities/${idActivity}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Error deleting activity:', error);
+        return { status: false, error: 'Error deleting activity' };
+    }
+}
+
 function Home() {
     //Sidebar open/closed
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -383,6 +454,7 @@ function Home() {
 
     // Add activity div visible or not
     const [isAddActivityDivVisible, setAddActivityDivVisible] = useState(false);
+    const [activityAdded, setActivityAdded] = useState({});
     const handleAddActivityDivVisible = () => {
         setAddActivityDivVisible(true);
         setTimeout(() => {
@@ -391,10 +463,31 @@ function Home() {
             addActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
         }, 20);
     }
+    const handleAddActivityClick = async () => {
+        try {
+            const result = await addActivity(displayedProject.id);
+            setActivityAdded(result);
+            if (result.status !== false) {
+                setAddActivityDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+                document.getElementById('titleActivity').value = '';
+                document.getElementById('descriptionActivity').value = '';
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     // Modify activity div visible or not
     const [isModifyActivityDivVisible, setModifyActivityDivVisible] = useState(false);
-    const handleModifyActivityDivVisible = () => {
+    const [activityModified, setActivityModified] = useState({});
+    const [activityToModify, setActivityToModify] = useState({});
+    const handleModifyActivityDivVisible = (activityData) => {
+        setActivityToModify({ ...activityData });
         setModifyActivityDivVisible(true);
         setTimeout(() => {
             const modifyActivityDiv = document.getElementById('modifyActivityDiv');
@@ -402,17 +495,58 @@ function Home() {
             modifyActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
         }, 20);
     }
+    const handleModifyActivityClick = async () => {
+        try {
+            const result = await modifyActivity(displayedProject.id, activityToModify.idActivity);
+            setActivityModified(result);
+            if (result.status !== false) {
+                setModifyActivityDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     // Delete activity div visible or not
     const [isDeleteActivityDivVisible, setDeleteActivityDivVisible] = useState(false);
-    const handleDeleteActivityDivVisible = () => {
+    const [activityDeleted, setActivityDeleted] = useState({});
+    const [activityToDelete, setActivityToDelete] = useState({});
+    const handleDeleteActivityDivVisible = (activityToDelete) => {
         setDeleteActivityDivVisible(true);
+        setActivityToDelete({ ...activityToDelete });
         setTimeout(() => {
             const deleteActivityDiv = document.getElementById('deleteActivityDiv');
             deleteActivityDiv.classList.add('animate-fadeIn');
             deleteActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
         }, 20);
     }
+
+    const closeDeleteActivityDivVisible = () => {
+        setDeleteActivityDivVisible(false);
+    }
+
+    const handleDeleteActivityClick = async () => {
+        try {
+            const result = await deleteActivity(activityToDelete.idActivity);
+            setActivityDeleted(result);
+            if (result.status !== false) {
+                setDeleteActivityDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     // Set project active
     async function setProjectActive(idProject) {
@@ -495,19 +629,19 @@ function Home() {
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddActivityDivVisible(false)}></div>
                     )}
                     <div id='addActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <AddActivity />
+                        <AddActivity activityAdded={activityAdded} submitActivity={handleAddActivityClick} />
                     </div>
                     {isModifyActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyActivityDivVisible(false)}></div>
                     )}
                     <div id='modifyActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <ModifyActivity />
+                        <ModifyActivity activityModified={activityModified} submitModActivity={handleModifyActivityClick} currentData={activityToModify} />
                     </div>
                     {isDeleteActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteActivityDivVisible(false)}></div>
                     )}
                     <div id='deleteActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <DeleteActivity />
+                        <DeleteActivity submitDeleteActivity={handleDeleteActivityClick} closeDeleteActivity={closeDeleteActivityDivVisible} activityDeleted={activityDeleted} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
@@ -592,8 +726,8 @@ function Home() {
                                             {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
                                                 onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                             }
-                                            <button onClick={handleModifyActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
-                                            <button onClick={handleDeleteActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
+                                            <button onClick={() => handleModifyActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
+                                            <button onClick={() => handleDeleteActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
                                         </div>
                                         : null
                                     }

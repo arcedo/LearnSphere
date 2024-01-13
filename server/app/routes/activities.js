@@ -144,7 +144,7 @@ router.post('/', async (req, res) => {
  */
 router.put('/:idActivity', async (req, res) => {
     try {
-        const result = await database.getPromise().query('UPidProject = ? DATE activity SET name = ?, description = ? WHERE idActivity = ?;', [req.body.name, req.body.description, req.params.idActivity]);
+        const result = await database.getPromise().query('UPDATE activity SET name = ?, description = ?, idProject = ? WHERE idActivity = ?;', [req.body.name, req.body.description, req.body.idProject, req.params.idActivity]);
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
