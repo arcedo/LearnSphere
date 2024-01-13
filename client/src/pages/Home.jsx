@@ -765,7 +765,7 @@ function Home() {
                                                 onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                             }
                                             <button onClick={() => handleModifyActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Modify</button>
-                                            <button onClick={() => handleDeleteActivityDivVisible} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
+                                            <button onClick={() => handleDeleteActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold'>Delete</button>
                                         </div>
                                         : null
                                     }
