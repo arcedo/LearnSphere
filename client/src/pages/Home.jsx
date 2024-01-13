@@ -139,6 +139,33 @@ async function addSkill(idProject) {
     }
 }
 
+async function modifySkill(idSkill) {
+    const skill = {
+        skillName: document.getElementById('modSkillName').value,
+        globalPercentage: document.getElementById('modGlobalPercentage').value,
+    }
+    if (!skill.skillName || !skill.globalPercentage) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(skill)
+            }
+            const response = await fetch(`http://localhost:3001/skills/${idSkill}`, options);
+            if (response.status === 200) {
+                return await response.json();
+            } else return { status: false, error: 'Error modifying skill' }
+        } catch (error) {
+            console.error('Error modifying skill:', error);
+            return { status: false, error: 'Error modifying skill' };
+        }
+    }
+}
+
 async function deleteSkill(idSkill) {
     try {
         const response = await fetch(`http://localhost:3001/skills/${idSkill}`, {
@@ -364,6 +391,23 @@ function Home() {
         }, 20);
     }
 
+    const handleModifySkillClick = async () => {
+        try {
+            const result = await modifySkill(displayedProject.id);
+            setSkillAdded(result);
+            if (result.status !== false) {
+                setModifySkillDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     // Delete skill div visible or not
     const [isDeleteSkillDivVisible, setDeleteSkillDivVisible] = useState(false);
     const handleDeleteSkillDivVisible = () => {
@@ -501,7 +545,7 @@ function Home() {
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifySkillDivVisible(false)}></div>
                     )}
                     <div id='modifySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <ModifySkill skills={displayedProject.skills}/>
+                        <ModifySkill submitFunction={handleModifySkillClick} skills={displayedProject.skills}/>
                     </div>
                     {isDeleteSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillDivVisible(false)}></div>
