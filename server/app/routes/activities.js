@@ -74,13 +74,58 @@ router.get('/', async (req, res) => {
  */
 router.get('/:idProject', async (req, res) => {
     try {
-        const result = await database.getPromise().query('SELECT * FROM activity WHERE idProject = ?;', [req.params.idProject]);
-        res.status(200).json(result[0]); // Assuming result is an array of rows
+        const result = await database.getPromise().query(
+            `SELECT
+                activity.idActivity,
+                activity.idProject,
+                activity.name,
+                activity.activeActivity,
+                activity.description,
+                ap.idSkill,
+                ap.activityPercentatge
+            FROM
+                activity
+            LEFT JOIN
+                activityPercentatge ap ON activity.idActivity = ap.idActivity
+            WHERE
+                activity.idProject = ?;`,
+            [req.params.idProject]
+        );
+
+        // Organize the data into a nested structure
+        const activities = {};
+        result[0].forEach((row) => {
+            const activityId = row.idActivity;
+
+            if (!activities[activityId]) {
+                activities[activityId] = {
+                    idActivity: row.idActivity,
+                    idProject: row.idProject,
+                    name: row.name,
+                    activeActivity: row.activeActivity,
+                    description: row.description,
+                    skills: [],
+                };
+            }
+
+            // Check if there are skills associated with the activity
+            if (row.idSkill) {
+                activities[activityId].skills.push({
+                    idSkill: row.idSkill,
+                    skillName: row.skillName,
+                    globalPercentage: row.activityPercentatge, // Adjust this based on your actual column names
+                });
+            }
+        });
+
+        const responseArray = Object.values(activities);
+        res.status(200).json(responseArray);
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();
     }
 });
+
 
 /**
  * @swagger
@@ -237,20 +282,34 @@ router.get('/:idActivity/skills/', async (req, res) => {
  *         description: Skill to add to the activity
  *         required: true
  *         schema:
- *           $ref: '#/definitions/schemas/Activity'
+ *           type: object
+ *           properties:
+ *             idSkill:
+ *               type: integer
+ *             activityPercentatge:
+ *               type: integer
+ *           example:
+ *             idSkill: 1
+ *             activityPercentatge: 8
  *     responses:
  *       200:
  *         description: Successful operation
  *         schema:
- *           $ref: '#/definitions/schemas/Activity'
+ *           type: object
+ *           properties:
+ *             idSkill:
+ *               type: integer
+ *             activityPercentatge:
+ *               type: integer
+ *           
  *       500:
  *         description: Internal Server Error
  */
 router.post('/:idActivity/skills/', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'INSERT INTO activityGrade (idActivity, idSkill, grade) VALUES (?, ?, ?)',
-            [req.params.idActivity, req.body.idSkill, req.body.grade]
+            'INSERT INTO activityPercentatge (idActivity, idSkill, activityPercentatge) VALUES (?, ?, ?)',
+            [req.params.idActivity, req.body.idSkill, req.body.activityPercentatge]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
