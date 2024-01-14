@@ -413,7 +413,7 @@ export default function Settings() {
           {isAddStudentDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddStudentDivVisible(false)}></div>
           )}
-          <div id='addStudentDiv' className={`w-1/2 h-3/5 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='addStudentDiv' className={`w-9/12 md:w-1/2 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <AddStudent
               submitStudentFunction={handleAddStudentClick}
               studentAdded={studentAdded}
@@ -422,13 +422,13 @@ export default function Settings() {
           {isModifyStudentDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyStudentDivVisible(false)}></div>
           )}
-          <div id='modifyStudentDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='modifyStudentDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} currentData={studentClicked} />
           </div>
           {isDeleteStudentDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteStudentDivVisible(false)}></div>
           )}
-          <div id='deleteStudentDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='deleteStudentDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <DeleteStudent studentName={{
               firstName: studentClicked.firstName,
               lastName: studentClicked.lastName
@@ -437,13 +437,13 @@ export default function Settings() {
           {isImportCsvDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setImportCsvDivVisible(false)}></div>
           )}
-          <div id='importCsvDiv' className={`w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isImportCsvDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='importCsvDiv' className={`w-9/12 md:w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isImportCsvDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <ImportCSV submitCsvFunction={handleImportCsvClick} csvAdded={csvAdded}/>
           </div>
           {isAddGroupDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddGroupDivVisible(false)}></div>
           )}
-          <div id='addGroupDiv' className={`w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddGroupDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='addGroupDiv' className={`w-9/12 md:w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddGroupDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <AddGroup
               submitGroupFunction={handleAddGroupClick}
               groupAdded={groupAdded}

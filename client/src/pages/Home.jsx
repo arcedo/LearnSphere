@@ -806,13 +806,13 @@ function Home() {
                     {isAddSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillDivVisible(false)}></div>
                     )}
-                    <div id='addSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addSkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} maxPercentage={100 - displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0)} />
                     </div>
                     {isModifySkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifySkillDivVisible(false)}></div>
                     )}
-                    <div id='modifySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='modifySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifySkill submitFunction={handleModifySkillClick} skillModified={skillModified} skills={displayedProject.skills} maxPercentage={100 - displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0)} />
                     </div>
                     {isDeleteSkillDivVisible && (

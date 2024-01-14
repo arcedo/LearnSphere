@@ -10,7 +10,7 @@ import plus from "../assets/img/plus.svg"
 import logout from "../assets/img/logout.svg"
 
 export default function Sidebar({ isOpen, onClose, listContent, selectedItem, onItemClick }) {
-  const sidebarClassName = `w-80 z-10 ${isOpen ? 'sidebar-open' : 'sidebar-closed'} fixed md:static mt-20 md:mt-0 top-0 left-0 h-full`;
+  const sidebarClassName = `w-96 z-10 ${isOpen ? 'sidebar-open' : 'sidebar-closed'} fixed md:static mt-20 md:mt-0 top-0 left-0 h-full`;
 
   return (
     <div className={`${sidebarClassName}`}>

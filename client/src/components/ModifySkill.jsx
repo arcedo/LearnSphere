@@ -66,8 +66,8 @@ export default function ModifySkill({ submitFunction, skills, maxPercentage, ski
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
                     />
                 </div>
-                <div className="">
-                    <label htmlFor="globalPercentage">Value percentage <span>(min:1 max:{maxValue === 0 ? setMaxValue(selectedSkill.globalPercentage) : maxValue + selectedSkill.globalPercentage})</span></label>
+                <div className="w-1/3">
+                    <label htmlFor="globalPercentage">Percentage <span>(Min: 1 Max: {(maxValue === 0 ? setMaxValue(selectedSkill.globalPercentage) : maxValue + selectedSkill.globalPercentage)-100})</span></label>
                     <input
                         type="number"
                         id="modGlobalPercentage"

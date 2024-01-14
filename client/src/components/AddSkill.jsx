@@ -34,7 +34,7 @@ export default function AddSkill({ submitSkillFunction, skillAdded, maxPercentag
                     <input type="number" id="globalPercentage" name="globalPercentage" className='p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' max={maxPercentage} min={1} />
                 </div>
                 <div className="flex items-center">
-                    <label onClick={handleImageClick} id='imageInputLabel' className="cursor-pointer w-36 text-center border-2 border-white rounded-md px-4 py-2 bgSidebar bg-white hover:bg-white text-white hover:text-black transition-all">
+                    <label onClick={handleImageClick} id='imageInputLabel' className="cursor-pointer w-36 text-center border-2 border-white overflow-hidden rounded-md px-4 py-2 bgSidebar bg-white hover:bg-white text-white hover:text-black transition-all">
                         {selectedImage ? selectedImage : 'Image'}
                     </label>
                     <input

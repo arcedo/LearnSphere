@@ -166,10 +166,14 @@ const upload2 = multer({ storage: storage2 });
 router.put('/:idSkill', upload2.single('image'), async (req, res) => {
     try {
         const idSkill = req.params.idSkill;
-        const { skillName, idProject, globalPercentage } = req.body;
+        // Get the uploaded file information
+        const uploadedFile = req.file;
 
-        // Check if a file is uploaded
-        const imagePath = req.file ? req.file.path : null;
+        // Assuming you have other fields in the request body
+        const { idProject, skillName, globalPercentage } = req.body;
+
+        // Use the uploaded file path or filename as needed in your database query
+        const imagePath = `/src/assets/skillIcons/${uploadedFile.filename}`;
 
         const result = await database.getPromise().query(
             'UPDATE skill SET skillName = ?, idProject = ?, globalPercentage = ?, image = ? WHERE idSkill = ?;',
