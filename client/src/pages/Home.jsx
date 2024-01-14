@@ -12,6 +12,8 @@ import DeleteSkill from '../components/DeleteSkill';
 import AddActivity from '../components/AddActivity';
 import ModifyActivity from '../components/ModifyActivity';
 import DeleteActivity from '../components/DeleteActivity';
+import AddSkillActivity from '../components/AddSkillActivity';
+import DeleteActivitySkill from '../components/DeleteActivitySkill';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import currentProject from "../assets/img/currentProject.svg"
 import {
@@ -282,18 +284,27 @@ async function deleteActivity(idActivity) {
 }
 
 async function addActivitySkill(idActivity, idSkill) {
-    try {
-        const response = await fetch(`http://localhost:3001/activities/${idActivity}/skills/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            }
-        });
-        return await response.json();
+    const skill = {
+        idSkill: idSkill,
+        activityPercentatge: document.getElementById('percentageValueActSkill').value,
     }
-    catch (error) {
-        console.error('Error adding activity skill:', error);
-        return { status: false, error: 'Error adding activity skill' };
+    if (!skill.idSkill || !skill.activityPercentatge) {
+        return { status: false, error: 'Missing fields' };
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3001/activities/${idActivity}/skills/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(skill)
+            });
+            return await response.json();
+        }
+        catch (error) {
+            console.error('Error adding activity skill:', error);
+            return { status: false, error: 'Error adding activity skill' };
+        }
     }
 }
 
@@ -491,7 +502,7 @@ function Home() {
                 document.getElementById('skillName').value = '';
                 document.getElementById('globalPercentage').value = '';
                 document.getElementById('imageInputLabel').innerHTML = 'Image';
-                document.getElementById('imageInputSkill').value = ''; 
+                document.getElementById('imageInputSkill').value = '';
             }
         } catch (error) {
             console.error(error);
@@ -654,6 +665,77 @@ function Home() {
         }
     };
 
+    // Add activity skill div visible or not
+    const [isAddSkillActivityDivVisible, setAddSkillActivityDivVisible] = useState(false);
+    const [activityData, setActivityData] = useState({});
+    const [activitySkillAdded, setActivitySkillAdded] = useState({});
+    const handleAddActivitySkillDivVisible = (activityData) => {
+        setAddSkillActivityDivVisible(true);
+        setActivityData({ ...activityData });
+        setTimeout(() => {
+            const addActivitySkillDiv = document.getElementById('addActivitySkillDiv');
+            addActivitySkillDiv.classList.add('animate-fadeIn');
+            addActivitySkillDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+    const handleAddActivitySkillClick = async () => {
+        try {
+            const result = await addActivitySkill(activityData.idActivity, document.getElementById('selectedActSkill').options[document.getElementById('selectedActSkill').selectedIndex].value);
+            setActivitySkillAdded(result);
+            if (result.status !== false) {
+                setAddSkillActivityDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const [isDeleteSkillActivityDivVisible, setDeleteSkillActivityDivVisible] = useState(false);
+    const [activitySkillDeleted, setActivitySkillDeleted] = useState({});
+    const [activitySkillToDelete, setActivitySkillToDelete] = useState({});
+    const handleDeleteSkillActivityDivVisible = (activitySkillToDelete) => {
+        console.log(activitySkillToDelete);
+        setDeleteSkillActivityDivVisible(true);
+        setActivitySkillToDelete({ ...activitySkillToDelete });
+        setTimeout(() => {
+            const deleteSkillActivityDiv = document.getElementById('deleteActivitySkillDiv');
+            deleteSkillActivityDiv.classList.add('animate-fadeIn');
+            deleteSkillActivityDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
+
+    const closeDeleteSkillActivityDivVisible = () => {
+        setDeleteSkillActivityDivVisible(false);
+    }
+
+    const handleDeleteSkillActivityClick = async () => {
+        try {
+            const response = await fetch(`http://localhost:3001/activities/${activitySkillToDelete.idActivity}/skills/${document.getElementById('selectableActSkillsDelete').options[document.getElementById('selectableActSkillsDelete').selectedIndex].value}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                }
+            });
+            const result = await response.json();
+            setActivitySkillDeleted(result);
+            if (result.status !== false) {
+                setDeleteSkillActivityDivVisible(false);
+                setDisplayedProject({
+                    ...displayedProject,
+                    skills: await getSkillsByProjectId(displayedProject.id),
+                    activities: await getActivitiesByProjectId(displayedProject.id),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     // Set project active
     async function setProjectActive(idProject) {
@@ -695,7 +777,7 @@ function Home() {
         }
     }
     //console.log(selectableProjects);
-    console.log(displayedProject);
+    //console.log(displayedProject);
     const loginStatus = LoginStatusChecker();
     if (loginStatus) {
         return (
@@ -756,6 +838,18 @@ function Home() {
                     <div id='deleteActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteActivity submitDeleteActivity={handleDeleteActivityClick} closeDeleteActivity={closeDeleteActivityDivVisible} activityDeleted={activityDeleted} activityToDelete={activityToDelete} />
                     </div>
+                    {isAddSkillActivityDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillActivityDivVisible(false)}></div>
+                    )}
+                    <div id='addActivitySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <AddSkillActivity activityData={activityData} submitAddSkillActivity={handleAddActivitySkillClick} selectableSkills={displayedProject.skills} addedSkillActivity={activitySkillAdded} />
+                    </div>
+                    {isDeleteSkillActivityDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillActivityDivVisible(false)}></div>
+                    )}
+                    <div id='deleteActivitySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <DeleteActivitySkill setNotVisible={closeDeleteSkillActivityDivVisible} actSkills={activitySkillToDelete.skills} submitFunction={handleDeleteSkillActivityClick} skills={displayedProject.skills} />
+                    </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto font-montserrat font-medium'>
@@ -802,7 +896,7 @@ function Home() {
                             ) : (
                                 <>
                                     {displayedProject.skills.map((item) => (
-                                        <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} image={item.image}/>
+                                        <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} image={item.image} />
                                     ))}
                                     {getLoggedUser().type === 'teacher' && (
                                         <>
@@ -856,36 +950,38 @@ function Home() {
                                         {getLoggedUser().type === 'teacher' ? (<div><button className=' rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button></div>) : null}
                                     </div>
                                     <h5 className='text-white pt-5'>Required Skills</h5>
-                                    {getLoggedUser().type === 'teacher' ?
+                                    {
                                         <div>
                                             <div className='flex items-center gap-2.5 pb-5 pt-1.5'>
                                                 {item.skills ? (
                                                     item.skills.map((actSkill, index) => {
                                                         const matchingSkill = displayedProject.skills.find(skill => skill.idSkill === actSkill.idSkill);
-
                                                         return matchingSkill ? (
                                                             <Skills
                                                                 key={index}
                                                                 skillName={matchingSkill.skillName}
                                                                 globalPercentage={actSkill.globalPercentage + '%'}
+                                                                image={matchingSkill.image}
                                                             />
                                                         ) : null;
                                                     })
                                                 ) : null}
-                                                <button className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
-                                                {item.skills && item.skills.length !== 0 ? <button className="bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300">Modify</button> : null}
-                                                {item.skills && item.skills.length !== 0 ? <button className="bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300">Delete</button> : null}
-
+                                                {getLoggedUser().type === 'teacher' ?
+                                                    <div className='flex gap-2.5'>
+                                                        <button onClick={() => handleAddActivitySkillDivVisible(item)} className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
+                                                        {item.skills && item.skills.length !== 0 ? <button onClick={() => handleDeleteSkillActivityDivVisible(item)} className="bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300">Delete</button> : null}
+                                                    </div>
+                                                    : null}
                                             </div>
-                                            <div className='flex justify-end items-center gap-2.5'>
-                                                {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
-                                                    onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
-                                                }
-                                                <button onClick={() => handleModifyActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
-                                                <button onClick={() => handleDeleteActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
-                                            </div>
+                                            {getLoggedUser().type === 'teacher' ?
+                                                <div className='flex justify-end items-center gap-2.5'>
+                                                    {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
+                                                        onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
+                                                    }
+                                                    <button onClick={() => handleModifyActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
+                                                    <button onClick={() => handleDeleteActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
+                                                </div> : null}
                                         </div>
-                                        : null
                                     }
                                 </AccordionBody>
                             </Accordion>

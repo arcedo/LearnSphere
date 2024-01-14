@@ -389,7 +389,7 @@ router.put('/:idActivity/skills/:idSkill', async (req, res) => {
 router.delete('/:idActivity/skills/:idSkill', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'DELETE FROM activityGrade WHERE idActivity = ? AND idSkill = ?;',
+            'DELETE FROM activityPercentatge WHERE idActivity = ? AND idSkill = ?;',
             [req.params.idActivity, req.params.idSkill]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows

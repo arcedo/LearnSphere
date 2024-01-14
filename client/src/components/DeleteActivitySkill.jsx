@@ -1,12 +1,14 @@
-export default function deleteSkill({ setNotVisible, submitFunction, skills }) {
-    console.log(skills);
+export default function deleteActivitySkill({ setNotVisible, submitFunction, skills, actSkills }) {
+    const skillsAvailable = skills.filter(skill =>
+        !actSkills || actSkills.some(actSkill => actSkill.idSkill === skill.idSkill)
+    );
     return (
         <div className='p-8'>
             <h2 className='font-sora text-4xl font-extrabold'>Delete skill</h2>
             <div className='flex flex-col mt-8 gap-3'>
-                <label htmlFor="selectableSkills">Select skill to delete:</label>
-                <select name="selectableSkills" id="selectableSkillsDelete" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal'>
-                    {skills ? skills.map((skill, index) => {
+                <label htmlFor="selectableActSkills">Select skill to delete:</label>
+                <select name="selectableActSkills" id="selectableActSkillsDelete" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal'>
+                    {skills ? skillsAvailable.map((skill, index) => {
                         return (
                             <option key={index} value={skill.idSkill}>{skill.skillName}</option>
                         );
