@@ -312,7 +312,7 @@ function Home() {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const pullSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
-        {isSidebarOpen ? document.getElementById('sideButton').classList.remove('left-72') : document.getElementById('sideButton').classList.add('left-72')}
+        { isSidebarOpen ? document.getElementById('sideButton').classList.remove('left-72') : document.getElementById('sideButton').classList.add('left-72') }
     };
 
     //Accordion
@@ -971,7 +971,7 @@ function Home() {
                                                 ) : null}
                                                 {getLoggedUser().type === 'teacher' ?
                                                     <div className='flex gap-2.5'>
-                                                        <button onClick={() => handleAddActivitySkillDivVisible(item)} className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
+                                                        {item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) !== 100 ? (<button onClick={() => handleAddActivitySkillDivVisible(item)} className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>) : null}
                                                         {item.skills && item.skills.length !== 0 ? <button onClick={() => handleDeleteSkillActivityDivVisible(item)} className="bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300">Delete</button> : null}
                                                     </div>
                                                     : null}
