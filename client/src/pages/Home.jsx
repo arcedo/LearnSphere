@@ -510,6 +510,7 @@ function Home() {
 
     // Modify skill div visible or not
     const [isModifySkillDivVisible, setModifySkillDivVisible] = useState(false);
+    const [skillModified, setSkillModified] = useState({});
     const handleModifySkillDivVisible = () => {
         setModifySkillDivVisible(true);
         setTimeout(() => {
@@ -522,7 +523,7 @@ function Home() {
     const handleModifySkillClick = async () => {
         try {
             const result = await modifySkill(displayedProject.id);
-            setSkillAdded(result);
+            setSkillModified(result);
             if (result.status !== false) {
                 setModifySkillDivVisible(false);
                 setDisplayedProject({
@@ -805,13 +806,13 @@ function Home() {
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillDivVisible(false)}></div>
                     )}
                     <div id='addSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} />
+                        <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} maxPercentage={100 - displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0)} />
                     </div>
                     {isModifySkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifySkillDivVisible(false)}></div>
                     )}
                     <div id='modifySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <ModifySkill submitFunction={handleModifySkillClick} skills={displayedProject.skills} />
+                        <ModifySkill submitFunction={handleModifySkillClick} skillModified={skillModified} skills={displayedProject.skills} maxPercentage={100 - displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0)} />
                     </div>
                     {isDeleteSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillDivVisible(false)}></div>
@@ -899,11 +900,13 @@ function Home() {
                                     ))}
                                     {getLoggedUser().type === 'teacher' && (
                                         <>
-                                            <button
-                                                onClick={handleAddSkillDivVisible}
-                                                className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
-                                                Add
-                                            </button>
+                                            {displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) !== 100 ?
+                                                <button
+                                                    onClick={handleAddSkillDivVisible}
+                                                    className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
+                                                    Add
+                                                </button> : null
+                                            }
                                             <button
                                                 onClick={handleModifySkillDivVisible}
                                                 className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-full px-5 py-2 font-sans font-extrabold transition-colors duration-300'>
