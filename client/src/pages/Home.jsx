@@ -950,7 +950,7 @@ function Home() {
                                         <div>
                                             <p>{item.description}</p>
                                         </div>
-                                        {getLoggedUser().type === 'teacher' ? (<div><button className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-40 w-full rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button></div>) : null}
+                                        {getLoggedUser().type === 'teacher' && item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) === 100 ? (<div><button className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-40 w-full rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button></div>) : null}
                                     </div>
                                     <h5 className='text-white pt-5'>Required Skills</h5>
                                     {
