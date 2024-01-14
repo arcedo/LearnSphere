@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-export default function ModifySkill({ submitFunction, skills }) {
-    const [selectedSkillId, setSelectedSkillId] = useState(null);
+export default function ModifySkill({ submitFunction, skills, maxPercentage, skillModified }) {
+    const [selectedSkill, setSelectedSkill] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleImageClick = () => {
@@ -14,7 +14,7 @@ export default function ModifySkill({ submitFunction, skills }) {
         const skillId = document.getElementById('selectableSkills').value;
         const skill = skills.find((skill) => skill.idSkill === parseInt(skillId, 10));
 
-        setSelectedSkillId(skill.idSkill);
+        setSelectedSkill(skill || {});
         skillNameInput.value = skill.skillName;
         globalPercentageInput.value = skill.globalPercentage;
 
@@ -27,7 +27,17 @@ export default function ModifySkill({ submitFunction, skills }) {
         const fileName = fileInput.files[0] ? fileInput.files[0].name : null;
         setSelectedImage(fileName);
     };
-
+    const [error, setError] = useState({ status: true, error: '' });
+    const [maxValue, setMaxValue] = useState(maxPercentage);
+    function submitValidation() {
+        setError({ status: true, error: '' });
+        const globalPercentage = document.getElementById('modGlobalPercentage').value;
+        if (globalPercentage < 1 || globalPercentage > maxValue) {
+            setError({ status: false, error: `The value percentage must be between 1 and ${maxValue}.` });
+        } else {
+            submitFunction();
+        }
+    }
     return (
         <div className='p-8'>
             <h2 className='font-sora text-4xl font-extrabold mb-4'>Modify skill</h2>
@@ -37,7 +47,7 @@ export default function ModifySkill({ submitFunction, skills }) {
                 id="selectableSkills"
                 className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
                 onChange={handleSkillChange}
-                value={selectedSkillId || ''}
+                value={selectedSkill.idSkill || ''}
             >
                 <option value="">---</option>
                 {skills.map((skill, index) => (
@@ -57,13 +67,13 @@ export default function ModifySkill({ submitFunction, skills }) {
                     />
                 </div>
                 <div className="">
-                    <label htmlFor="globalPercentage">Value percentage</label>
+                    <label htmlFor="globalPercentage">Value percentage <span>(min:1 max:{maxValue === 0 ? setMaxValue(selectedSkill.globalPercentage) : maxValue + selectedSkill.globalPercentage})</span></label>
                     <input
                         type="number"
                         id="modGlobalPercentage"
                         name="globalPercentage"
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
-                        max={100}
+                        max={maxValue}
                         min={1}
                     />
                 </div>
@@ -85,11 +95,14 @@ export default function ModifySkill({ submitFunction, skills }) {
             </div>
             <div className='flex gap-3 justify-start items-center'>
                 <button
-                    onClick={submitFunction}
+                    onClick={submitValidation}
                     className='w-36 border-2 border-white rounded-md px-4 py-2 bgSidebar hover:bg-white hover:text-black transition-all'
                 >
-                    Add skill
+                    Modify Skill
                 </button>
+                {skillModified.status === false || error.status === false ? (
+                    <strong className='text-red-800 text-md'>{skillModified.error || error.error}</strong>
+                ) : null}
             </div>
         </div>
     );
