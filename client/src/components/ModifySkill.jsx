@@ -46,8 +46,8 @@ export default function ModifySkill({ submitFunction, skills }) {
                     </option>
                 ))}
             </select>
-            <div className='flex justify-around gap-5 pt-5 mb-5'>
-                <div className="w-1/2">
+            <div className='flex items-center flex-wrap gap-x-2.5 gap-y-2 pt-5 mb-5'>
+                <div className="w-1/3">
                     <label htmlFor="skillName">Skill name</label>
                     <input
                         type="text"
@@ -56,7 +56,7 @@ export default function ModifySkill({ submitFunction, skills }) {
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
                     />
                 </div>
-                <div className="w-1/3">
+                <div className="">
                     <label htmlFor="globalPercentage">Value percentage</label>
                     <input
                         type="number"

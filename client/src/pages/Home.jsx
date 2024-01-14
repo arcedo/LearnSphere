@@ -155,11 +155,9 @@ async function addSkill(idProject) {
     }
 }
 
-async function modifySkill(idSkill) {
+async function modifySkill(idProject) {
+    const idSkill = document.getElementById('selectableSkills').options[document.getElementById('selectableSkills').selectedIndex].value;
     const skillName = document.getElementById('modSkillName').value;
-    // TODO: Get the project ID from somewhere
-    const idProject = idSkill;
-    console.log(idProject);
     const globalPercentage = document.getElementById('modGlobalPercentage').value;
     const imageInput = document.getElementById('imageInputSkill');
 
@@ -168,13 +166,14 @@ async function modifySkill(idSkill) {
     formData.append('skillName', skillName);
     formData.append('idProject', idProject);
     formData.append('globalPercentage', globalPercentage);
+    formData.append('idSkill', idSkill);
 
     // Check if a file is selected
     if (imageInput.files.length > 0) {
         formData.append('image', imageInput.files[0]);
     }
 
-    if (!skillName || !globalPercentage) {
+    if (!skillName || !globalPercentage || !idSkill) {
         return { status: false, error: 'Missing fields' };
     } else {
         try {
@@ -535,6 +534,7 @@ function Home() {
                 document.getElementById('modGlobalPercentage').value = '';
                 document.getElementById('imageInputLabel').innerHTML = 'Image';
                 document.getElementById('imageInputSkill').value = '';
+                document.getElementById('selectableSkills').selectedIndex = 0;
             }
         } catch (error) {
             console.error(error);
@@ -699,7 +699,6 @@ function Home() {
     const [activitySkillDeleted, setActivitySkillDeleted] = useState({});
     const [activitySkillToDelete, setActivitySkillToDelete] = useState({});
     const handleDeleteSkillActivityDivVisible = (activitySkillToDelete) => {
-        console.log(activitySkillToDelete);
         setDeleteSkillActivityDivVisible(true);
         setActivitySkillToDelete({ ...activitySkillToDelete });
         setTimeout(() => {
