@@ -54,7 +54,7 @@ function Login() {
                     <img className='w-16 h-16' src={Logo} alt='logo' />
                     <h1 className='white text-5xl font-sora font-bold'>LearnSphere</h1>
                 </div>
-                <div className='flex flex-col justify-center items-start gap-5 text-white font-sora font-semibold py-10 px-10 rounded-xl bgLogin'>
+                <div className='flex flex-col justify-center items-start gap-5 text-white font-sora font-semibold mt-4 py-10 px-10 rounded-xl bgLogin'>
                     <div id='loginChecker' className='text-red text-sm font-medium text-red-500'></div>
                     <div className="flex flex-col">
                         <label>Username:</label>

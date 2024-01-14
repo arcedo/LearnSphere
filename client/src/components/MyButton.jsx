@@ -19,7 +19,7 @@ const MyButton = ({ onButtonClick }) => {
   };
 
   return (
-    <button onClick={handleClick} className='h-fit my-auto'>
+    <button id='sideButton' onClick={handleClick} className='h-fit z-20 my-auto sticky left-72 md:left-0 md:static'>
       <span
         className=""
         data-state="closed"

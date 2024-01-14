@@ -379,8 +379,10 @@ export default function Settings() {
     setSelectedItem(defaultItem);
   }, []);
 
+  //Sidebar open/closed
   const pullSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
+      setSidebarOpen(!isSidebarOpen);
+      {isSidebarOpen ? document.getElementById('sideButton').classList.remove('left-72') : document.getElementById('sideButton').classList.add('left-72')}
   };
 
   const handleItemClick = (item) => {

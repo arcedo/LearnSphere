@@ -70,7 +70,7 @@ export default function ModifySkill({ submitFunction, skills }) {
                 <div className='flex items-center mt-7'>
                     <label
                         onClick={handleImageClick}
-                        className='cursor-pointer w-36 text-center border-2 border-white rounded-md px-4 py-2 bgSidebar bg-white hover:bg-white text-white hover:text-black transition-all'
+                        className='cursor-pointer w-36 text-center border-2 border-white rounded-md px-4 py-2 overflow-hidden bgSidebar bg-white hover:bg-white text-white hover:text-black transition-all'
                     >
                         {selectedImage ? selectedImage : 'Image'}
                     </label>

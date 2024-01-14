@@ -129,9 +129,6 @@ export default function AccountSettings() {
             // Create a FormData object to handle file uploads
             const formData = new FormData();
 
-            // // Append userName to the FormData object
-            // formData.append('userName', userName);
-
             // Append other fields to the FormData object
             Object.entries(updatedUserData).forEach(([key, value]) => {
                 formData.append(key, value);
@@ -181,7 +178,7 @@ export default function AccountSettings() {
     return (
         <div>
             <h2 className='font-sora text-4xl font-extrabold'>Account</h2>
-            <div className='flex pl-3 flex-col-reverse md:flex-row justify-around items-center'>
+            <div className='flex pl-3 flex-col-reverse md:flex-row items-center'>
                 <div className='w-full md:w-1/2'>
                     {getLoggedUser().type === 'student' ?
                         <div>

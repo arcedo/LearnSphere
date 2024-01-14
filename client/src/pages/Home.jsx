@@ -312,6 +312,7 @@ function Home() {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const pullSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
+        {isSidebarOpen ? document.getElementById('sideButton').classList.remove('left-72') : document.getElementById('sideButton').classList.add('left-72')}
     };
 
     //Accordion
@@ -786,72 +787,72 @@ function Home() {
                     {isAddProjectDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddProjectDivVisible(false)}></div>
                     )}
-                    <div id='addProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addProjectDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddProject submitProjectFunction={handleAddProjectClick} projectAdded={projectAdded} />
                     </div>
                     {isDeleteProjectDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteProjectDivVisible(false)}></div>
                     )}
-                    <div id='deleteProjectDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteProjectDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteProject projectName={displayedProject.title} submitFunction={handleDeleteProjectClick} setNotVisible={closeDeleteProjectDivVisible} />
                     </div>
                     {isModifyProjectDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyProjectDivVisible(false)}></div>
                     )}
-                    <div id='modifyProjectDiv' className={`w-5/12 h-4/6 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='modifyProjectDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifyProject submitProjectFunction={handleModifyProjectClick} projectModified={projectModified} currentData={{ title: displayedProject.title, description: displayedProject.description, idStudentGroup: displayedProject.idStudentGroup }} />
                     </div>
                     {isAddSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillDivVisible(false)}></div>
                     )}
-                    <div id='addSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addSkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} />
                     </div>
                     {isModifySkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifySkillDivVisible(false)}></div>
                     )}
-                    <div id='modifySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='modifySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifySkill submitFunction={handleModifySkillClick} skills={displayedProject.skills} />
                     </div>
                     {isDeleteSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillDivVisible(false)}></div>
                     )}
-                    <div id='deleteSkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteSkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteSkill setNotVisible={closeDeleteSkillDivVisible} submitFunction={handleDeleteSkillClick} skills={displayedProject.skills} />
                     </div>
                     {isAddActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddActivityDivVisible(false)}></div>
                     )}
-                    <div id='addActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addActivityDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddActivity activityAdded={activityAdded} submitActivity={handleAddActivityClick} />
                     </div>
                     {isModifyActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyActivityDivVisible(false)}></div>
                     )}
-                    <div id='modifyActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='modifyActivityDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifyActivity activityModified={activityModified} submitModActivity={handleModifyActivityClick} currentData={activityToModify} />
                     </div>
                     {isDeleteActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteActivityDivVisible(false)}></div>
                     )}
-                    <div id='deleteActivityDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteActivityDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteActivity submitDeleteActivity={handleDeleteActivityClick} closeDeleteActivity={closeDeleteActivityDivVisible} activityDeleted={activityDeleted} activityToDelete={activityToDelete} />
                     </div>
                     {isAddSkillActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillActivityDivVisible(false)}></div>
                     )}
-                    <div id='addActivitySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addActivitySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddSkillActivity activityData={activityData} submitAddSkillActivity={handleAddActivitySkillClick} selectableSkills={displayedProject.skills} addedSkillActivity={activitySkillAdded} />
                     </div>
                     {isDeleteSkillActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillActivityDivVisible(false)}></div>
                     )}
-                    <div id='deleteActivitySkillDiv' className={`w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteActivitySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteActivitySkill setNotVisible={closeDeleteSkillActivityDivVisible} actSkills={activitySkillToDelete.skills} submitFunction={handleDeleteSkillActivityClick} skills={displayedProject.skills} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
-                    <div className='w-11/12 mx-auto pl-5 pr-10 py-10 overflow-auto font-montserrat font-medium'>
+                    <div className='w-full mx-auto pl-5 pr-10 md:pl-14 md:pr-20 py-10 overflow-auto font-montserrat font-medium'>
                         <div className={`flex flex-wrap items-center gap-4 justify-between`}>
                             <div className='flex gap-2'>
                                 <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
@@ -868,7 +869,7 @@ function Home() {
                             </div>
                             {getLoggedUser().type === 'student' ?
                                 <strong className='text-3xl font-sans font-extrabold'>N/A</strong>
-                                : <div className='flex items-center gap-3.5'>
+                                : <div className='flex items-center gap-3.5 mb-5 md:mb-5'>
                                     <button onClick={handleModifyProjectDivVisible}
                                         className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-2xl px-5 py-2 font-sans transition-colors duration-300 font-extrabold'
                                     >
@@ -942,16 +943,16 @@ function Home() {
                                     }
                                 </AccordionHeader>
                                 <AccordionBody className='px-3.5 pb-10 font-montserrat font-semibold text-lg'>
-                                    <div className='flex justify-between flex-wrap-reverse text-xl gap-2 text-gray-100 py-0'>
+                                    <div className='md:flex md:justify-between md:flex-wrap-reverse text-xl gap-2 text-gray-100 py-0'>
                                         <div>
                                             <p>{item.description}</p>
                                         </div>
-                                        {getLoggedUser().type === 'teacher' ? (<div><button className=' rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button></div>) : null}
+                                        {getLoggedUser().type === 'teacher' ? (<div><button className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-40 w-full rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button></div>) : null}
                                     </div>
                                     <h5 className='text-white pt-5'>Required Skills</h5>
                                     {
                                         <div>
-                                            <div className='flex items-center gap-2.5 pb-5 pt-1.5'>
+                                            <div className='flex flex-wrap items-center gap-2.5 pb-5 pt-1.5'>
                                                 {item.skills ? (
                                                     item.skills.map((actSkill, index) => {
                                                         const matchingSkill = displayedProject.skills.find(skill => skill.idSkill === actSkill.idSkill);
@@ -973,12 +974,14 @@ function Home() {
                                                     : null}
                                             </div>
                                             {getLoggedUser().type === 'teacher' ?
-                                                <div className='flex justify-end items-center gap-2.5'>
-                                                    {!item.activeActivity ? <button className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
+                                                <div className='flex flex-wrap justify-end items-center gap-2'>
+                                                    {!item.activeActivity ? <button className='w-full md:w-36 bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
                                                         onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                                     }
-                                                    <button onClick={() => handleModifyActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
-                                                    <button onClick={() => handleDeleteActivityDivVisible(item)} className='bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
+                                                    <div className='flex w-full md:w-auto justify-between gap-2'>
+                                                        <button onClick={() => handleModifyActivityDivVisible(item)} className='w-6/12 md:w-auto bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
+                                                        <button onClick={() => handleDeleteActivityDivVisible(item)} className='w-6/12 md:w-auto bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
+                                                    </div>
                                                 </div> : null}
                                         </div>
                                     }
