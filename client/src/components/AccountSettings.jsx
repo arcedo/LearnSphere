@@ -178,7 +178,7 @@ export default function AccountSettings() {
     return (
         <div>
             <h2 className='font-sora text-4xl font-extrabold'>Account</h2>
-            <div className='flex pl-3 flex-col-reverse md:flex-row items-center'>
+            <div className='flex flex-col-reverse md:flex-row items-center'>
                 <div className='w-full md:w-1/2'>
                     {getLoggedUser().type === 'student' ?
                         <div>
@@ -198,14 +198,14 @@ export default function AccountSettings() {
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.target.value)}
                     />
-                    <h3 className='font-sora text-xl font-bold mt-2'>New password</h3>
+                    <h3 className='font-sora text-xl font-bold mt-4'>New password</h3>
                     <input
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal max-w-96'
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
-                    <h3 className='font-sora text-xl font-bold mt-2'>Confirm new password</h3>
+                    <h3 className='font-sora text-xl font-bold mt-4'>Confirm new password</h3>
                     <input
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal max-w-96'
                         type="password"

@@ -22,9 +22,9 @@ export default function GroupSettings({handleAddGroupDivVisible, setGroups, grou
                     Add group
                 </button>
             </div>
-            <div className='flex flex-wrap gap-5 mt-8'>
+            <div className='flex flex-wrap justify-between md:justify-normal gap-5 mt-8'>
                 {groups.map((group, index) => (
-                    <div key={index} className='flex flex-col justify-center items-center w-2/12 py-6 border-white border-2 rounded-xl'>                        
+                    <div key={index} className='flex flex-col justify-center items-center w-40 py-6 border-white border-2 rounded-xl'>                        
                         <h3 className='font-sora text-2xl font-bold'>{group.name}</h3>
                     </div>
                 ))}

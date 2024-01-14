@@ -413,7 +413,7 @@ export default function Settings() {
           {isAddStudentDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddStudentDivVisible(false)}></div>
           )}
-          <div id='addStudentDiv' className={`w-9/12 md:w-1/2 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+          <div id='addStudentDiv' className={`w-9/12 md:w-1/2 md:h-fit h-4/5 z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
             <AddStudent
               submitStudentFunction={handleAddStudentClick}
               studentAdded={studentAdded}
