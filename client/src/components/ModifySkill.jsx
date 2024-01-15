@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function ModifySkill({ submitFunction, skills, maxPercentage, skillModified }) {
+export default function ModifySkill({ submitFunction, skills, skillModified }) {
     const [selectedSkill, setSelectedSkill] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
 
@@ -10,13 +10,11 @@ export default function ModifySkill({ submitFunction, skills, maxPercentage, ski
 
     const handleSkillChange = () => {
         const skillNameInput = document.getElementById('modSkillName');
-        const globalPercentageInput = document.getElementById('modGlobalPercentage');
         const skillId = document.getElementById('selectableSkills').value;
         const skill = skills.find((skill) => skill.idSkill === parseInt(skillId, 10));
 
         setSelectedSkill(skill || {});
         skillNameInput.value = skill.skillName;
-        globalPercentageInput.value = skill.globalPercentage;
 
         // Set the selected image name
         setSelectedImage(null);  // Clear the selected image when skill changes
@@ -28,16 +26,11 @@ export default function ModifySkill({ submitFunction, skills, maxPercentage, ski
         setSelectedImage(fileName);
     };
     const [error, setError] = useState({ status: true, error: '' });
-    const [maxValue, setMaxValue] = useState(maxPercentage);
     function submitValidation() {
         setError({ status: true, error: '' });
-        const globalPercentage = document.getElementById('modGlobalPercentage').value;
-        if (globalPercentage < 1 || globalPercentage > maxValue) {
-            setError({ status: false, error: `The value percentage must be between 1 and ${maxValue}.` });
-        } else {
-            submitFunction();
-        }
+        submitFunction();
     }
+
     return (
         <div className='p-8'>
             <h2 className='font-sora text-4xl font-extrabold mb-4'>Modify skill</h2>
@@ -57,7 +50,7 @@ export default function ModifySkill({ submitFunction, skills, maxPercentage, ski
                 ))}
             </select>
             <div className='flex items-center flex-wrap gap-x-2.5 gap-y-2 pt-5 mb-5'>
-                <div className="w-1/3">
+                <div className="w-full md:w-1/3">
                     <label htmlFor="skillName">Skill name</label>
                     <input
                         type="text"
@@ -66,21 +59,10 @@ export default function ModifySkill({ submitFunction, skills, maxPercentage, ski
                         className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
                     />
                 </div>
-                <div className="w-1/3">
-                    <label htmlFor="globalPercentage">Percentage <span>(Min: 1 Max: {(maxValue === 0 ? setMaxValue(selectedSkill.globalPercentage) : maxValue + selectedSkill.globalPercentage)-100})</span></label>
-                    <input
-                        type="number"
-                        id="modGlobalPercentage"
-                        name="globalPercentage"
-                        className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1'
-                        max={maxValue}
-                        min={1}
-                    />
-                </div>
-                <div className='flex items-center mt-7'>
+                <div className='flex items-center w-full md:w-1/3 mt-2 md:mt-7'>
                     <label
                         onClick={handleImageClick}
-                        className='cursor-pointer w-36 text-center border-2 border-white rounded-md px-4 py-2 overflow-hidden bgSidebar bg-white hover:bg-white text-white hover:text-black transition-all'
+                        className='cursor-pointer w-full md:w-36 text-center border-2 border-white rounded-md px-4 py-2 overflow-hidden bgSidebar bg-white hover:bg-white text-white hover:text-black transition-all'
                     >
                         {selectedImage ? selectedImage : 'Image'}
                     </label>
@@ -98,7 +80,7 @@ export default function ModifySkill({ submitFunction, skills, maxPercentage, ski
                     onClick={submitValidation}
                     className='w-36 border-2 border-white rounded-md px-4 py-2 bgSidebar hover:bg-white hover:text-black transition-all'
                 >
-                    Modify Skill
+                    Modify skill
                 </button>
                 {skillModified.status === false || error.status === false ? (
                     <strong className='text-red-800 text-md'>{skillModified.error || error.error}</strong>
