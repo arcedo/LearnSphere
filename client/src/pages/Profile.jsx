@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Skills from '../components/Skills';
 import { getLoggedUser } from '../utils/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 
 async function getUserData() {
@@ -40,20 +40,31 @@ function Profile() {
 
     const { firstName, lastName, profilePicture, bio } = userData;
     const loginStatus = LoginStatusChecker();
+    const navigate = useNavigate(); // Assuming you're using React Router's useNavigate hook
+
+    if (getLoggedUser().type === 'teacher') {
+        navigate('/error');
+    }
     if (loginStatus) {
         return (
             <div>
                 <Header title={'Profile'} />
-                <section className="flex w-full h-screen pt-20 text-white bgPrincipal">
-                    <div className='w-11/12 mx-auto pl-5 pr-10 py-10'>
-                        <img src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
-                        <h4 className='font-sora text-4xl font-extrabold'>{`${firstName} ${lastName}`}</h4>
-                        <p>{userData.idStudentGroup}</p>
-                        <h4>@{getLoggedUser().name}</h4>
+                <section className="flex w-full h-screen pt-20 justify-around items-center text-white bgPrincipal gap-4">
+                    <div className='w-5/12 py-10'>
+                        <img className='rounded-full' src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
+                        <h4 className='font-sora text-4xl font-extrabold mt-4'>{`${firstName} ${lastName}`}</h4>
+                        <div className='flex font-sora font-light text-gray-500 text-xl gap-2'>
+                            <h4>@{getLoggedUser().name}</h4>
+                            <p> · </p>
+                            <p>{userData.idStudentGroup}</p>
+                        </div>
                         <p>{bio}</p>
                         <Link to='/settings'>
                             <button className='border-l-white border-2 border-radius rounded-md px-4 py-2 hover:bg-white hover:text-black transition-all'>Edit</button>
                         </Link>
+                    </div>
+                    <div className='5/12 border-2 border-gray-800 rounded-lg'>
+                        <div className='w-full'></div>
                     </div>
                 </section>
             </div>
