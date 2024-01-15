@@ -316,7 +316,6 @@ router.post('/:idActivity/skills/', async (req, res) => {
             WHERE a.idActivity = ? AND s.idSkill = ?;`,
             [req.params.idActivity, req.body.idSkill]
         );
-        console.log(actGrade);
         const result = await database.getPromise().query(
             'INSERT INTO activityPercentatge (idActivity, idSkill, activityPercentatge) VALUES (?, ?, ?);',
             [req.params.idActivity, req.body.idSkill, req.body.activityPercentatge]
