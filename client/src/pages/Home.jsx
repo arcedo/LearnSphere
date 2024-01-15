@@ -116,14 +116,12 @@ async function modifyProject(idProject) {
 async function addSkill(idProject) {
     const skill = {
         skillName: document.getElementById('skillName').value,
-        globalPercentage: document.getElementById('globalPercentage').value,
         idProject: idProject
     };
 
     // Create a FormData object
     const formData = new FormData();
     formData.append('skillName', skill.skillName);
-    formData.append('globalPercentage', skill.globalPercentage);
     formData.append('idProject', skill.idProject);
 
     // Get the selected file from the input field
@@ -132,7 +130,7 @@ async function addSkill(idProject) {
         formData.append('image', imageInput.files[0]);
     }
 
-    if (!skill.skillName || !skill.globalPercentage) {
+    if (!skill.skillName) {
         return { status: false, error: 'Missing fields' };
     } else {
         try {
@@ -158,14 +156,12 @@ async function addSkill(idProject) {
 async function modifySkill(idProject) {
     const idSkill = document.getElementById('selectableSkills').options[document.getElementById('selectableSkills').selectedIndex].value;
     const skillName = document.getElementById('modSkillName').value;
-    const globalPercentage = document.getElementById('modGlobalPercentage').value;
     const imageInput = document.getElementById('imageInputSkill');
 
     // Use FormData to handle file uploads
     const formData = new FormData();
     formData.append('skillName', skillName);
     formData.append('idProject', idProject);
-    formData.append('globalPercentage', globalPercentage);
     formData.append('idSkill', idSkill);
 
     // Check if a file is selected
@@ -173,7 +169,7 @@ async function modifySkill(idProject) {
         formData.append('image', imageInput.files[0]);
     }
 
-    if (!skillName || !globalPercentage || !idSkill) {
+    if (!skillName || !idSkill) {
         return { status: false, error: 'Missing fields' };
     } else {
         try {
@@ -500,7 +496,6 @@ function Home() {
                     activities: await getActivitiesByProjectId(displayedProject.id),
                 });
                 document.getElementById('skillName').value = '';
-                document.getElementById('globalPercentage').value = '';
                 document.getElementById('imageInputLabel').innerHTML = 'Image';
                 document.getElementById('imageInputSkill').value = '';
             }
@@ -533,7 +528,6 @@ function Home() {
                     activities: await getActivitiesByProjectId(displayedProject.id),
                 });
                 document.getElementById('modSkillName').value = '';
-                document.getElementById('modGlobalPercentage').value = '';
                 document.getElementById('imageInputLabel').innerHTML = 'Image';
                 document.getElementById('imageInputSkill').value = '';
                 document.getElementById('selectableSkills').selectedIndex = 0;
@@ -788,67 +782,67 @@ function Home() {
                     {isAddProjectDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddProjectDivVisible(false)}></div>
                     )}
-                    <div id='addProjectDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addProjectDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddProject submitProjectFunction={handleAddProjectClick} projectAdded={projectAdded} />
                     </div>
                     {isDeleteProjectDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteProjectDivVisible(false)}></div>
                     )}
-                    <div id='deleteProjectDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteProjectDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteProject projectName={displayedProject.title} submitFunction={handleDeleteProjectClick} setNotVisible={closeDeleteProjectDivVisible} />
                     </div>
                     {isModifyProjectDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyProjectDivVisible(false)}></div>
                     )}
-                    <div id='modifyProjectDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='modifyProjectDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyProjectDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifyProject submitProjectFunction={handleModifyProjectClick} projectModified={projectModified} currentData={{ title: displayedProject.title, description: displayedProject.description, idStudentGroup: displayedProject.idStudentGroup }} />
                     </div>
                     {isAddSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillDivVisible(false)}></div>
                     )}
-                    <div id='addSkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} maxPercentage={100 - displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0)} />
+                    <div id='addSkillDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <AddSkill submitSkillFunction={handleAddSkillClick} skillAdded={skillAdded} />
                     </div>
                     {isModifySkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifySkillDivVisible(false)}></div>
                     )}
-                    <div id='modifySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <ModifySkill submitFunction={handleModifySkillClick} skillModified={skillModified} skills={displayedProject.skills} maxPercentage={100 - displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0)} />
+                    <div id='modifySkillDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifySkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <ModifySkill submitFunction={handleModifySkillClick} skillModified={skillModified} skills={displayedProject.skills} />
                     </div>
                     {isDeleteSkillDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillDivVisible(false)}></div>
                     )}
-                    <div id='deleteSkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteSkillDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteSkill setNotVisible={closeDeleteSkillDivVisible} submitFunction={handleDeleteSkillClick} skills={displayedProject.skills} />
                     </div>
                     {isAddActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddActivityDivVisible(false)}></div>
                     )}
-                    <div id='addActivityDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addActivityDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddActivity activityAdded={activityAdded} submitActivity={handleAddActivityClick} />
                     </div>
                     {isModifyActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyActivityDivVisible(false)}></div>
                     )}
-                    <div id='modifyActivityDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='modifyActivityDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <ModifyActivity activityModified={activityModified} submitModActivity={handleModifyActivityClick} currentData={activityToModify} />
                     </div>
                     {isDeleteActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteActivityDivVisible(false)}></div>
                     )}
-                    <div id='deleteActivityDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteActivityDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteActivity submitDeleteActivity={handleDeleteActivityClick} closeDeleteActivity={closeDeleteActivityDivVisible} activityDeleted={activityDeleted} activityToDelete={activityToDelete} />
                     </div>
                     {isAddSkillActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddSkillActivityDivVisible(false)}></div>
                     )}
-                    <div id='addActivitySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='addActivitySkillDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isAddSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <AddSkillActivity activityData={activityData} submitAddSkillActivity={handleAddActivitySkillClick} selectableSkills={displayedProject.skills} addedSkillActivity={activitySkillAdded} />
                     </div>
                     {isDeleteSkillActivityDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteSkillActivityDivVisible(false)}></div>
                     )}
-                    <div id='deleteActivitySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='deleteActivitySkillDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteActivitySkill setNotVisible={closeDeleteSkillActivityDivVisible} actSkills={activitySkillToDelete.skills} submitFunction={handleDeleteSkillActivityClick} skills={displayedProject.skills} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
@@ -897,17 +891,15 @@ function Home() {
                             ) : (
                                 <>
                                     {displayedProject.skills.map((item) => (
-                                        <Skills key={item.idSkill} skillName={item.skillName} globalPercentage={item.globalPercentage + '%'} image={item.image} />
+                                        <Skills key={item.idSkill} skillName={item.skillName} image={item.image} />
                                     ))}
                                     {getLoggedUser().type === 'teacher' && (
-                                        <>
-                                            {displayedProject.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) !== 100 ?
-                                                <button
-                                                    onClick={handleAddSkillDivVisible}
-                                                    className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
-                                                    Add
-                                                </button> : null
-                                            }
+                                        <>                                           
+                                            <button
+                                                onClick={handleAddSkillDivVisible}
+                                                className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
+                                                Add
+                                            </button>
                                             <button
                                                 onClick={handleModifySkillDivVisible}
                                                 className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-full px-5 py-2 font-sans font-extrabold transition-colors duration-300'>

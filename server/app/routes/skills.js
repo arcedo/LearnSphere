@@ -17,9 +17,7 @@ const database = require('../database/dbConnection.js');
  *           type: string
  *         idProject:
  *          type: integer
- *         globalPercentage:
- *           type: integer
- *       required: ['skillName', 'idProject', 'globalPercentage']
+ *       required: ['skillName', 'idProject']
  */
 
 /**
@@ -128,15 +126,15 @@ router.post('/', upload.single('image'), async (req, res) => {
         const uploadedFile = req.file;
 
         // Assuming you have other fields in the request body
-        const { idProject, skillName, globalPercentage } = req.body;
+        const { idProject, skillName } = req.body;
 
         // Use the uploaded file path or filename as needed in your database query
         const imagePath = `/src/assets/skillIcons/${uploadedFile.filename}`;
 
         // Insert data into the database
         const result = await database.getPromise().query(
-            'INSERT INTO skill (idProject, skillName, globalPercentage, image) VALUES (?, ?, ?, ?);',
-            [idProject, skillName, globalPercentage, imagePath]
+            'INSERT INTO skill (idProject, skillName, image) VALUES (?, ?, ?);',
+            [idProject, skillName, imagePath]
         );
 
         res.status(200).json(result[0]); // Assuming result is an array of rows
@@ -168,19 +166,28 @@ router.put('/:idSkill', upload2.single('image'), async (req, res) => {
         const idSkill = req.params.idSkill;
         // Get the uploaded file information
         const uploadedFile = req.file;
-
         // Assuming you have other fields in the request body
-        const { idProject, skillName, globalPercentage } = req.body;
+        const { idProject, skillName } = req.body;
 
-        // Use the uploaded file path or filename as needed in your database query
-        const imagePath = `/src/assets/skillIcons/${uploadedFile.filename}`;
+        if(uploadedFile == null){
+            const { idProject, skillName } = req.body;
+            const result = await database.getPromise().query(
+                'UPDATE skill SET skillName = ?, idProject = ? WHERE idSkill = ?;',
+                [skillName, idProject, idSkill]
+            );
+            res.status(200).json(result[0]);
+            return;
+        } else {
+            // Use the uploaded file path or filename as needed in your database query
+            const imagePath = `/src/assets/skillIcons/${uploadedFile.filename}`;
 
-        const result = await database.getPromise().query(
-            'UPDATE skill SET skillName = ?, idProject = ?, globalPercentage = ?, image = ? WHERE idSkill = ?;',
-            [skillName, idProject, globalPercentage, imagePath, idSkill]
-        );
-
-        res.status(200).json(result[0]);
+            const result = await database.getPromise().query(
+                'UPDATE skill SET skillName = ?, idProject = ?, image = ? WHERE idSkill = ?;',
+                [skillName, idProject, imagePath, idSkill]
+            );
+            res.status(200).json(result[0]);
+            return;
+        }
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();
