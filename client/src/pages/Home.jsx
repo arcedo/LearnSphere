@@ -14,6 +14,7 @@ import ModifyActivity from '../components/ModifyActivity';
 import DeleteActivity from '../components/DeleteActivity';
 import AddSkillActivity from '../components/AddSkillActivity';
 import DeleteActivitySkill from '../components/DeleteActivitySkill';
+import PostGrades from '../components/PostGrade';
 import LoginStatusChecker from '../components/LogginStatusChecker';
 import currentProject from "../assets/img/currentProject.svg"
 import {
@@ -737,7 +738,17 @@ function Home() {
         }
     };
 
-
+    const [postGradesDivVisible, setPostGradesDivVisible] = useState(false);
+    const [currentActivityData, setCurrentActivityData] = useState({});
+    const handlePostGradesDivVisible = (activityData) => {
+        setPostGradesDivVisible(true);
+        setCurrentActivityData(activityData)
+        setTimeout(() => {
+            const postGradesDiv = document.getElementById('postGradesDiv');
+            postGradesDiv.classList.add('animate-fadeIn');
+            postGradesDiv.classList.remove('hidden');  // Remove 'hidden' class
+        }, 20);
+    }
     // Set project active
     async function setProjectActive(idProject) {
         try {
@@ -851,6 +862,12 @@ function Home() {
                     <div id='deleteActivitySkillDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isDeleteSkillActivityDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <DeleteActivitySkill setNotVisible={closeDeleteSkillActivityDivVisible} actSkills={activitySkillToDelete.skills} submitFunction={handleDeleteSkillActivityClick} skills={displayedProject.skills} />
                     </div>
+                    {postGradesDivVisible && (
+                        <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setPostGradesDivVisible(false)}></div>
+                    )}
+                    <div id='postGradesDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${postGradesDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <PostGrades currentProject={displayedProject.title} currentActivity={currentActivityData} />
+                    </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
                     <div className='w-full mx-auto pl-5 pr-10 md:pl-14 md:pr-20 py-10 overflow-auto font-montserrat font-medium'>
@@ -950,7 +967,12 @@ function Home() {
                                         <div>
                                             <p>{item.description}</p>
                                         </div>
-                                        {getLoggedUser().type === 'teacher' && item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) === 100 ? (<div><button className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-40 w-full rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button></div>) : null}
+                                        {getLoggedUser().type === 'teacher' && item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) === 100 ?
+                                            (<div>
+                                                <button onClick={() => handlePostGradesDivVisible(item)} className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-40 w-full rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button>
+                                            </div>)
+                                            : null
+                                        }
                                     </div>
                                     <h5 className='text-white pt-5'>Required Skills</h5>
                                     {

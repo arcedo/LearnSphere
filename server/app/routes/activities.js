@@ -307,8 +307,18 @@ router.get('/:idActivity/skills/', async (req, res) => {
  */
 router.post('/:idActivity/skills/', async (req, res) => {
     try {
+        await database.getPromise().query(`INSERT INTO activityGrade (idActivity, idSkill, idStudent, grade)
+            SELECT a.idActivity, s.idSkill, st.idStudent, NULL
+            FROM activity AS a
+            JOIN project AS p ON a.idProject = p.idProject
+            JOIN skill AS s ON a.idProject = s.idProject -- Corrected JOIN condition
+            JOIN student AS st ON p.idStudentGroup = st.idStudentGroup
+            WHERE a.idActivity = ? AND s.idSkill = ?;`,
+            [req.params.idActivity, req.body.idSkill]
+        );
+        console.log(actGrade);
         const result = await database.getPromise().query(
-            'INSERT INTO activityPercentatge (idActivity, idSkill, activityPercentatge) VALUES (?, ?, ?)',
+            'INSERT INTO activityPercentatge (idActivity, idSkill, activityPercentatge) VALUES (?, ?, ?);',
             [req.params.idActivity, req.body.idSkill, req.body.activityPercentatge]
         );
         res.status(200).json(result[0]); // Assuming result is an array of rows
