@@ -395,15 +395,41 @@ router.put('/:idActivity/skills/:idSkill', async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
+
 router.delete('/:idActivity/skills/:idSkill', async (req, res) => {
     try {
-        const result = await database.getPromise().query(
+        const connection = await database.getPromise().getConnection();
+
+        // Start a transaction to ensure atomicity
+        await connection.beginTransaction();
+
+        // Delete from activityGrade table
+        await connection.query(
+            'DELETE FROM activityGrade WHERE idActivity = ? AND idSkill = ?;',
+            [req.params.idActivity, req.params.idSkill]
+        );
+
+        // Delete from activityPercentatge table
+        const result = await connection.query(
             'DELETE FROM activityPercentatge WHERE idActivity = ? AND idSkill = ?;',
             [req.params.idActivity, req.params.idSkill]
         );
+
+        // Commit the transaction if all queries succeed
+        await connection.commit();
+
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
-        console.error('Unable to execute query to MySQL: ' + err);
+        // Rollback the transaction in case of any error
+        console.error('Unable to execute queries to MySQL: ' + err);
+        if (connection) {
+            await connection.rollback();
+        }
+    } finally {
+        // Release the connection back to the pool
+        if (connection) {
+            connection.release();
+        }
     }
 });
 
