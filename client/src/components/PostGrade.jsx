@@ -64,7 +64,7 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                             <th className='w-4/12 text-left pl-5 font-sora'>Student</th>
                             {currentActivity.skills ? (
                                 currentActivity.skills.map((actSkill) => {
-                                    const matchingSkill = currentProject.skills.find(skill => skill.idSkill === actSkill.idSkill);
+                                    const matchingSkill = currentProject.skills.find(skill => skill.idSkill === actSkill.idSkill) || null;
                                     return matchingSkill ? (
                                         <th key={matchingSkill.idSkill} className='w-2/12 py-2.5 font-sora'>
                                             {matchingSkill.skillName} | {actSkill.globalPercentage + '%'}
@@ -128,7 +128,7 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                 onClick={() => {
                     setFinalGrades({});
                     saveGradesToDatabase();
-                }}                
+                }}
             >
                 Save grades
             </button>
