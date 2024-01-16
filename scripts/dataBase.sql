@@ -151,6 +151,3 @@ INSERT INTO activity (name, description, idProject)
 VALUES ('HTML', 'Create a simple page using HTML and CSS.', 2);
 INSERT INTO activity (name, description, idProject)
 VALUES ('Portfolio', 'Create a design and develop the desing using HTML, CSS or a framework to achive this.', 2);
-select * from activityGrade ag ;
-select * from student s ;
-SELECT * FROM student s JOIN activityGrade ag ON s.idStudent = ag.idStudent WHERE s.idStudentGroup = 'DAW2' AND ag.idActivity = 1
