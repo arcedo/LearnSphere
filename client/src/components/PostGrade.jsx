@@ -17,6 +17,11 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
         }
     }, [students]);
 
+    const handleGradeChange = (studentId, skillId, newGrade) => {
+        const updatedFinalGrades = { ...finalGrades, [`${studentId}-${skillId}`]: newGrade };
+        setFinalGrades(updatedFinalGrades);
+    };
+
     const saveGradesToDatabase = async () => {
         try {
             // Prepare the data to be sent to the server
