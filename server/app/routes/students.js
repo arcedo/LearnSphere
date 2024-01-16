@@ -170,80 +170,80 @@ const multer2 = require('multer');
 const fs2 = require('fs/promises');
 
 const storage2 = multer2.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'csvUploads/'); // Define your upload destination
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+    destination: function (req, file, cb) {
+        cb(null, 'csvUploads/'); // Define your upload destination
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
 });
 
 const upload2 = multer2({ storage: storage2 });
 
 router.post('/csv', upload2.single('csv'), async (req, res) => {
-  try {
-    const csvFilePath = req.file.path; // Use req.file to access the uploaded file
-    const students = [];
+    try {
+        const csvFilePath = req.file.path; // Use req.file to access the uploaded file
+        const students = [];
 
-    await fs2.readFile(csvFilePath, 'utf-8')
-      .then(data => {
-        return new Promise((resolve) => {
-          const rows = data.trim().split('\n');
-          const headers = rows[0].split(',');
+        await fs2.readFile(csvFilePath, 'utf-8')
+            .then(data => {
+                return new Promise((resolve) => {
+                    const rows = data.trim().split('\n');
+                    const headers = rows[0].split(',');
 
-          for (let i = 1; i < rows.length; i++) {
-            const values = rows[i].split(',');
-            const student = {};
+                    for (let i = 1; i < rows.length; i++) {
+                        const values = rows[i].split(',');
+                        const student = {};
 
-            headers.forEach((header, index) => {
-              student[header] = values[index];
+                        headers.forEach((header, index) => {
+                            student[header] = values[index];
+                        });
+
+                        const firstNameShort = student.firstName.substring(0, 3).toLowerCase();
+                        const lastNameShort = student.lastName.substring(0, 3).toLowerCase();
+
+                        const userName = `${firstNameShort}${lastNameShort}`;
+                        const email = `${userName}@lsphere.net`;
+
+                        const profilePicturePath = `/src/assets/profilePictures/${userName}.png`;
+
+                        students.push([
+                            student.dni,
+                            student.firstName,
+                            student.lastName,
+                            parseInt(student.phoneNumber),
+                            email,
+                            userName,
+                            student.userPassword,
+                            profilePicturePath,
+                            student.bio,
+                            student.idStudentGroup,
+                        ]);
+                    }
+
+                    resolve();
+                });
             });
 
-            const firstNameShort = student.firstName.substring(0, 3).toLowerCase();
-            const lastNameShort = student.lastName.substring(0, 3).toLowerCase();
+        const defaultImagePath = path.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
+        const profilePicturePath = path.join(__dirname, '../../../client/src/assets/profilePictures/');
 
-            const userName = `${firstNameShort}${lastNameShort}`;
-            const email = `${userName}@lsphere.net`;
-
-            const profilePicturePath = `/src/assets/profilePictures/${userName}.png`;
-
-            students.push([
-              student.dni,
-              student.firstName,
-              student.lastName,
-              parseInt(student.phoneNumber),
-              email,
-              userName,
-              student.userPassword,
-              profilePicturePath,
-              student.bio,
-              student.idStudentGroup,
-            ]);
-          }
-
-          resolve();
-        });
-      });
-
-      const defaultImagePath = path.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
-      const profilePicturePath = path.join(__dirname, '../../../client/src/assets/profilePictures/');
-  
-      for (const student of students) {
-        const newImagePath = path.join(profilePicturePath, `${student[5]}.png`);
-        if (!fs.existsSync(newImagePath)) {
-          fs.copyFileSync(defaultImagePath, newImagePath);
+        for (const student of students) {
+            const newImagePath = path.join(profilePicturePath, `${student[5]}.png`);
+            if (!fs.existsSync(newImagePath)) {
+                fs.copyFileSync(defaultImagePath, newImagePath);
+            }
         }
-      }
-  
-      const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
-      const result = await database.getPromise().query(sql, [students]);
-  
-      res.status(200).json(result[0]); // Assuming result is an array of rows
+
+        const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
+        const result = await database.getPromise().query(sql, [students]);
+
+        res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
-      console.error('Unable to import students from CSV: ' + err);
-      res.status(500).send();
+        console.error('Unable to import students from CSV: ' + err);
+        res.status(500).send();
     }
-  });
+});
 
 
 /**
@@ -437,5 +437,88 @@ router.get('/:idStudent/:idActivity/grade', async (req, res) => {
         res.status(500).send();
     }
 });
+
+/**
+ * @swagger
+ * /students/{idGroup}/{idActivity}:
+ *   get:
+ *     tags:
+ *       - Students
+ *     summary: Get the grade for a student on an activity
+ *     parameters:
+ *       - in: path
+ *         name: idGroup
+ *         description: ID of the student
+ *         required: true
+ *         type: string
+ *       - in: path
+ *         name: idActivity
+ *         description: ID of the activity
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               grade:
+ *                 type: integer
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get('/:idGroup/:idActivity', async (req, res) => {
+    try {
+        const result = await database.getPromise().query(
+            `SELECT * 
+            FROM student s 
+            JOIN activityGrade ag ON s.idStudent = ag.idStudent  
+            WHERE s.idStudentGroup = ? AND ag.idActivity = ?;`,
+            [req.params.idGroup, req.params.idActivity]);
+
+        // Transform the result into the desired format
+        const transformedResult = result[0].reduce((acc, student) => {
+            // Check if the student already exists in the transformed result
+            const existingStudent = acc.find(item => item.idStudent === student.idStudent);
+
+            if (existingStudent) {
+                // Student exists, add the skill and grade to the existing array
+                existingStudent.skills.push({
+                    idSkill: student.idSkill,
+                    grade: student.grade
+                });
+            } else {
+                // Student doesn't exist, create a new entry with an array of skills
+                acc.push({
+                    idStudent: student.idStudent,
+                    dni: student.dni,
+                    firstName: student.firstName,
+                    lastName: student.lastName,
+                    phoneNumber: student.phoneNumber,
+                    email: student.email,
+                    userName: student.userName,
+                    userPassword: student.userPassword,
+                    profilePicture: student.profilePicture,
+                    bio: student.bio,
+                    idStudentGroup: student.idStudentGroup,
+                    skills: [{
+                        idSkill: student.idSkill,
+                        grade: student.grade
+                    }]
+                });
+            }
+
+            return acc;
+        }, []);
+
+        res.status(200).json(transformedResult);
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
+});
+
 
 module.exports = router;
