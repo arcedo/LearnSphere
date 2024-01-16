@@ -397,8 +397,8 @@ router.put('/:idActivity/skills/:idSkill', async (req, res) => {
  */
 
 router.delete('/:idActivity/skills/:idSkill', async (req, res) => {
+    const connection = await database.getPromise().getConnection();
     try {
-        const connection = await database.getPromise().getConnection();
 
         // Start a transaction to ensure atomicity
         await connection.beginTransaction();
@@ -464,7 +464,6 @@ router.put('/:idProject/activate/:idActivity', async (req, res) => {
             'UPDATE activity SET activeActivity = 0 WHERE activeActivity = 1 AND idProject = ?;',
             [req.params.idProject]
         );
-        console.log(deactivateCurrentActive);
         if (deactivateCurrentActive) {
             const result = await database.getPromise().query(
                 'UPDATE activity SET activeActivity = 1 WHERE idActivity = ?;',

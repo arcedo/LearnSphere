@@ -46,6 +46,12 @@ async function getActivitiesByProjectId(idProject) {
     return await response.json();
 }
 
+async function getStudents(idStudentGroup, idActivity) {
+    const response = await fetch(`http://localhost:3001/students/${idStudentGroup}/${idActivity}`);
+    const data = await response.json();
+    return data;
+}
+
 async function addProject() {
     const project = {
         title: document.getElementById('title').value,
@@ -734,9 +740,11 @@ function Home() {
 
     const [postGradesDivVisible, setPostGradesDivVisible] = useState(false);
     const [currentActivityData, setCurrentActivityData] = useState({});
-    const handlePostGradesDivVisible = (activityData) => {
+    const [students, setStudents] = useState([]);
+    const handlePostGradesDivVisible = async (activityData) => {
         setPostGradesDivVisible(true);
         setCurrentActivityData(activityData)
+        setStudents(await getStudents(displayedProject.idStudentGroup, activityData.idActivity));
         setTimeout(() => {
             const postGradesDiv = document.getElementById('postGradesDiv');
             postGradesDiv.classList.add('animate-fadeIn');
@@ -859,8 +867,8 @@ function Home() {
                     {postGradesDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setPostGradesDivVisible(false)}></div>
                     )}
-                    <div id='postGradesDiv' className={`w-9/12 md:w-5/12 max-h-screen h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${postGradesDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <PostGrades currentProject={displayedProject.title} currentActivity={currentActivityData} />
+                    <div id='postGradesDiv' className={`w-9/12 md:w-8/12 max-h-screen h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${postGradesDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                        <PostGrades currentProject={displayedProject} currentActivity={currentActivityData} students={students} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />
@@ -895,6 +903,7 @@ function Home() {
                                 </div>
                             }
                         </div>
+                        {getLoggedUser().type === 'teacher' ? <strong>{displayedProject.idStudentGroup}</strong> : null}
                         <p className='pb-2.5 font-montserrat font-semibold text-lg pt-1.5'>{displayedProject.description}</p>
                         <div className='flex items-center gap-3 flex-wrap pt-5 pb-5'>
                             {displayedProject.skills.length === 0 ? (
@@ -911,7 +920,7 @@ function Home() {
                                         <Skills key={item.idSkill} skillName={item.skillName} image={item.image} />
                                     ))}
                                     {getLoggedUser().type === 'teacher' && (
-                                        <>                                           
+                                        <>
                                             <button
                                                 onClick={handleAddSkillDivVisible}
                                                 className='bg-white text-black rounded-full px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>

@@ -440,14 +440,14 @@ router.get('/:idStudent/:idActivity/grade', async (req, res) => {
 
 /**
  * @swagger
- * /students/{idGroup}/{idActivity}:
+ * /students/{idStudentGroup}/{idActivity}:
  *   get:
  *     tags:
  *       - Students
  *     summary: Get the grade for a student on an activity
  *     parameters:
  *       - in: path
- *         name: idGroup
+ *         name: idStudentGroup
  *         description: ID of the student
  *         required: true
  *         type: string
@@ -469,15 +469,14 @@ router.get('/:idStudent/:idActivity/grade', async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.get('/:idGroup/:idActivity', async (req, res) => {
+router.get('/:idStudentGroup/:idActivity', async (req, res) => {
     try {
         const result = await database.getPromise().query(
             `SELECT * 
             FROM student s 
             JOIN activityGrade ag ON s.idStudent = ag.idStudent  
             WHERE s.idStudentGroup = ? AND ag.idActivity = ?;`,
-            [req.params.idGroup, req.params.idActivity]);
-
+            [req.params.idStudentGroup, req.params.idActivity]);
         // Transform the result into the desired format
         const transformedResult = result[0].reduce((acc, student) => {
             // Check if the student already exists in the transformed result
@@ -512,7 +511,6 @@ router.get('/:idGroup/:idActivity', async (req, res) => {
 
             return acc;
         }, []);
-
         res.status(200).json(transformedResult);
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
