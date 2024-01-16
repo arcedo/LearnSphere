@@ -13,6 +13,8 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                     initialGrades[`${student.idStudent}-${skill.idSkill}`] = gradeValue;
                 });
             });
+            const inputs = Array.from(document.getElementsByClassName('setEmpty'));
+            inputs.forEach((input) => (input.value = ''));
             setFinalGrades(initialGrades);
         }
     }, [students]);
@@ -47,7 +49,7 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
             // Convert HTMLCollection to array and clear input values
             const inputs = Array.from(document.getElementsByClassName('setEmpty'));
             inputs.forEach((input) => (input.value = ''));
-            postGradesDivVisible(false);
+            postGradesDivVisible();
         } catch (error) {
             console.error('Error saving grades:', error);
         }
