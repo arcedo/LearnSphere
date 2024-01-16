@@ -868,7 +868,7 @@ function Home() {
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setPostGradesDivVisible(false)}></div>
                     )}
                     <div id='postGradesDiv' className={`w-9/12 md:w-8/12 max-h-screen h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${postGradesDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-                        <PostGrades currentProject={displayedProject} currentActivity={currentActivityData} students={students} />
+                        <PostGrades currentProject={displayedProject} postGradesDivVisible={setPostGradesDivVisible} currentActivity={currentActivityData} students={students} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
                     <MyButton onButtonClick={pullSidebar} />

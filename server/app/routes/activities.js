@@ -358,16 +358,22 @@ router.post('/:idActivity/skills/', async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.put('/:idActivity/skills/:idSkill', async (req, res) => {
+router.put('/:idActivity/skills', async (req, res) => {
     try {
-        const result = await database.getPromise().query(
-            'UPDATE activityGrade SET grade = ? WHERE idActivity = ? AND idSkill = ?;',
-            [req.body.grade, req.params.idActivity, req.params.idSkill]
-        );
-        res.status(200).json(result[0]); // Assuming result is an array of rows
-    } catch (err) {
-        console.error('Unable to execute query to MySQL: ' + err);
+        const { grades } = req.body;
 
+        // Assuming grades is an array of objects with properties: studentId, skillId, grade
+        for (const { studentId, skillId, grade } of grades) {
+            await database.getPromise().query(
+                'UPDATE activityGrade SET grade = ? WHERE idActivity = ? AND idSkill = ? AND idStudent = ?;',
+                [grade, req.params.idActivity, skillId, studentId]
+            );
+        }
+
+        res.status(200).json({ message: 'Grades updated successfully' });
+    } catch (err) {
+        console.error('Unable to execute query to MySQL:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
