@@ -859,7 +859,7 @@ function Home() {
                     {postGradesDivVisible && (
                         <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setPostGradesDivVisible(false)}></div>
                     )}
-                    <div id='postGradesDiv' className={`w-8/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${postGradesDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
+                    <div id='postGradesDiv' className={`w-9/12 md:w-5/12 max-h-screen h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${postGradesDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                         <PostGrades currentProject={displayedProject.title} currentActivity={currentActivityData} />
                     </div>
                     <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} listContent={selectableProjects} selectedItem={selectedItem} onItemClick={handleSidebarItemClick} />
@@ -869,7 +869,7 @@ function Home() {
                             <div className='flex gap-2'>
                                 <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
                                 {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ?
-                                    <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sans font-bold'
+                                    <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sora font-bold'
                                         onClick={() => setProjectActive(displayedProject.id)}
                                     >
                                         Set Active
@@ -880,15 +880,15 @@ function Home() {
                                 }
                             </div>
                             {getLoggedUser().type === 'student' ?
-                                <strong className='text-3xl font-sans font-extrabold'>N/A</strong>
+                                <strong className='text-3xl font-sora font-extrabold'>N/A</strong>
                                 : <div className='flex items-center gap-3.5 mb-5 md:mb-5'>
                                     <button onClick={handleModifyProjectDivVisible}
-                                        className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-2xl px-5 py-2 font-sans transition-colors duration-300 font-extrabold'
+                                        className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-2xl px-5 py-2 font-sora transition-colors duration-300 font-extrabold'
                                     >
                                         Modify
                                     </button>
                                     <button onClick={handleDeleteProjectDivVisible}
-                                        className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'
+                                        className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sora font-extrabold'
                                     >
                                         Delete
                                     </button>
@@ -901,7 +901,7 @@ function Home() {
                                 getLoggedUser().type === 'teacher' ? (
                                     <button
                                         onClick={handleAddSkillDivVisible}
-                                        className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
+                                        className='bg-white text-black rounded-full px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
                                         Add
                                     </button>
                                 ) : null
@@ -914,17 +914,17 @@ function Home() {
                                         <>                                           
                                             <button
                                                 onClick={handleAddSkillDivVisible}
-                                                className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
+                                                className='bg-white text-black rounded-full px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>
                                                 Add
                                             </button>
                                             <button
                                                 onClick={handleModifySkillDivVisible}
-                                                className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-full px-5 py-2 font-sans font-extrabold transition-colors duration-300'>
+                                                className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-full px-5 py-2 font-sora font-extrabold transition-colors duration-300'>
                                                 Modify
                                             </button>
                                             <button
                                                 onClick={handleDeleteSkillDivVisible}
-                                                className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 rounded-full hover:text-white transition-colors duration-300 px-5 py-2 font-sans font-extrabold'>
+                                                className='border-2 border-white bg-white text-black hover:bg-red-800 hover:border-red-800 rounded-full hover:text-white transition-colors duration-300 px-5 py-2 font-sora font-extrabold'>
                                                 Delete
                                             </button>
                                         </>
@@ -935,7 +935,7 @@ function Home() {
                         </div>
                         {getLoggedUser().type === 'teacher' ?
                             <div className='flex justify-end items-center pb-3'>
-                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
+                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
                             </div>
                             : null
                         }
@@ -961,7 +961,7 @@ function Home() {
                                         </div>
                                         {getLoggedUser().type === 'teacher' && item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) === 100 ?
                                             (<div>
-                                                <button onClick={() => handlePostGradesDivVisible(item)} className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-40 w-full rounded-2xl px-4 py-2 font-sans font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button>
+                                                <button onClick={() => handlePostGradesDivVisible(item)} className='mt-8 mb-3 md:mt-0 md:mb-0 md:w-48 w-full rounded-2xl px-4 py-3 font-sora font-extrabold border-2 text-white bgBrand bg-black hover:scale-95 hover:bg-white hover:text-black transition-all duration-300'>Post Grades</button>
                                             </div>)
                                             : null
                                         }
@@ -985,19 +985,19 @@ function Home() {
                                                 ) : null}
                                                 {getLoggedUser().type === 'teacher' ?
                                                     <div className='flex gap-2.5'>
-                                                        {item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) !== 100 ? (<button onClick={() => handleAddActivitySkillDivVisible(item)} className='bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>) : null}
-                                                        {item.skills && item.skills.length !== 0 ? <button onClick={() => handleDeleteSkillActivityDivVisible(item)} className="bg-white text-black rounded-full px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300">Delete</button> : null}
+                                                        {item.skills.reduce((accumulator, currentValue) => accumulator + currentValue.globalPercentage, 0) !== 100 ? (<button onClick={() => handleAddActivitySkillDivVisible(item)} className='bg-white text-black rounded-full px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>) : null}
+                                                        {item.skills && item.skills.length !== 0 ? <button onClick={() => handleDeleteSkillActivityDivVisible(item)} className="bg-white text-black rounded-full px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300">Delete</button> : null}
                                                     </div>
                                                     : null}
                                             </div>
                                             {getLoggedUser().type === 'teacher' ?
                                                 <div className='flex flex-wrap justify-end items-center gap-2'>
-                                                    {!item.activeActivity ? <button className='w-full md:w-36 bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
+                                                    {!item.activeActivity ? <button className='w-full md:w-36 bg-white text-black rounded-2xl px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'
                                                         onClick={() => setActivityActive(item.idProject, item.idActivity)}>Set Active</button> : null
                                                     }
                                                     <div className='flex w-full md:w-auto justify-between gap-2'>
-                                                        <button onClick={() => handleModifyActivityDivVisible(item)} className='w-6/12 md:w-auto bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
-                                                        <button onClick={() => handleDeleteActivityDivVisible(item)} className='w-6/12 md:w-auto bg-white text-black rounded-2xl px-4 py-2 font-sans font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
+                                                        <button onClick={() => handleModifyActivityDivVisible(item)} className='w-6/12 md:w-auto bg-white text-black rounded-2xl px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Modify</button>
+                                                        <button onClick={() => handleDeleteActivityDivVisible(item)} className='w-6/12 md:w-auto bg-white text-black rounded-2xl px-4 py-2 font-sora font-extrabold border-2 border-white hover:bg-red-800 hover:border-red-800 hover:text-white transition-colors duration-300'>Delete</button>
                                                     </div>
                                                 </div> : null}
                                         </div>

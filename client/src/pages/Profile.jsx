@@ -40,7 +40,7 @@ function Profile() {
 
     const { firstName, lastName, profilePicture, bio } = userData;
     const loginStatus = LoginStatusChecker();
-    const navigate = useNavigate(); // Assuming you're using React Router's useNavigate hook
+    const navigate = useNavigate();
 
     if (getLoggedUser().type === 'teacher') {
         navigate('/error');
@@ -58,9 +58,9 @@ function Profile() {
                             <p> · </p>
                             <p>{userData.idStudentGroup}</p>
                         </div>
-                        <p>{bio}</p>
+                        <p className='font-montserrat font-normal'>{bio}</p>
                         <Link to='/settings'>
-                            <button className='border-l-white border-2 border-radius rounded-md px-4 py-2 hover:bg-white hover:text-black transition-all'>Edit</button>
+                            <button className='border-l-white border-2 border-radius w-80 mt-3 rounded-md px-4 py-2 hover:bg-white hover:text-black transition-all'>Edit</button>
                         </Link>
                     </div>
                     <div className='5/12 border-2 border-gray-800 rounded-lg'>

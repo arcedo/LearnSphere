@@ -18,7 +18,7 @@ export default function GroupSettings({handleAddGroupDivVisible, setGroups, grou
         <div>
             <div className='flex items-center w-full mx-auto justify-between'>
                 <h2 className='font-sora text-4xl font-extrabold'>Groups</h2>
-                <button onClick={handleAddGroupDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
+                <button onClick={handleAddGroupDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sora font-extrabold'>
                     Add group
                 </button>
             </div>

@@ -23,10 +23,10 @@ export default function StudentsSettings({handleAddStudentDivVisible, handleModi
       <div className='flex flex-wrap items-center w-full mx-auto justify-between'>
         <h2 className='font-sora text-4xl font-extrabold'>Students</h2>
         <div className='flex items-center justify-between mt-3 md:mt-0 gap-3'>
-          <button onClick={handleAddStudentDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
+          <button onClick={handleAddStudentDivVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sora font-extrabold'>
               Add student
           </button>
-          <button onClick={handleImportCsvVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sans font-extrabold'>
+          <button onClick={handleImportCsvVisible} className='bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-colors duration-300 rounded-2xl px-5 py-2 font-sora font-extrabold'>
               Import CSV
           </button>
         </div>
