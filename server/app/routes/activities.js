@@ -483,4 +483,51 @@ router.put('/:idProject/activate/:idActivity', async (req, res) => {
     }
 });
 
+router.get('/:idStudent/grades', async (req, res) => {
+    try {
+        const result = await database.getPromise().query(
+            'SELECT * FROM student s JOIN activityGrade ag ON s.idStudent = ag.idStudent WHERE s.idStudent = ?;',
+            [req.params.idStudent]);
+        const transformedResult = result[0].reduce((acc, student) => {
+            // Check if the student already exists in the transformed result
+            const existingStudent = acc.find(item => item.idStudent === student.idStudent);
+
+            if (existingStudent) {
+                // Student exists, add the skill and grade to the existing array
+                existingStudent.skills.push({
+                    idActivity: student.idActivity,
+                    idSkill: student.idSkill,
+                    grade: student.grade
+                });
+            } else {
+                // Student doesn't exist, create a new entry with an array of skills
+                acc.push({
+                    idStudent: student.idStudent,
+                    dni: student.dni,
+                    firstName: student.firstName,
+                    lastName: student.lastName,
+                    phoneNumber: student.phoneNumber,
+                    email: student.email,
+                    userName: student.userName,
+                    userPassword: student.userPassword,
+                    profilePicture: student.profilePicture,
+                    bio: student.bio,
+                    idStudentGroup: student.idStudentGroup,
+                    skills: [{
+                        idSkill: student.idSkill,
+                        grade: student.grade,
+                        idActivity: student.idActivity
+                    }]
+                });
+            }
+
+            return acc;
+        }, []);
+        res.status(200).json(transformedResult);
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
+});
+
 module.exports = router;
