@@ -9,17 +9,13 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
             const initialGrades = {};
             students.forEach((student) => {
                 student.skills.forEach((skill) => {
-                    initialGrades[`${student.idStudent}-${skill.idSkill}`] = skill.grade.toString();
+                    const gradeValue = skill.grade !== null && skill.grade !== undefined ? skill.grade.toString() : '0';
+                    initialGrades[`${student.idStudent}-${skill.idSkill}`] = gradeValue;
                 });
             });
             setFinalGrades(initialGrades);
         }
     }, [students]);
-
-    const handleGradeChange = (studentId, skillId, newGrade) => {
-        const updatedFinalGrades = { ...finalGrades, [`${studentId}-${skillId}`]: newGrade };
-        setFinalGrades(updatedFinalGrades);
-    };
 
     const saveGradesToDatabase = async () => {
         try {
