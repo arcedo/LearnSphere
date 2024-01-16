@@ -743,7 +743,7 @@ function Home() {
     const [students, setStudents] = useState([]);
     const handlePostGradesDivVisible = async (activityData) => {
         setPostGradesDivVisible(true);
-        setCurrentActivityData(activityData)
+        setCurrentActivityData(activityData);
         setStudents(await getStudents(displayedProject.idStudentGroup, activityData.idActivity));
         setTimeout(() => {
             const postGradesDiv = document.getElementById('postGradesDiv');

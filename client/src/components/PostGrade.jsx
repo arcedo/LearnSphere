@@ -81,10 +81,10 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                                 return (
                                     <tr key={student.idStudent} className='border-b-2 border-gray-200 '>
                                         <td className='pl-5 w-4/12'>{student.firstName} {student.lastName}</td>
-                                        {currentActivity.skills ? (
-                                            currentActivity.skills.map((actSkill) => {
+                                        {student.skills ? (
+                                            student.skills.map((stuSkill) => {
                                                 const matchingSkill = currentProject.skills.find(
-                                                    (skill) => skill.idSkill === actSkill.idSkill
+                                                    (skill) => skill.idSkill === stuSkill.idSkill
                                                 );
                                                 return matchingSkill ? (
                                                     <td key={matchingSkill.idSkill} className='w-2/12'>
@@ -94,9 +94,7 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                                                             min={0}
                                                             max={10}
                                                             defaultValue={
-                                                                matchingSkill.grade ||
-                                                                finalGrades[`${student.idStudent}-${matchingSkill.idSkill}`] ||
-                                                                0
+                                                                stuSkill.grade || 0
                                                             }
                                                             onChange={(e) =>
                                                                 handleGradeChange(
@@ -110,18 +108,18 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                                                 ) : null;
                                             })
                                         ) : null}
-                                    <td className='w-2/12'>
-                                        {currentActivity.skills.reduce((sum, actSkill) => {
-                                            const matchingSkill = currentProject.skills.find(skill => skill.idSkill === actSkill.idSkill);
-                                            const skillGrade = parseFloat(finalGrades[`${student.idStudent}-${matchingSkill.idSkill}`] || 0);
-                                            const skillPercentage = actSkill.globalPercentage / 100;
-                                            return sum + (matchingSkill ? skillGrade * skillPercentage : 0);
-                                        }, 0).toFixed(2)}
-                                    </td>
-                                </tr>
-                            );
-                        })
-                    ) : null}
+                                        <td className='w-2/12'>
+                                            {currentActivity.skills.reduce((sum, actSkill) => {
+                                                const matchingSkill = currentProject.skills.find(skill => skill.idSkill === actSkill.idSkill);
+                                                const skillGrade = parseFloat(finalGrades[`${student.idStudent}-${matchingSkill.idSkill}`] || 0);
+                                                const skillPercentage = actSkill.globalPercentage / 100;
+                                                return sum + (matchingSkill ? skillGrade * skillPercentage : 0);
+                                            }, 0).toFixed(2)}
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        ) : null}
                     </tbody>
                 </table>
             </div>
