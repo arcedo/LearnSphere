@@ -13,8 +13,8 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                     initialGrades[`${student.idStudent}-${skill.idSkill}`] = gradeValue;
                 });
             });
-            const inputs = Array.from(document.getElementsByClassName('setEmpty'));
-            inputs.forEach((input) => (input.value = ''));
+            //const inputs = Array.from(document.getElementsByClassName('setEmpty'));
+            //inputs.forEach((input) => (input.value = ''));
             setFinalGrades(initialGrades);
         }
     }, [students]);
@@ -127,7 +127,10 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
             </div>
             <button
                 className='w-36 border-2 border-white rounded-md mt-4 px-4 py-2 bgSidebar hover:bg-white hover:text-black transition-all'
-                onClick={saveGradesToDatabase}
+                onClick={() => {
+                    setFinalGrades({})
+                    saveGradesToDatabase
+                }}
             >
                 Save grades
             </button>

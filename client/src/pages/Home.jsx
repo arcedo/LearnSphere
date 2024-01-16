@@ -743,6 +743,8 @@ function Home() {
         setPostGradesDivVisible(false);
         setCurrentActivityData({});
         setStudents([]);
+        const inputs = Array.from(document.getElementsByClassName('setEmpty'));
+        inputs.forEach((input) => (input.value = ''));
     }
 
     const [currentActivityData, setCurrentActivityData] = useState({});
