@@ -483,11 +483,16 @@ router.put('/:idProject/activate/:idActivity', async (req, res) => {
     }
 });
 
-router.get('/:idStudent/grades', async (req, res) => {
+router.get('/:idStudent/grades/:idProject', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'SELECT s.idStudent, ag.*, (SELECT SUM( COALESCE(ag.grade, 0) * COALESCE(ap.activityPercentatge, 0) / 100 ) FROM activityPercentatge ap WHERE ap.idSkill = ag.idSkill AND ap.idActivity = ag.idActivity) AS finalActivityGrade FROM student s JOIN activityGrade ag ON s.idStudent = ag.idStudent WHERE s.idStudent = ?;',
-            [req.params.idStudent]);
+            `SELECT s.idStudent, ag.*, (
+                SELECT SUM( COALESCE(ag.grade, 0) * COALESCE(ap.activityPercentatge, 0) / 100 )
+                FROM activityPercentatge ap
+                WHERE ap.idSkill = ag.idSkill
+                AND ap.idActivity = ag.idActivity) AS finalActivityGrade
+                FROM student s JOIN activityGrade ag ON s.idStudent = ag.idStudent JOIN activity a ON a.idActivity = ag.idActivity  WHERE s.idStudent = ? AND a.idProject = ?;`,
+            [req.params.idStudent, req.params.idProject]);
 
         const transformedResult = result[0].reduce((acc, student) => {
             // Initialize acc as an array if it's undefined
