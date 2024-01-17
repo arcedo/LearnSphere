@@ -130,14 +130,18 @@ router.post('/', upload.single('image'), async (req, res) => {
 
         // Use the uploaded file path or filename as needed in your database query
         const imagePath = `/src/assets/skillIcons/${uploadedFile.filename}`;
-
+        const sameName = await database.getPromise().query('SELECT * FROM skill WHERE skillName = ? AND idProject = ?;', [skillName, idProject]);
         // Insert data into the database
-        const result = await database.getPromise().query(
-            'INSERT INTO skill (idProject, skillName, image) VALUES (?, ?, ?);',
-            [idProject, skillName, imagePath]
-        );
+        if (sameName[0].length === 0) {
+            const result = await database.getPromise().query(
+                'INSERT INTO skill (idProject, skillName, image) VALUES (?, ?, ?);',
+                [idProject, skillName, imagePath]
+            );
+            res.status(200).json(result[0]); // Assuming result is an array of rows
+        } else {
+            res.status(500).send();
+        }
 
-        res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();
@@ -169,7 +173,7 @@ router.put('/:idSkill', upload2.single('image'), async (req, res) => {
         // Assuming you have other fields in the request body
         const { idProject, skillName } = req.body;
 
-        if(uploadedFile == null){
+        if (uploadedFile == null) {
             const { idProject, skillName } = req.body;
             const result = await database.getPromise().query(
                 'UPDATE skill SET skillName = ?, idProject = ? WHERE idSkill = ?;',

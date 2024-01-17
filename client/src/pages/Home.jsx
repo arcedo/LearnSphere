@@ -53,7 +53,7 @@ async function getStudents(idStudentGroup, idActivity) {
 }
 
 async function getGrades(idProject) {
-    console.log('grades:'+idProject)
+    console.log('grades:' + idProject)
     const response = await fetch(`http://localhost:3001/activities/${getLoggedUser().id}/grades/${idProject}`);
     const data = await response.json();
     return data;
@@ -354,9 +354,9 @@ function Home() {
                 });
             };
             fetchData();
-            if (getLoggedUser().type === 'student'){
+            if (getLoggedUser().type === 'student') {
                 const fetchGrades = async () => {
-                    setStudentGrades(await getGrades(item.id));    
+                    setStudentGrades(await getGrades(item.id));
                 }
                 fetchGrades();
             }
@@ -395,15 +395,15 @@ function Home() {
                 });
             }
             fetchData();
-            if (getLoggedUser().type === 'student'){
+            if (getLoggedUser().type === 'student') {
                 const fetchGrades = async () => {
-                    setStudentGrades(await getGrades(defaultItem.id));    
+                    setStudentGrades(await getGrades(defaultItem.id));
                 }
                 fetchGrades();
             }
         }
     }, [selectableProjects]);
-        
+
     // Add project div visible or not
     const [isAddProjectDivVisible, setAddProjectDivVisible] = useState(false);
     //Add Project
@@ -817,7 +817,7 @@ function Home() {
             // Handle the error or show a user-friendly message
         }
     }
-    const [studentGrades, setStudentGrades] = useState([{activities: [{ skills: [{}] }]}]);
+    const [studentGrades, setStudentGrades] = useState([{ activities: [{ skills: [{}] }] }]);
     // useEffect(() => {
     //     const fetchStudentGrades = async () => {
     //         const response = await getGrades(displayedProject.id);
@@ -931,7 +931,6 @@ function Home() {
                                             if (studentGrades.length === 0) {
                                                 return 'N/A';
                                             }
-
                                             const allGrades = studentGrades.flatMap(student => student.activities.map(activity => activity.finalActivityGrade));
                                             const overallAverage = allGrades.reduce((sum, grade) => sum + grade, 0) / allGrades.length;
 
@@ -955,7 +954,8 @@ function Home() {
                         </div>
                         {getLoggedUser().type === 'teacher' ? <strong>{displayedProject.idStudentGroup}</strong> : null}
                         <p className='pb-2.5 font-montserrat font-semibold text-lg pt-1.5'>{displayedProject.description}</p>
-                        <div className='flex items-center gap-3 flex-wrap pt-5 pb-5'>
+                        <h5 className='text-3xl font-sora font-extrabold pt-5 pb-2.5'>Skills</h5>
+                        <div className='flex items-center gap-3 flex-wrap pb-5'>
                             {displayedProject.skills.length === 0 ? (
                                 getLoggedUser().type === 'teacher' ? (
                                     <button
@@ -992,12 +992,13 @@ function Home() {
                             )
                             }
                         </div>
-                        {getLoggedUser().type === 'teacher' ?
-                            <div className='flex justify-end items-center pb-3'>
-                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
-                            </div>
-                            : null
-                        }
+                        <div className='flex justify-between items-center'>
+                            <h5 className='text-3xl font-sora font-extrabold'>Activities</h5>
+                            {getLoggedUser().type === 'teacher' ?
+                                <button onClick={handleAddActivityDivVisible} className='bg-white text-black rounded-2xl px-5 py-2 mb-1 font-sora font-extrabold border-2 border-white hover:bg-black hover:text-white transition-colors duration-300'>Add</button>
+                                : null
+                            }
+                        </div>
                         {displayedProject.activities.map((item, index) => (
                             <Accordion key={index} open={openIndex === index} className='border-2 border-white rounded-2xl px-5 mt-2.5'>
                                 <AccordionHeader id='accordion' onClick={() => handleOpen(index)} className='py-2.5 border-none font-sora font-extrabold text-lg flex justify-between items-center text-white hover:text-gray-200'>
@@ -1009,15 +1010,15 @@ function Home() {
                                         {item.activeActivity ? <img src={currentProject} alt='Current project' /> : null}
                                     </div>
                                     {
-                                    getLoggedUser().type === 'student' && studentGrades && studentGrades.length > 0 ? (
-                                        <strong className='pr-3.5 text-2xl'>
-                                        {
-                                            studentGrades[0].activities && studentGrades[0].activities.length > 0 ?
-                                            studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade || 'N/A'
-                                            : 'N/A'
-                                        }
-                                        </strong>
-                                    ) : null
+                                        getLoggedUser().type === 'student' && studentGrades && studentGrades.length > 0 ? (
+                                            <strong className='pr-3.5 text-2xl'>
+                                                {
+                                                    studentGrades[0].activities && studentGrades[0].activities.length > 0 ?
+                                                        studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade || 'N/A'
+                                                        : 'N/A'
+                                                }
+                                            </strong>
+                                        ) : null
                                     }
                                 </AccordionHeader>
                                 <AccordionBody className='px-3.5 pb-10 font-montserrat font-semibold text-lg'>
@@ -1032,7 +1033,7 @@ function Home() {
                                             : null
                                         }
                                     </div>
-                                    <h5 className='text-white pt-5'>Required Skills</h5>
+                                    <h5 className='text-white text-xl pt-5 font-sora font-extrabold'>{item.skills.length > 0 ? 'Required' : 'No'} skills</h5>
                                     {
                                         <div>
                                             <div className='flex flex-wrap items-center gap-2.5 pb-5 pt-1.5'>
