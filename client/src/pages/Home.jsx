@@ -921,7 +921,7 @@ function Home() {
                                     </button> : ""
                                 }
                                 {displayedProject.activeProject ?
-                                    <p className='font-bold text-lg mt-3'>Currently active</p> : ""
+                                    <p className='font-bold text-lg mt-5'>Active</p> : ""
                                 }
                             </div>
                             {getLoggedUser().type === 'student' ?
