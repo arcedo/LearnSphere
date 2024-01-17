@@ -1,14 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../database/dbConnection.js');
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /**
  * @swagger
  * tags:
  *   name: Teachers
  *   description: API operations related to teachers
+ * definitions:
+ *   schemas:
+ *     Teacher:
+ *       type: object
+ *       properties:
+ *         dni:
+ *           type: string
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         phoneNumber:
+ *           type: integer
+ *         email:
+ *           type: string
+ *         userName:
+ *           type: string
+ *         userPassword:
+ *           type: string
+ *       required:
+ *         - dni
+ *         - firstName
+ *         - lastName
+ *         - phoneNumber
+ *         - email
+ *         - userName
+ *         - userPassword
  */
+
 
 /**
  * @swagger
@@ -78,6 +107,50 @@ router.get('/:idTeacher', async (req, res) => {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();
     };
+});
+
+/**
+ * @swagger
+ * /teachers:
+ *   post:
+ *     summary: Create a new teacher
+ *     description: Create a new teacher with the provided details.
+ *     tags:
+ *       - Teachers
+ *     parameters:
+ *      - in: body
+ *        name: teacher
+ *        description: The teacher to create
+ *        required: true
+ *        schema:
+ *         items:
+ *           $ref: '#/definitions/schemas/Teacher'
+ *     responses:
+ *       200:
+ *         description: Successful response with the ID of the new teacher
+ *         content:
+ *           application/json:
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/', async (req, res) => {
+    try {
+        // Access the first (and only) object in the array
+        const user = req.body[0];
+
+        // Hash the password
+        user.userPassword = await bcrypt.hash(user.userPassword, 10);
+
+        const result = await database.getPromise().query(
+            'INSERT INTO teacher (dni, firstName, lastName, phoneNumber, email, userName, userPassword) VALUES (?, ?, ?, ?, ?, ?, ?);',
+            [user.dni, user.firstName, user.lastName, user.phoneNumber, user.email, user.userName, user.userPassword]
+        );
+
+        res.status(200).json(result[0]);
+    } catch (err) {
+        console.error('Unable to execute query to MySQL: ' + err);
+        res.status(500).send();
+    }
 });
 
 module.exports = router;
