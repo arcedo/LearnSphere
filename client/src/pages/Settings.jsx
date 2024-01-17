@@ -389,7 +389,7 @@ export default function Settings() {
 
   useEffect(() => {
     const defaultItem = "Account";
-    setSelectedItem(defaultItem);
+    {getLoggedUser().type === 'teacher' ? setSelectedItem("Students") : setSelectedItem(defaultItem)}
   }, []);
 
   //Sidebar open/closed
@@ -410,10 +410,9 @@ export default function Settings() {
   if (loginStatus) {
     const exampleList = getLoggedUser().type === 'teacher'
       ? [
-        { id: 1, title: "Account" },
-        { id: 2, title: "Students" },
-        { id: 3, title: "Groups" },
-        { id: 4, title: "Log out" },
+        { id: 1, title: "Students" },
+        { id: 2, title: "Groups" },
+        { id: 3, title: "Log out" },
       ]
       : [
         { id: 1, title: "Account" },
