@@ -5,21 +5,7 @@ async function getAllGroups() {
     return await response.json();
 }
 
-export default function AddStudent({ submitStudentFunction, studentModified, currentData }) {
-    const [groups, setGroups] = useState([]);
-
-    useEffect(() => {
-        async function fetchGroups() {
-            try {
-                const fetchedGroups = await getAllGroups();
-                setGroups(fetchedGroups);
-            } catch (error) {
-                console.error('Error fetching groups:', error);
-            }
-        }
-
-        fetchGroups();
-    }, []);
+export default function AddStudent({ submitStudentFunction, studentModified, currentData, groups }) {
     return (
         <div className='px-8 py-5'>
             <h2 className='font-sora text-4xl font-extrabold'>Modify student</h2>

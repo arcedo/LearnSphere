@@ -110,7 +110,7 @@ const storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../../../client/src/assets/skillIcons/'));
     },
     filename: function (req, file, cb) {
-        const fileName = req.body.skillName;
+        const fileName = req.body.skillName + '_' + new Date().getTime();
 
         // Force the file extension to be '.png'
         const newFilename = `${fileName}.png`;
@@ -155,7 +155,7 @@ const storage2 = multer.diskStorage({
         cb(null, path.join(__dirname, '../../../client/src/assets/skillIcons/'));
     },
     filename: function (req, file, cb) {
-        const fileName = req.body.skillName;
+        const fileName = req.body.skillName + '_' + new Date().getTime();
 
         // Force the file extension to be '.png'
         const newFilename = `${fileName}.png`;

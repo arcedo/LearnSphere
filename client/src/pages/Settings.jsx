@@ -229,13 +229,13 @@ export default function Settings() {
   useEffect(() => {
     // Fetch data from the API
     const fetchData = async () => {
-        try {
-            const response = await fetch('http://localhost:3001/groups');
-            const data = await response.json();
-            setGroups(data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
+      try {
+        const response = await fetch('http://localhost:3001/groups');
+        const data = await response.json();
+        setGroups(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }; fetchData();
   }, []);
 
@@ -356,7 +356,7 @@ export default function Settings() {
     }
     setImportCsvDivVisible(false);
   };
-  
+
   // Add group div visible or not
   const handleAddGroupDivVisible = () => {
     setAddGroupDivVisible(true);
@@ -394,8 +394,8 @@ export default function Settings() {
 
   //Sidebar open/closed
   const pullSidebar = () => {
-      setSidebarOpen(!isSidebarOpen);
-      {isSidebarOpen ? document.getElementById('sideButton').classList.remove('left-72') : document.getElementById('sideButton').classList.add('left-72')}
+    setSidebarOpen(!isSidebarOpen);
+    { isSidebarOpen ? document.getElementById('sideButton').classList.remove('left-72') : document.getElementById('sideButton').classList.add('left-72') }
   };
 
   const handleItemClick = (item) => {
@@ -437,7 +437,7 @@ export default function Settings() {
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setModifyStudentDivVisible(false)}></div>
           )}
           <div id='modifyStudentDiv' className={`w-9/12 md:w-5/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isModifyStudentDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-            <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} currentData={studentClicked} />
+            <ModifyStudent submitStudentFunction={handleModifyStudentClick} studentModified={studentModified} currentData={studentClicked} groups={groups} />
           </div>
           {isDeleteStudentDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setDeleteStudentDivVisible(false)}></div>
@@ -452,7 +452,7 @@ export default function Settings() {
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setImportCsvDivVisible(false)}></div>
           )}
           <div id='importCsvDiv' className={`w-9/12 md:w-4/12 h-fit z-30 bgSidebar rounded-xl border-2 border-gray-800 hidden overflow-auto ${isImportCsvDivVisible ? 'absolute' : ''} inset-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
-            <ImportCSV submitCsvFunction={handleImportCsvClick} csvAdded={csvAdded}/>
+            <ImportCSV submitCsvFunction={handleImportCsvClick} csvAdded={csvAdded} />
           </div>
           {isAddGroupDivVisible && (
             <div className="overlay fixed top-0 left-0 w-full h-full bg-black opacity-70 z-30" onClick={() => setAddGroupDivVisible(false)}></div>
