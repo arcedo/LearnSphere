@@ -171,7 +171,7 @@ router.post('/', async (req, res) => {
 // CSV part
 
 const multer2 = require('multer');
-const fs2 = require('fs/promises');
+const fs2 = require('fs');
 
 const storage2 = multer2.diskStorage({
     destination: function (req, file, cb) {
@@ -240,6 +240,7 @@ router.post('/csv', upload2.single('csv'), async (req, res) => {
         res.status(200).json(result[0]); // Assuming result is an array of rows
     } catch (err) {
         console.error('Unable to import students from CSV: ' + err);
+        console.error(err.stack);
         res.status(500).send();
     }
 });

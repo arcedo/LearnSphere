@@ -1011,11 +1011,15 @@ function Home() {
                                             <strong className='pr-3.5 text-2xl'>
                                                 {
                                                     studentGrades[0].activities && studentGrades[0].activities.length > 0 ?
-                                                        studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade.toFixed(2) || 'N/A'
+                                                        (() => {
+                                                            const activity = studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity);
+                                                            return activity && activity.finalActivityGrade !== undefined ? activity.finalActivityGrade.toFixed(2) : 'N/A';
+                                                        })()
                                                         : 'N/A'
                                                 }
                                             </strong>
                                         ) : null
+                                                                               
                                     }
                                 </AccordionHeader>
                                 <AccordionBody className='px-3.5 pb-10 font-montserrat font-semibold text-lg'>
