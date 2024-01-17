@@ -1011,7 +1011,7 @@ function Home() {
                                             <strong className='pr-3.5 text-2xl'>
                                                 {
                                                     studentGrades[0].activities && studentGrades[0].activities.length > 0 ?
-                                                        studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade || 'N/A'
+                                                        studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade.toFixed(2) || 'N/A'
                                                         : 'N/A'
                                                 }
                                             </strong>

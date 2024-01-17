@@ -363,7 +363,12 @@ router.put('/:idActivity/skills', async (req, res) => {
         const { grades } = req.body;
 
         // Assuming grades is an array of objects with properties: studentId, skillId, grade
-        for (const { studentId, skillId, grade } of grades) {
+        for (let { studentId, skillId, grade } of grades) {
+            if (grade < 0) {
+                grade = 0;
+            } else if (grade > 10) {
+                grade = 10;
+            }
             await database.getPromise().query(
                 'UPDATE activityGrade SET grade = ? WHERE idActivity = ? AND idSkill = ? AND idStudent = ?;',
                 [grade, req.params.idActivity, skillId, studentId]
