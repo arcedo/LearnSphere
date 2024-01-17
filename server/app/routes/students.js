@@ -148,7 +148,6 @@ router.post('/', async (req, res) => {
                 student.idStudentGroup
             ];
         }));
-        console.log(values);
         const defaultImagePath = path2.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
         const profilePicturePath = path2.join(__dirname, '../../../client/src/assets/profilePictures/');
         values.forEach(async (student) => {

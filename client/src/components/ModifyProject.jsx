@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-//TODO: add non repeatable project name
-
 async function getAllGroups() {
     const response = await fetch(`http://localhost:3001/groups`);
     return await response.json();

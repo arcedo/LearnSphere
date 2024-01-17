@@ -453,7 +453,6 @@ router.put('/:idProject/activate', async (req, res) => {
         const deactivateCurrentActive = await database.getPromise().query(
             'UPDATE project SET activeProject = 0 WHERE activeProject = 1;'
         );
-        console.log(deactivateCurrentActive);
         if (deactivateCurrentActive) {
             const result = await database.getPromise().query(
                 'UPDATE project SET activeProject = 1 WHERE idProject = ?;',

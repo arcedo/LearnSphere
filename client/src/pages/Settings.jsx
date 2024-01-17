@@ -32,7 +32,18 @@ async function addStudent() {
   if (!firstName || !lastName || !dni || !phoneNumber || !userPassword || !idStudentGroup) {
     return { status: false, error: 'Missing fields' };
   } else {
-    const username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
+    const getStudents = await fetch('http://localhost:3001/students');
+    const studentsData = await getStudents.json();
+    let username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
+    let usernameExists = studentsData.some(student => student.userName === username);
+    if (usernameExists) {
+      do {
+        if (usernameExists) {
+          username = `${username}${Math.floor(Math.random() * 100)}`;
+        }
+        usernameExists = studentsData.some(student => student.userName === username);
+      } while (usernameExists);
+    }
     const email = `${username}@lsphere.net`;
     const profilePicture = `/src/assets/profilePictures/${username}.png`;
     const bio = '';
@@ -93,7 +104,18 @@ async function modifyStudent(idStudent) {
   if (!firstName || !lastName || !dni || !phoneNumber || !userPassword || !idStudentGroup) {
     return { status: false, error: 'Missing fields' };
   } else {
-    const username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
+    const getStudents = await fetch('http://localhost:3001/students');
+    const studentsData = await getStudents.json();
+    let username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
+    let usernameExists = studentsData.some(student => student.userName === username);
+    if (usernameExists) {
+      do {
+        if (usernameExists) {
+          username = `${username}${Math.floor(Math.random() * 100)}`;
+        }
+        usernameExists = studentsData.some(student => student.userName === username);
+      } while (usernameExists);
+    }
     const email = `${username}@lsphere.net`;
     const profilePicture = `/src/assets/profilePictures/${username}.png`;
 
@@ -389,7 +411,7 @@ export default function Settings() {
 
   useEffect(() => {
     const defaultItem = "Account";
-    {getLoggedUser().type === 'teacher' ? setSelectedItem("Students") : setSelectedItem(defaultItem)}
+    { getLoggedUser().type === 'teacher' ? setSelectedItem("Students") : setSelectedItem(defaultItem) }
   }, []);
 
   //Sidebar open/closed

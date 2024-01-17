@@ -42,8 +42,6 @@ export default function PostGrades({ currentProject, postGradesDivVisible, curre
                 },
                 body: JSON.stringify({ grades: gradesData }),
             });
-
-            console.log('Grades saved successfully!');
             // Convert HTMLCollection to array and clear input values
             const inputs = Array.from(document.getElementsByClassName('setEmpty'));
             inputs.forEach((input) => (input.value = ''));

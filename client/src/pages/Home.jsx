@@ -53,7 +53,6 @@ async function getStudents(idStudentGroup, idActivity) {
 }
 
 async function getGrades(idProject) {
-    console.log('grades:' + idProject)
     const response = await fetch(`http://localhost:3001/activities/${getLoggedUser().id}/grades/${idProject}`);
     const data = await response.json();
     return data;
@@ -826,9 +825,7 @@ function Home() {
     //     fetchStudentGrades();
     // }, [setStudentGrades])
     // console.log(selectableProjects);
-    console.log(displayedProject);
     // console.log(studentGrades);
-    console.log(displayedProject.id)
     const loginStatus = LoginStatusChecker();
     if (loginStatus) {
         return (
