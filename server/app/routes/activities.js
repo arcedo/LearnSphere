@@ -486,46 +486,70 @@ router.put('/:idProject/activate/:idActivity', async (req, res) => {
 router.get('/:idStudent/grades', async (req, res) => {
     try {
         const result = await database.getPromise().query(
-            'SELECT * FROM student s JOIN activityGrade ag ON s.idStudent = ag.idStudent WHERE s.idStudent = ?;',
+            'SELECT s.idStudent, ag.*, (SELECT SUM( COALESCE(ag.grade, 0) * COALESCE(ap.activityPercentatge, 0) / 100 ) FROM activityPercentatge ap WHERE ap.idSkill = ag.idSkill AND ap.idActivity = ag.idActivity) AS finalActivityGrade FROM student s JOIN activityGrade ag ON s.idStudent = ag.idStudent WHERE s.idStudent = ?;',
             [req.params.idStudent]);
+
         const transformedResult = result[0].reduce((acc, student) => {
-            // Check if the student already exists in the transformed result
+            // Initialize acc as an array if it's undefined
+            acc = acc || [];
+
             const existingStudent = acc.find(item => item.idStudent === student.idStudent);
 
             if (existingStudent) {
-                // Student exists, add the skill and grade to the existing array
-                existingStudent.skills.push({
-                    idActivity: student.idActivity,
-                    idSkill: student.idSkill,
-                    grade: student.grade
-                });
+                // Ensure existingStudent.activities is an array
+                existingStudent.activities = existingStudent.activities || [];
+
+                // Check if the activity already exists for that student
+                const existingActivity = existingStudent.activities.find(activity => activity.idActivity === student.idActivity);
+
+                if (existingActivity) {
+                    // Activity already exists, update the existing finalActivityGrade
+                    existingActivity.finalActivityGrade += parseFloat(student.finalActivityGrade);
+
+                    // Add a new skill to the existing activity
+                    existingActivity.skills.push({
+                        idSkill: student.idSkill,
+                        grade: student.grade
+                    });
+                } else {
+                    // Activity doesn't exist, create a new entry for the activity
+                    existingStudent.activities.push({
+                        idActivity: student.idActivity,
+                        finalActivityGrade: parseFloat(student.finalActivityGrade),
+                        skills: [
+                            {
+                                idSkill: student.idSkill,
+                                grade: student.grade
+                            }
+                        ]
+                    });
+                }
             } else {
-                // Student doesn't exist, create a new entry with an array of skills
+                // Student doesn't exist, create a new entry with an array of activities
                 acc.push({
                     idStudent: student.idStudent,
-                    dni: student.dni,
-                    firstName: student.firstName,
-                    lastName: student.lastName,
-                    phoneNumber: student.phoneNumber,
-                    email: student.email,
-                    userName: student.userName,
-                    userPassword: student.userPassword,
-                    profilePicture: student.profilePicture,
-                    bio: student.bio,
-                    idStudentGroup: student.idStudentGroup,
-                    skills: [{
-                        idSkill: student.idSkill,
-                        grade: student.grade,
-                        idActivity: student.idActivity
-                    }]
+                    activities: [
+                        {
+                            idActivity: student.idActivity,
+                            finalActivityGrade: parseFloat(student.finalActivityGrade),
+                            skills: [
+                                {
+                                    idSkill: student.idSkill,
+                                    grade: student.grade
+                                }
+                            ]
+                        }
+                    ]
                 });
             }
 
             return acc;
         }, []);
+
         res.status(200).json(transformedResult);
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
+        console.error(err.stack);
         res.status(500).send();
     }
 });

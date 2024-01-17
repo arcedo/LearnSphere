@@ -371,7 +371,7 @@ function Home() {
     useEffect(() => {
         // This effect runs when selectableProjects changes
         //const defaultItem = selectedItem ? null : selectableProjects.find(project => project.activeProject);
-        const defaultItem = selectableProjects.find(project => project.activeProject);
+        const defaultItem = selectableProjects.find(project => project.activeProject) || selectableProjects[0];
         if (defaultItem) {
             setSelectedItem(defaultItem.title);
             const fetchData = async () => {
@@ -798,6 +798,15 @@ function Home() {
             // Handle the error or show a user-friendly message
         }
     }
+    const [studentGrades, setStudentGrades] = useState([]);
+    useEffect(() => {
+        const fetchStudentGrades = async () => {
+            const response = await fetch(`http://localhost:3001/activities/${getLoggedUser().id}/grades`);
+            const data = await response.json();
+            setStudentGrades(data);
+        }
+        fetchStudentGrades();
+    }, [setStudentGrades])
     //console.log(selectableProjects);
     //console.log(displayedProject);
     const loginStatus = LoginStatusChecker();
@@ -883,7 +892,7 @@ function Home() {
                     <div className='w-full mx-auto pl-5 pr-10 md:pl-14 md:pr-20 py-10 overflow-auto font-montserrat font-medium'>
                         <div className={`flex flex-wrap items-center gap-4 justify-between`}>
                             <div className='flex gap-2'>
-                                <h4 className='font-sora text-4xl font-extrabold'>{displayedProject.title}</h4>
+                                <h4 className='font-sora text-5xl font-extrabold'>{displayedProject.title}</h4>
                                 {getLoggedUser().type === 'teacher' && !displayedProject.activeProject ?
                                     <button className='hover:bg-white hover:text-black border-2 border-white rounded-full transition-colors duration-500 px-5 py-1 font-sora font-bold'
                                         onClick={() => setProjectActive(displayedProject.id)}
@@ -896,7 +905,20 @@ function Home() {
                                 }
                             </div>
                             {getLoggedUser().type === 'student' ?
-                                <strong className='text-3xl font-sora font-extrabold'>N/A</strong>
+                                <strong className='text-5xl font-sora font-extrabold'>
+                                    {
+                                        (() => {
+                                            if (studentGrades.length === 0) {
+                                                return 'N/A';
+                                            }
+
+                                            const allGrades = studentGrades.flatMap(student => student.activities.map(activity => activity.finalActivityGrade));
+                                            const overallAverage = allGrades.reduce((sum, grade) => sum + grade, 0) / allGrades.length;
+
+                                            return !isNaN(overallAverage) ? overallAverage.toFixed(2) : 'N/A';
+                                        })()
+                                    }
+                                </strong>
                                 : <div className='flex items-center gap-3.5 mb-5 md:mb-5'>
                                     <button onClick={handleModifyProjectDivVisible}
                                         className='border-2 border-white bg-white text-black hover:bg-black hover:text-white rounded-2xl px-5 py-2 font-sora transition-colors duration-300 font-extrabold'
@@ -966,8 +988,10 @@ function Home() {
                                         <h5 className='text-3xl'>{item.name}</h5>
                                         {item.activeActivity ? <img src={currentProject} alt='Current project' /> : null}
                                     </div>
-                                    {getLoggedUser().type === 'student' ?
-                                        <strong className='pr-3.5 text-2xl'>N/A</strong>
+                                    {getLoggedUser().type === 'student' && studentGrades ?
+                                        <strong className='pr-3.5 text-2xl'>
+                                            {studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade || 'N/A'}
+                                        </strong>
                                         : null
                                     }
                                 </AccordionHeader>
