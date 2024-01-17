@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../database/dbConnection.js');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /**
  * @swagger
@@ -131,28 +133,31 @@ const path2 = require('path');
 router.post('/', async (req, res) => {
     try {
         const students = req.body.students;
-        const values = students.map(student => [
-            student.dni,
-            student.firstName,
-            student.lastName,
-            student.phoneNumber,
-            student.email,
-            student.userName,
-            student.userPassword,
-            `/src/assets/profilePictures/${student.userName}.png`,
-            student.bio,
-            student.idStudentGroup
-        ]);
-
+        const values = await Promise.all(students.map(async (student) => {
+            const hashedPassword = await bcrypt.hash(student.userPassword, saltRounds);
+            return [
+                student.dni,
+                student.firstName,
+                student.lastName,
+                student.phoneNumber,
+                student.email,
+                student.userName,
+                hashedPassword,
+                `/src/assets/profilePictures/${student.userName}.png`,
+                student.bio,
+                student.idStudentGroup
+            ];
+        }));
+        console.log(values);
         const defaultImagePath = path2.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
         const profilePicturePath = path2.join(__dirname, '../../../client/src/assets/profilePictures/');
-
         values.forEach(async (student) => {
             const newImagePath = path.join(profilePicturePath, `${student[5]}.png`);
             if (!fs.existsSync(newImagePath)) {
                 fs.copyFileSync(defaultImagePath, newImagePath);
             }
         });
+
 
         const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
         const result = await database.getPromise().query(sql, [values]);
@@ -182,58 +187,53 @@ const upload2 = multer2({ storage: storage2 });
 
 router.post('/csv', upload2.single('csv'), async (req, res) => {
     try {
-        const csvFilePath = req.file.path; // Use req.file to access the uploaded file
-        const students = [];
-
-        await fs2.readFile(csvFilePath, 'utf-8')
+        const csvFilePath = req.file.path;
+        const students = await fs2.promises.readFile(csvFilePath, 'utf-8')
             .then(data => {
-                return new Promise((resolve) => {
-                    const rows = data.trim().split('\n');
-                    const headers = rows[0].split(',');
+                const rows = data.trim().split('\n');
+                const headers = rows[0].split(',');
 
-                    for (let i = 1; i < rows.length; i++) {
-                        const values = rows[i].split(',');
-                        const student = {};
+                return Promise.all(rows.slice(1).map(async row => {
+                    const values = row.split(',');
+                    const student = {};
 
-                        headers.forEach((header, index) => {
-                            student[header] = values[index];
-                        });
+                    headers.forEach((header, index) => {
+                        student[header] = values[index];
+                    });
 
-                        const firstNameShort = student.firstName.substring(0, 3).toLowerCase();
-                        const lastNameShort = student.lastName.substring(0, 3).toLowerCase();
+                    const firstNameShort = student.firstName.substring(0, 3).toLowerCase();
+                    const lastNameShort = student.lastName.substring(0, 3).toLowerCase();
 
-                        const userName = `${firstNameShort}${lastNameShort}`;
-                        const email = `${userName}@lsphere.net`;
+                    const userName = `${firstNameShort}${lastNameShort}`;
+                    const email = `${userName}@lsphere.net`;
 
-                        const profilePicturePath = `/src/assets/profilePictures/${userName}.png`;
+                    const profilePicturePath = `/src/assets/profilePictures/${userName}.png`;
+                    const hashedPassword = await bcrypt.hash(student.userPassword, saltRounds);
 
-                        students.push([
-                            student.dni,
-                            student.firstName,
-                            student.lastName,
-                            parseInt(student.phoneNumber),
-                            email,
-                            userName,
-                            student.userPassword,
-                            profilePicturePath,
-                            student.bio,
-                            student.idStudentGroup,
-                        ]);
-                    }
-
-                    resolve();
-                });
+                    return [
+                        student.dni,
+                        student.firstName,
+                        student.lastName,
+                        parseInt(student.phoneNumber),
+                        email,
+                        userName,
+                        hashedPassword,
+                        profilePicturePath,
+                        student.bio,
+                        student.idStudentGroup,
+                    ];
+                }));
             });
 
         const defaultImagePath = path.join(__dirname, '../../../client/src/assets/profilePictures/default.png');
         const profilePicturePath = path.join(__dirname, '../../../client/src/assets/profilePictures/');
 
-        for (const student of students) {
+        await Promise.all(students.map(async (student) => {
             const newImagePath = path.join(profilePicturePath, `${student[5]}.png`);
             if (!fs.existsSync(newImagePath)) {
                 fs.copyFileSync(defaultImagePath, newImagePath);
             }
-        }
+        }));
 
         const sql = 'INSERT INTO student (dni, firstName, lastName, phoneNumber, email, userName, userPassword, profilePicture, bio, idStudentGroup) VALUES ?';
         const result = await database.getPromise().query(sql, [students]);
@@ -296,7 +296,11 @@ router.put('/:id', upload.single('profilePicture'), async (req, res) => {
     try {
         // Assuming req.params.id is the user ID
         const userId = req.params.id;
-
+        // Check if the user provided a new password
+        if (req.body.userPassword) {
+            // Hash the new password
+            req.body.userPassword = await bcrypt.hash(req.body.userPassword, saltRounds);
+        }
         // Check if a file is uploaded
         if (req.file && req.file.filename) {
             // Handle updating other user data in the database here

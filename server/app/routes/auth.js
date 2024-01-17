@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../database/dbConnection.js');
+const bcrypt = require('bcrypt');
 
 /**
  * @swagger
@@ -48,29 +49,46 @@ const database = require('../database/dbConnection.js');
  */
 router.post('/', async (req, res) => {
     try {
-        let result = await database.getPromise().query(
-            'SELECT idStudent AS id, idStudentGroup AS userGroup FROM student WHERE userName LIKE ? AND userPassword LIKE ?;',
-            [req.body.userName, req.body.userPassword]
+        let result;
+
+        // Check if the user is a student
+        result = await database.getPromise().query(
+            'SELECT idStudent AS id, idStudentGroup AS userGroup, userPassword FROM student WHERE userName LIKE ?;',
+            [req.body.userName]
         );
 
-        if (result[0].length === 0) {
-            result = await database.getPromise().query(
-                'SELECT idTeacher AS id FROM teacher WHERE userName LIKE ? AND userPassword LIKE ?;',
-                [req.body.userName, req.body.userPassword]
-            );
-            if (result[0].length !== 0) {
-                result[0][0].userType = 'teacher';
+        if (result[0].length === 1) {
+            const hashedPassword = result[0][0].userPassword;
+
+            // Compare the hashed password with the input password using bcrypt
+            const passwordMatch = await bcrypt.compare(req.body.userPassword, hashedPassword);
+
+            if (passwordMatch) {
+                result[0][0].userType = 'student';
+                return res.status(200).json({ status: 200, data: result[0] });
             }
-        } else {
-            result[0][0].userType = 'student';
         }
 
-        if (result[0].length === 0) {
-            // No matching user found
-            return res.status(401).json({ status: 401, error: 'Authentication failed' });
+        // If the user is not a student, check if they are a teacher
+        result = await database.getPromise().query(
+            'SELECT idTeacher AS id, userPassword FROM teacher WHERE userName LIKE ?;',
+            [req.body.userName]
+        );
+
+        if (result[0].length === 1) {
+            const hashedPassword = result[0][0].userPassword;
+
+            // Compare the hashed password with the input password using bcrypt
+            const passwordMatch = await bcrypt.compare(req.body.userPassword, hashedPassword);
+
+            if (passwordMatch) {
+                result[0][0].userType = 'teacher';
+                return res.status(200).json({ status: 200, data: result[0] });
+            }
         }
 
-        res.status(200).json({ status: 200, data: result[0] }); // Assuming result is an array of rows
+        // No matching user found
+        return res.status(401).json({ status: 401, error: 'Authentication failed' });
     } catch (err) {
         console.error('Unable to execute query to MySQL: ' + err);
         res.status(500).send();
