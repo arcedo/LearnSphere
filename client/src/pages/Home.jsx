@@ -52,6 +52,13 @@ async function getStudents(idStudentGroup, idActivity) {
     return data;
 }
 
+async function getGrades(idProject) {
+    console.log('grades:'+idProject)
+    const response = await fetch(`http://localhost:3001/activities/${getLoggedUser().id}/grades/${idProject}`);
+    const data = await response.json();
+    return data;
+}
+
 async function addProject() {
     const project = {
         title: document.getElementById('title').value,
@@ -347,6 +354,12 @@ function Home() {
                 });
             };
             fetchData();
+            if (getLoggedUser().type === 'student'){
+                const fetchGrades = async () => {
+                    setStudentGrades(await getGrades(item.id));    
+                }
+                fetchGrades();
+            }
         }
     };
 
@@ -382,9 +395,15 @@ function Home() {
                 });
             }
             fetchData();
+            if (getLoggedUser().type === 'student'){
+                const fetchGrades = async () => {
+                    setStudentGrades(await getGrades(defaultItem.id));    
+                }
+                fetchGrades();
+            }
         }
     }, [selectableProjects]);
-
+        
     // Add project div visible or not
     const [isAddProjectDivVisible, setAddProjectDivVisible] = useState(false);
     //Add Project
@@ -798,17 +817,18 @@ function Home() {
             // Handle the error or show a user-friendly message
         }
     }
-    const [studentGrades, setStudentGrades] = useState([]);
-    useEffect(() => {
-        const fetchStudentGrades = async () => {
-            const response = await fetch(`http://localhost:3001/activities/${getLoggedUser().id}/grades`);
-            const data = await response.json();
-            setStudentGrades(data);
-        }
-        fetchStudentGrades();
-    }, [setStudentGrades])
-    //console.log(selectableProjects);
-    //console.log(displayedProject);
+    const [studentGrades, setStudentGrades] = useState([{activities: [{ skills: [{}] }]}]);
+    // useEffect(() => {
+    //     const fetchStudentGrades = async () => {
+    //         const response = await getGrades(displayedProject.id);
+    //         setStudentGrades(response);
+    //     }
+    //     fetchStudentGrades();
+    // }, [setStudentGrades])
+    // console.log(selectableProjects);
+    console.log(displayedProject);
+    // console.log(studentGrades);
+    console.log(displayedProject.id)
     const loginStatus = LoginStatusChecker();
     if (loginStatus) {
         return (
@@ -905,7 +925,7 @@ function Home() {
                                 }
                             </div>
                             {getLoggedUser().type === 'student' ?
-                                <strong className='text-5xl font-sora font-extrabold'>
+                                <strong id='grade' className='text-5xl font-sora font-extrabold'>
                                     {
                                         (() => {
                                             if (studentGrades.length === 0) {
@@ -988,11 +1008,16 @@ function Home() {
                                         <h5 className='text-3xl'>{item.name}</h5>
                                         {item.activeActivity ? <img src={currentProject} alt='Current project' /> : null}
                                     </div>
-                                    {getLoggedUser().type === 'student' && studentGrades ?
+                                    {
+                                    getLoggedUser().type === 'student' && studentGrades && studentGrades.length > 0 ? (
                                         <strong className='pr-3.5 text-2xl'>
-                                            {studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade || 'N/A'}
+                                        {
+                                            studentGrades[0].activities && studentGrades[0].activities.length > 0 ?
+                                            studentGrades[0].activities.find(studentGrade => studentGrade.idActivity === item.idActivity)?.finalActivityGrade || 'N/A'
+                                            : 'N/A'
+                                        }
                                         </strong>
-                                        : null
+                                    ) : null
                                     }
                                 </AccordionHeader>
                                 <AccordionBody className='px-3.5 pb-10 font-montserrat font-semibold text-lg'>

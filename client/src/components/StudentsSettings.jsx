@@ -14,7 +14,6 @@ export default function StudentsSettings({handleAddStudentDivVisible, handleModi
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
 

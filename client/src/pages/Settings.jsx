@@ -226,6 +226,19 @@ export default function Settings() {
   const [groupAdded, setGroupAdded] = useState(false);
   const [groups, setGroups] = useState([]);
 
+  useEffect(() => {
+    // Fetch data from the API
+    const fetchData = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/groups');
+            const data = await response.json();
+            setGroups(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }; fetchData();
+  }, []);
+
   const handleAddStudentDivVisible = () => {
     setAddStudentDivVisible(true);
     setTimeout(() => {
@@ -417,6 +430,7 @@ export default function Settings() {
             <AddStudent
               submitStudentFunction={handleAddStudentClick}
               studentAdded={studentAdded}
+              groups={groups}
             />
           </div>
           {isModifyStudentDivVisible && (

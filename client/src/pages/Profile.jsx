@@ -38,13 +38,14 @@ function Profile() {
         fetchUserData();
     }, []);
 
+    if (getLoggedUser() && getLoggedUser().type === 'teacher') {
+        navigate('/error');
+    }
+
     const { firstName, lastName, profilePicture, bio } = userData;
     const loginStatus = LoginStatusChecker();
     const navigate = useNavigate();
 
-    if (getLoggedUser().type === 'teacher') {
-        navigate('/error');
-    }
     if (loginStatus) {
         return (
             <div>
