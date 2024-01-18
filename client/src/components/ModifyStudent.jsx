@@ -6,6 +6,14 @@ async function getAllGroups() {
 }
 
 export default function AddStudent({ submitStudentFunction, studentModified, currentData, groups }) {
+    const [error, setError] = useState({ status: true, error: '' });
+    const handleSubmitButton = () => {
+        if (document.getElementById('modPassword').value === '') {
+            setError({ status: false, error: 'Password cannot be empty' });
+        } else {
+            submitStudentFunction();
+        }
+    };
     return (
         <div className='px-8 py-5'>
             <h2 className='font-sora text-4xl font-extrabold'>Modify student</h2>
@@ -33,7 +41,7 @@ export default function AddStudent({ submitStudentFunction, studentModified, cur
                 <div className='flex gap-5'>
                     <div className="w-6/12">
                         <label htmlFor="password" className='font-sora font-bold text-xl mt-4'>Password</label>
-                        <input type="password" id="modPassword" defaultValue={currentData.userPassword || ''} name="password" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
+                        <input type="password" id="modPassword" defaultValue={''} name="password" className='w-full p-2 rounded-md border-2 border-gray-800 bgPrincipal mt-1' />
                     </div>
                     <div className="w-6/12">
                         <label htmlFor="idGroup" className='font-sora font-bold text-xl mt-4'>Group</label>
@@ -61,13 +69,13 @@ export default function AddStudent({ submitStudentFunction, studentModified, cur
                 </div>
                 <div className='flex gap-3 justify-start items-center'>
                     <button
-                        onClick={submitStudentFunction}
+                        onClick={handleSubmitButton}
                         className='w-36 border-2 border-white rounded-md px-4 py-2 bgSidebar hover:bg-white hover:text-black transition-all'
                     >
                         Edit student
                     </button>
-                    {studentModified.status === false ? (
-                        <strong className='text-red-800 text-md'>{studentModified.error}</strong>
+                    {studentModified.status === false || error.status === false ? (
+                        <strong className='text-red-800 text-md'>{studentModified.error || error.error}</strong>
                     ) : null}
                 </div>
             </div>

@@ -107,7 +107,7 @@ async function modifyStudent(idStudent) {
     const getStudents = await fetch('http://localhost:3001/students');
     const studentsData = await getStudents.json();
     let username = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}`;
-    let usernameExists = studentsData.some(student => student.userName === username);
+    let usernameExists = studentsData.some(student => student.userName === username && student.idStudent !== idStudent);
     if (usernameExists) {
       do {
         if (usernameExists) {
