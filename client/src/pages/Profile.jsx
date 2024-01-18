@@ -52,7 +52,7 @@ function Profile() {
                 <Header title={'Profile'} />
                 <section className="flex w-full h-screen pt-20 justify-around items-center text-white bgPrincipal gap-4">
                     <div className='w-5/12 py-10'>
-                        <img className='rounded-full' src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
+                        <img className='rounded-full w-80 h-80' src={`http://localhost:5173/${profilePicture}`} alt="Profile Picture" />
                         <h4 className='font-sora text-4xl font-extrabold mt-4'>{`${firstName} ${lastName}`}</h4>
                         <div className='flex font-sora font-light text-gray-500 text-xl gap-2'>
                             <h4>@{getLoggedUser().name}</h4>
