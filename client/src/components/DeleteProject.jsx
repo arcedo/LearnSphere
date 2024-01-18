@@ -4,6 +4,7 @@ export default function deleteProject({ projectName, setNotVisible, submitFuncti
             <h2 className='font-sora text-4xl font-extrabold'>Delete {projectName}</h2>
             <div className='flex flex-col mt-8'>
                 <strong className='font-sora text-xl font-bold'>Are you sure you want to delete {projectName}?</strong>
+                <p className='font-sora text-sm mt-2'>This action cannot be undone, and will delete <span className="text-red-500">EVERYTHING</span> related to it, <span className="text-red-500">permanently</span>.</p>
                 <div className='flex gap-3 justify-start items-center'>
                     <button onClick={submitFunction} className='w-36 border-2 border-red-800 text-red-500 rounded-md px-4 py-2 bgSidebar mt-8 hover:bg-red-800 hover:text-white transition-all'>
                         Yes
